@@ -1,7 +1,7 @@
-FROM node:alpine
+FROM php:7.4-cli
 
 WORKDIR /app
 
-EXPOSE 3000
+EXPOSE 8081
 
-CMD ["npm", "start"]
+CMD ["php", "-S", "0.0.0.0:8181"]
