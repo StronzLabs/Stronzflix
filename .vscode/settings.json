@@ -1,0 +1,13 @@
+{
+    "files.exclude": {
+        "backend/bin/": true,
+        "backend/obj/": true,
+        "backend/Stronzflix.csproj": true,
+        "backend/Stronzflix.sln": true,
+
+        "frontend/node_modules/": true,
+        "frontend/package-lock.json": true,
+        "frontend/package.json": true,
+        "frontend/.gitignore": true
+    }
+}
