@@ -1,0 +1,17 @@
+/app/bin/Debug/net7.0/Stronzflix
+/app/bin/Debug/net7.0/Stronzflix.deps.json
+/app/bin/Debug/net7.0/Stronzflix.runtimeconfig.json
+/app/bin/Debug/net7.0/Stronzflix.dll
+/app/bin/Debug/net7.0/Stronzflix.pdb
+/app/bin/Debug/net7.0/Newtonsoft.Json.dll
+/app/obj/Debug/net7.0/Stronzflix.csproj.AssemblyReference.cache
+/app/obj/Debug/net7.0/Stronzflix.GeneratedMSBuildEditorConfig.editorconfig
+/app/obj/Debug/net7.0/Stronzflix.AssemblyInfoInputs.cache
+/app/obj/Debug/net7.0/Stronzflix.AssemblyInfo.cs
+/app/obj/Debug/net7.0/Stronzflix.csproj.CoreCompileInputs.cache
+/app/obj/Debug/net7.0/Stronzflix.csproj.CopyComplete
+/app/obj/Debug/net7.0/Stronzflix.dll
+/app/obj/Debug/net7.0/refint/Stronzflix.dll
+/app/obj/Debug/net7.0/Stronzflix.pdb
+/app/obj/Debug/net7.0/Stronzflix.genruntimeconfig.cache
+/app/obj/Debug/net7.0/ref/Stronzflix.dll
