@@ -3,7 +3,6 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Stronzflix.Media;
 using Stronzflix.Sites;
 
 namespace Stronzflix
@@ -16,16 +15,7 @@ namespace Stronzflix
             SiteRegistry.Instance.Register(
                 new StreamingCommunity("https://streamingcommunity.at"), "StreamingCommunity"
             );
-
-            // Site s = new StreamingCommunity("https://streamingcommunity.at");
-
-            // Result[] results = s.Search("Arrow");
-            // Series title = (Series)s.GetTitle(results[0]);
-
-            // Episode e = title.Seasons[7][0];
             
-            // string source = s.GetSource(e);
-            // Console.WriteLine(source);
             CreateWebHostBuilder(args).Build().Run();
         }
 
@@ -39,11 +29,22 @@ namespace Stronzflix
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+            });
             services.AddMvc(options => options.EnableEndpointRouting = false);
         }
 
         public void Configure(IApplicationBuilder app)
         {
+            app.UseCors("AllowAll");
             app.UseMvc();
         }
     }
