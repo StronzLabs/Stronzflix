@@ -83,8 +83,11 @@ namespace Stronzflix.Sites
 
                 string episode_url = "/watch/" + title_id + "?e=" + episode_id;
                 string episode_name = (string)episode["name"];
+                JArray images = (JArray)episode["images"];
+                JObject cover = (JObject)images[0];
+                string cover_url = this.cdn + "/images/" + (string)cover["filename"];
 
-                episodes_list.Add(new Episode(episode_name, episode_url));
+                episodes_list.Add(new Episode(episode_name, episode_url, cover_url));
             }
 
             return episodes_list.ToArray();

@@ -4,5 +4,6 @@ namespace Stronzflix.Media
     {
         public string Url { get; }
         public string Name { get; }
+        public string Cover { get;}
     }
 }

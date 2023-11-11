@@ -4,6 +4,7 @@
         "backend/obj/": true,
         "backend/Stronzflix.csproj": true,
         "backend/Stronzflix.sln": true,
+        "backend/.gitignore": true,
 
         "frontend/node_modules/": true,
         "frontend/package-lock.json": true,

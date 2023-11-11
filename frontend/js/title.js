@@ -34,7 +34,13 @@ function populateSeason()
             url = episode.url;
             setController('media');
         };
-        card.innerHTML = `<h5 class="card-title">${episode.name}</h5>`;
+        console.log(episode);
+        card.innerHTML = `
+            <div class="card-content">
+                <img src="${episode.cover}"></img>
+                <h5 class="card-title">${i + 1} - ${episode.name}</h5>
+            </div>
+        `;
         seasonBox.appendChild(card);
     }
 }

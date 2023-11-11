@@ -21,7 +21,12 @@ async function search()
             url = result.url;
             setController('title');
         };
-        card.innerHTML = `<img src="${result.poster}"></img><h5 class="card-title">${result.title}</h5>`;
+        card.innerHTML = `
+            <div class="card-content">
+                <img src="${result.poster}"></img>
+                <h5 class="card-title">${result.title}</h5>
+            </div>
+        `;
         resultBox.appendChild(card);
     }
 }

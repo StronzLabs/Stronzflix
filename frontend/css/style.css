@@ -63,18 +63,23 @@ svg {
 }
 
 .card {
-    background-color: #1A1A1A;
-    border: 1px solid #1A1A1A;
     border-radius: 3px;
     box-shadow: 3px 3px 3px #1A1A1A;
-    padding: 10px;
     margin: 10px;
     max-width: 200px;
     max-height: 200px;
-    min-width: 200px;
     min-height: 200px;
     display: inline-table;
-    text-decoration: none;
+    text-decoration: none;;
+}
+
+.card-content {
+    background-color: #1A1A1A;
+    border: 1px solid #1A1A1A;
+    padding: 10px;
+    display: grid;
+    row-gap: 10px;
+    grid-template-rows: 1fr 0.2fr;
 }
 
 .card:hover {
@@ -86,7 +91,12 @@ svg {
     font-weight: bold;
     margin: 0px;
     padding: 0px;
-    text-overflow: ellipsis;
     overflow: hidden;
     background-color: transparent;
+}
+
+select {
+    font-size: 32px;
+    padding: 10px;
+    border-radius: 3px;
 }
