@@ -131,6 +131,12 @@ select {
     color: var(--text-color);
 }
 
+.video-container {
+    display: flex;
+    margin-top: 80px;
+    justify-content: center;
+}
+
 /* button {
     border: none;
     background-color: orange;
