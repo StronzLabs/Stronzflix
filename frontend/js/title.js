@@ -1,5 +1,13 @@
 const seasonSelect = document.getElementById("season-select");
 const seasonBox = document.getElementById("season-box");
+const titleName = document.getElementById("title-name");
+
+function cleanTitle()
+{
+    seasonSelect.innerHTML = "";
+    seasonBox.innerHTML = "";
+    titleName.innerText = "";
+}
 
 async function loadTitle()
 {
@@ -9,10 +17,10 @@ async function loadTitle()
     .then(r => r.json());
     title = json.title;
 
+    titleName.innerText = title.name;
+
     for(let i = 0; i < title.seasons.length; i++)
-    {
-        const season = title.seasons[i];
-        
+    {        
         const option = document.createElement("option");
         option.value = `Stagione ${i + 1}`;
         option.innerText = `Stagione ${i + 1}`;

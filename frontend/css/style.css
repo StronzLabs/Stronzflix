@@ -1,10 +1,137 @@
-* {
-    background-color: #1E1E1E;
-    color: white;
-    outline: none;
+:root {
+    --text-color: white;
+    --accent-color: orange;
+    --background-color: #1E1E1E;
+    --evidence-color: #2A2A2A;
+    --border-color: #1F1F1F;
+    --shadow-color: #1A1A1A;
+    --topbar-color: #101010
 }
 
-button {
+* {
+    outline: none;
+    border: none;
+    font-family: helvetica;
+    background-color: transparent;
+}
+
+html {
+    background-color: var(--background-color);
+}
+
+.icon-button:hover {
+    cursor: pointer;
+}
+
+input[type="text"] {
+    border-bottom: 2px solid var(--accent-color);
+    color: var(--text-color);
+    padding: 5px;
+    font-size: 32px;
+}
+
+svg {
+    fill: var(--accent-color);
+}
+
+#result-box, #season-box {
+    margin-top: 80px;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.card {
+    border-radius: 3px;
+    box-shadow: 3px 3px 3px var(--shadow-color);
+    background-color: var(--evidence-color);
+    margin: 10px;
+    width: 1px;
+    display: inline-table;
+    color: var(--text-color);
+}
+
+.card:hover {
+    cursor: pointer;
+}
+
+.card-content {
+    padding: 10px;
+    display: grid;
+    row-gap: 10px;
+    grid-template-rows: 1fr 0.2fr;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+}
+
+dialog::backdrop {
+    background-color: #00000055;
+}
+
+dialog {
+    overflow: hidden;
+}
+
+.spinner {
+    border: 16px solid var(--border-color);
+    border-top: 16px solid var(--accent-color);
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.top-bar, .search-box {
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--topbar-color);
+    box-shadow: 0px 3px 3px var(--shadow-color);
+    font-size: 20px;
+    padding: 0px 100px;
+    height: 80px;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+}
+
+.search-box {    
+    justify-content: center;
+    column-gap: 10px;
+}
+
+.top-bar {
+    justify-content: space-between;
+}
+
+select {
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 3px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+#title-name {
+    margin: 0px;
+    color: var(--text-color);
+}
+
+/* button {
     border: none;
     background-color: orange;
     color: black;
@@ -23,105 +150,4 @@ button:hover {
 
 button:active {
     background-color: orange;
-}
-
-.icon-button {
-    background-color: transparent;
-    padding: 0px;
-    box-shadow: none;
-}
-
-.icon-button:hover {
-    cursor: pointer;
-}
-
-input[type="text"] {
-    border: none;
-    background-color: transparent;
-    border-bottom: 2px solid orange;
-    color: white;
-    padding: 5px;
-    font-size: 16px;
-}
-
-.search-box {
-    position: absolute;
-    right: 0px;
-    margin: 10px 30px;
-    display: inline-flex;
-}
-
-svg {
-    fill: orange;
-    padding-right: 10px;
-}
-
-#result-box {
-    position: absolute;
-    top: 100px;
-    left: 0px
-}
-
-.card {
-    border-radius: 3px;
-    box-shadow: 3px 3px 3px #1A1A1A;
-    margin: 10px;
-    max-width: 200px;
-    max-height: 200px;
-    min-height: 200px;
-    display: inline-table;
-    text-decoration: none;;
-}
-
-.card-content {
-    background-color: #1A1A1A;
-    border: 1px solid #1A1A1A;
-    padding: 10px;
-    display: grid;
-    row-gap: 10px;
-    grid-template-rows: 1fr 0.2fr;
-}
-
-.card:hover {
-    cursor: pointer;
-}
-
-.card-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin: 0px;
-    padding: 0px;
-    overflow: hidden;
-    background-color: transparent;
-}
-
-select {
-    font-size: 32px;
-    padding: 10px;
-    border-radius: 3px;
-}
-
-dialog::backdrop {
-    background-color: #00000055;
-}
-
-dialog {
-    border: none;
-    background-color: transparent;
-    overflow: hidden;
-}
-
-.spinner {
-    border: 16px solid #1A1A1A;
-    border-top: 16px solid orange;
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: spin 1.5s linear infinite;
-    background-color: transparent;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+} */

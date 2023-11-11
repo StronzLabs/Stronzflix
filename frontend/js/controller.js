@@ -1,12 +1,16 @@
 const searchTab = document.getElementById('search-tab');
 const titleTab = document.getElementById('title-tab');
 const mediaTab = document.getElementById('media-tab');
+const loadingDialog = document.getElementById('loading-dialog');
 
 const backend = "http://127.0.0.1:8989";
 
 var site = undefined;
 var url = undefined;
 var title = undefined;
+
+site = 'StreamingCommunity';
+url= '/titles/977-arrow';
 
 function setController(controller)
 {
@@ -15,8 +19,11 @@ function setController(controller)
     else
         searchTab.style.display = 'block';
     
-        if(controller != 'title')
+    if(controller != 'title')
+    {
         titleTab.style.display = 'none';
+        cleanTitle();
+    }
     else
     {
         titleTab.style.display = 'block';
@@ -32,7 +39,9 @@ function setController(controller)
     }
 }
 
-const loadingDialog = document.getElementById('loading-dialog');
+loadingDialog.addEventListener('cancel', (event) => {
+    event.preventDefault();
+});
 
 async function startLoading()
 {
