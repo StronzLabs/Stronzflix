@@ -77,6 +77,10 @@ svg {
     text-decoration: none;
 }
 
+.card:hover {
+    cursor: pointer;
+}
+
 .card-title {
     font-size: 20px;
     font-weight: bold;

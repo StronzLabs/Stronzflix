@@ -1,17 +1,9 @@
-const backend = "http://127.0.0.1:8989";
-
-const urlParams = new URLSearchParams(window.location.search);
-const site = urlParams.get("site");
-const url = urlParams.get("url");
-
 const seasonSelect = document.getElementById("season-select");
 const seasonBox = document.getElementById("season-box");
 
-var title = undefined;
-
 async function loadTitle()
 {
-    const json = await fetch(backend + `/api/get_title?site=${site}&url=${url}`)
+    const json = await fetch(`${backend}/api/get_title?site=${site}&url=${url}`)
     .then(r => r.json());
     title = json.title;
 
@@ -36,12 +28,13 @@ function populateSeason()
     for(let i = 0; i < season.length; i++)
     {
         const episode = season[i];
-        const card = document.createElement("a");
+        const card = document.createElement("div");
         card.className = "card";
-        card.href = `/media.html?site=${encodeURIComponent(site)}&url=${encodeURIComponent(episode.url)}`;
+        card.onclick = () => {
+            url = episode.url;
+            setController('media');
+        };
         card.innerHTML = `<h5 class="card-title">${episode.name}</h5>`;
         seasonBox.appendChild(card);
     }
 }
-
-loadTitle();
