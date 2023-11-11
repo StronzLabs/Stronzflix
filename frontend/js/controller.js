@@ -4,8 +4,8 @@ const mediaTab = document.getElementById('media-tab');
 
 const backend = "http://127.0.0.1:8989";
 
-var site = "StreamingCommunity";
-var url = "/titles/977-arrow";
+var site = undefined;
+var url = undefined;
 var title = undefined;
 
 function setController(controller)
@@ -32,3 +32,14 @@ function setController(controller)
     }
 }
 
+const loadingDialog = document.getElementById('loading-dialog');
+
+async function startLoading()
+{
+    loadingDialog.showModal();
+}
+
+async function stopLoading()
+{
+    loadingDialog.close();
+}

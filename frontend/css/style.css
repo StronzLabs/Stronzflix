@@ -100,3 +100,28 @@ select {
     padding: 10px;
     border-radius: 3px;
 }
+
+dialog::backdrop {
+    background-color: #00000055;
+}
+
+dialog {
+    border: none;
+    background-color: transparent;
+    overflow: hidden;
+}
+
+.spinner {
+    border: 16px solid #1A1A1A;
+    border-top: 16px solid orange;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 1.5s linear infinite;
+    background-color: transparent;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

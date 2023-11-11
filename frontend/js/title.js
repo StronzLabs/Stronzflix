@@ -3,6 +3,8 @@ const seasonBox = document.getElementById("season-box");
 
 async function loadTitle()
 {
+    startLoading();
+
     const json = await fetch(`${backend}/api/get_title?site=${site}&url=${url}`)
     .then(r => r.json());
     title = json.title;
@@ -18,6 +20,8 @@ async function loadTitle()
     }
 
     populateSeason();
+
+    stopLoading();
 }
 
 function populateSeason()
@@ -34,7 +38,6 @@ function populateSeason()
             url = episode.url;
             setController('media');
         };
-        console.log(episode);
         card.innerHTML = `
             <div class="card-content">
                 <img src="${episode.cover}"></img>
