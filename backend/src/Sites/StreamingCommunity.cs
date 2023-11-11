@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,10 +13,13 @@ namespace Stronzflix.Sites
         private readonly string search_url;
         private readonly Dictionary<string, string> inhertia;
 
+        private readonly string cdn;
+
         public StreamingCommunity(string url)
             : base("StreamingCommunity", url)
         {
             this.search_url = base.Url + "/search?q=";
+            this.cdn = string.Join("//cdn.", url.Split("//"));
             string inhertia_version = this.GetInertia();
             this.inhertia = new Dictionary<string, string>()
             {
@@ -42,11 +46,20 @@ namespace Stronzflix.Sites
             {
                 string title_id = (string)title["id"];
                 string title_slug = (string)title["slug"];
+                JArray images = (JArray)title["images"];
+                string poster = "";
+                foreach(JObject image in images.Cast<JObject>())
+                    if((string)image["type"] == "poster")
+                    {
+                        poster = (string)image["filename"];
+                        break;
+                    }
 
                 string title_url = "/titles/" + title_id + "-" + title_slug;
                 string title_name = (string)title["name"];
+                string poster_url = this.cdn + "/images/" + poster;
 
-                results.Add(new Result(this, title_name, title_url));
+                results.Add(new Result(this, title_name, title_url, poster_url));
             }
 
             return results.ToArray();

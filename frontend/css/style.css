@@ -1,9 +1,11 @@
 * {
     background-color: #1E1E1E;
     color: white;
+    outline: none;
 }
 
 button {
+    border: none;
     background-color: orange;
     color: black;
     font-weight: bold;
@@ -25,41 +27,39 @@ button:active {
 
 .icon-button {
     background-color: transparent;
-    border: none;
-    color: white;
-    font-size: 20px;
     padding: 0px;
-    outline: none;
     box-shadow: none;
 }
 
 .icon-button:hover {
-    background-color: transparent;
     cursor: pointer;
 }
 
 input[type="text"] {
-    background-color: transparent;
     border: none;
-    border-bottom: 1px solid orange;
+    background-color: transparent;
+    border-bottom: 2px solid orange;
     color: white;
-    font-size: 15px;
     padding: 5px;
-    outline: none;
+    font-size: 16px;
+}
+
+.search-box {
+    position: absolute;
+    right: 0px;
+    margin: 10px 30px;
+    display: inline-flex;
 }
 
 svg {
     fill: orange;
+    padding-right: 10px;
 }
 
-.result-box {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    flex-direction: row;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 100px;
-    padding: 10px;
+#result-box {
+    position: absolute;
+    top: 100px;
+    left: 0px
 }
 
 .card {
