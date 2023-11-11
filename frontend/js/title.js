@@ -16,18 +16,26 @@ async function loadTitle()
     const json = await fetch(`${backend}/api/get_title?site=${site}&url=${url}`)
     .then(r => r.json());
     title = json.title;
-
-    titleName.innerText = title.name;
-
-    for(let i = 0; i < title.seasons.length; i++)
-    {        
-        const option = document.createElement("option");
-        option.value = `Stagione ${i + 1}`;
-        option.innerText = `Stagione ${i + 1}`;
-        seasonSelect.appendChild(option);
+    
+    if(title.seasons)
+    {
+        titleName.innerText = title.name;
+    
+        for(let i = 0; i < title.seasons.length; i++)
+        {        
+            const option = document.createElement("option");
+            option.value = `Stagione ${i + 1}`;
+            option.innerText = `Stagione ${i + 1}`;
+            seasonSelect.appendChild(option);
+        }
+    
+        populateSeason();
     }
-
-    populateSeason();
+    else
+    {
+        url = title.url;
+        setController('media');
+    }
 
     stopLoading();
 }

@@ -9,9 +9,6 @@ var site = undefined;
 var url = undefined;
 var title = undefined;
 
-site = 'StreamingCommunity';
-url= '/titles/977-arrow';
-
 function setController(controller)
 {
     if(controller != 'search')

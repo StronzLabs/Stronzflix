@@ -46,6 +46,15 @@ namespace Stronzflix.Apis
 
                 return new JsonResult(json);
             }
+            else if(result is Film film)
+            {
+                Dictionary<string, Film> json = new Dictionary<string, Film>
+                {
+                    { "title", film }
+                };
+
+                return new JsonResult(json);
+            }
             else
                 throw new NotImplementedException();
         }

@@ -93,12 +93,10 @@ namespace Stronzflix.Sites
             return episodes_list.ToArray();
         }
 
-        public override Title GetTitle(string url)
+        private Series GetSeries(string url, JObject title)
         {
-            string json = SimpleHTTP.Get(base.Url + url, this.inhertia);
-            Dictionary<string, object> data = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-            JArray seasons = (JArray)((JObject)((JObject)data["props"])["title"])["seasons"];
-            string name = (string)((JObject)((JObject)data["props"])["title"])["name"];
+            JArray seasons = (JArray)title["seasons"];
+            string name = (string)title["name"];
             
             List<Episode[]> episodes = new List<Episode[]>();
 
@@ -111,6 +109,28 @@ namespace Stronzflix.Sites
             }
 
             return new Series(name, episodes.ToArray());
+        }
+
+        private Film GetFilm(JObject title)
+        {
+            string id = (string)title["id"];
+            string name = (string)title["name"];
+            string url = "/watch/" + id;
+
+            return new Film(name, url);
+        }
+
+        public override Title GetTitle(string url)
+        {
+            string json = SimpleHTTP.Get(base.Url + url, this.inhertia);
+            Dictionary<string, object> data = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+            JObject title = (JObject)((JObject)data["props"])["title"];
+            
+            string type = (string)title["type"];
+            if(type == "tv")
+                return this.GetSeries(url, title);
+            else
+                return this.GetFilm(title);
         }
 
         public override string GetSource(string url)

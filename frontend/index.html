@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Stronzflix</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <head>
+        <title>Stronzflix</title>
+        <link rel="stylesheet" href="css/style.css">
+        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 
     <dialog id="loading-dialog">
@@ -34,8 +34,11 @@
         </div>
     </div>
 
+    
     <div id="media-tab" style="display: none;">
-        <video id="video" controls></video>
+        <div class="video-container">
+            <video id="video" controls width="1080"></video>
+        </div>
     </div>
     
     <script src="js/controller.js"></script>
