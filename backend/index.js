@@ -8,7 +8,6 @@ siteRegistry.register(new StreamingCommunity("https://streamingcommunity.at"), "
 
 
 const app = express();
-app.use(express.json());
 
 app.disable("x-powered-by");
 app.disable("etag");
@@ -18,8 +17,6 @@ app.use((_, response, next) => {
 });
 app.use((_, response, next) => {
     response.header("Access-Control-Allow-Origin", "*");
-    // response.header("Access-Control-Allow-Methods", "GET");
-    // response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
 

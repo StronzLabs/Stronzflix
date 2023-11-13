@@ -84,7 +84,7 @@ export class StreamingCommunity extends Site
             episodes.push(this.getEpisodes(seasonUrl));
         }
 
-        return { "seasons": episodes };
+        return { "seasons": episodes, "name": title.name };
     }
 
     getFilm(title)
@@ -101,7 +101,7 @@ export class StreamingCommunity extends Site
         const title = json.props.title;
 
         const result = title.type == "tv" ? this.getSeries(url, title) : this.getFilm(title);
-   
+
         return { "title": result, "site": this.name, };
     }
 
