@@ -15,10 +15,6 @@ app.use((_, response, next) => {
     response.removeHeader("Date");
     next();
 });
-app.use((_, response, next) => {
-    response.header("Access-Control-Allow-Origin", "*");
-    next();
-});
 
 app.listen(3000, () => {
     console.log("Server Listening on PORT:", 3000);
