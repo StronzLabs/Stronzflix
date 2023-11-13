@@ -1,7 +1,7 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0
+FROM node:latest
 
 WORKDIR /app
 
-EXPOSE 8989
+EXPOSE 3000
 
-CMD ["dotnet", "run"]
+CMD ["node", "index.js"]

@@ -3,7 +3,7 @@ const titleTab = document.getElementById('title-tab');
 const mediaTab = document.getElementById('media-tab');
 const loadingDialog = document.getElementById('loading-dialog');
 
-const backend = "http://127.0.0.1:8989";
+const backend = "http://127.0.0.1:3000";
 
 var site = undefined;
 var url = undefined;

@@ -17,7 +17,7 @@ async function search()
         const card = document.createElement("div");
         card.className = "card";
         card.onclick = () => {
-            site = result.site.name;
+            site = result.site;
             url = result.url;
             setController('title');
         };
