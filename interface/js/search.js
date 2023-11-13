@@ -6,7 +6,7 @@ async function search()
     if(event.key && event.key !== 'Enter')
         return;
 
-    const json = await fetch(`${backend}/api/search?site=StreamingCommunity&query=${searchField.value}`)
+    const json = await fetch(`/api/search?site=StreamingCommunity&query=${searchField.value}`)
    .then(r => r.json());
     const results = json.results;
 

@@ -2,7 +2,7 @@ const video = document.getElementById('video');
 
 function loadMedia()
 {
-    const source = `${backend}/api/get_source?site=${site}&url=${url}`;
+    const source = `/api/get_source?site=${site}&url=${url}`;
     
     if (Hls.isSupported())
     {

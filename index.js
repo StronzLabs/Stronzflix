@@ -50,3 +50,5 @@ app.get("/api/get_source", (request, response) => {
 
     response.send(siteInstance.getSource(url));
 });
+
+app.use("/", express.static("interface"));

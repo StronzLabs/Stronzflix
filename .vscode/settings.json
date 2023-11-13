@@ -1,13 +1,8 @@
 {
     "files.exclude": {
-        "frontend/node_modules/": true,
-        "frontend/package-lock.json": true,
-        "frontend/package.json": true,
-        "frontend/.gitignore": true,
-
-        "backend/node_modules/": true,
-        "backend/package-lock.json": true,
-        "backend/package.json": true,
-        "backend/.gitignore": true
+        "node_modules/": true,
+        "package-lock.json": true,
+        "package.json": true,
+        ".gitignore": true
     }
 }

@@ -13,7 +13,7 @@ async function loadTitle()
 {
     startLoading();
 
-    const json = await fetch(`${backend}/api/get_title?site=${site}&url=${url}`)
+    const json = await fetch(`/api/get_title?site=${site}&url=${url}`)
     .then(r => r.json());
     title = json.title;
     
