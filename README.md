@@ -1,16 +1,14 @@
-# stronzflix
+# Stronzflix
 
-A new Flutter project.
+Stronzflix comes as both a single application client that handles everything locally and a centralized server hosted application allowing multiple screens (clients) to connect at the same time.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+### Stronzflix single-app
 
-A few resources to get you started if this is your first Flutter project:
+Run with `$ flutte run -d <platform_name>`
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Builds for:
+- android: `$ flutter build apk`
+- linux: `$ flutter build linux`
+- windows `$ flutter build windows`

@@ -7,6 +7,6 @@ import 'package:fvp/fvp.dart';
 void main() {
     StreamingCommunity.instance;
     VixxCloud.instance;
-    registerWith(options: {'platforms': ['android', 'linux']});
+    registerWith(options: {'platforms': ['android', 'linux', 'windows']});
     runApp(const Stronzflix());
 }
