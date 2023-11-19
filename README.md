@@ -19,3 +19,6 @@ TODO:
 - [ ] VideoPlayer
 - [ ] Chromecast
 - [ ] Keep watching
+
+Known Bugs:
+- Search button doesn't work with AndroidTV remote (works with a keyboard attached)
