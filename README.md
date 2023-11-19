@@ -12,3 +12,10 @@ Builds for:
 - android: `$ flutter build apk`
 - linux: `$ flutter build linux`
 - windows `$ flutter build windows`
+
+
+---
+TODO:
+- [ ] VideoPlayer
+- [ ] Chromecast
+- [ ] Keep watching
