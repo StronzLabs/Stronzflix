@@ -1,0 +1,7 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    unnecessary_this: false
+    curly_braces_in_flow_control_structures: false
+    unnecessary_brace_in_string_interps: false
