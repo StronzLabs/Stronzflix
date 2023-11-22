@@ -15,28 +15,31 @@ class MediaPage extends StatefulWidget {
 
 class _MediaPageState extends State<MediaPage> {
 
-    late Future<Uri> _uri;
+    late Future<void> _videoInitialize;
 
     late VideoPlayerController _videoPlayerController;
     late ChewieController _chewieController;
 
+    Future<void> initVideoPlayer() async {
+        Uri uri = await super.widget.media.player.getSource(super.widget.media);
+        this._videoPlayerController = VideoPlayerController.networkUrl(
+            Uri.parse("$uri#.m3u8")
+        );
+
+        await this._videoPlayerController.initialize();
+
+        this._chewieController = ChewieController(
+            videoPlayerController: this._videoPlayerController,
+            autoPlay: true,
+            allowedScreenSleep: false,
+            aspectRatio: this._videoPlayerController.value.aspectRatio,
+        );
+    }
+
     @override
     void initState() {
         super.initState();
-
-        this._uri = super.widget.media.player.getSource(super.widget.media);
-        this._uri.then((uri) {
-            this._videoPlayerController = VideoPlayerController.networkUrl(
-                Uri.parse("$uri#.m3u8")
-            );
-
-            this._chewieController = ChewieController(
-                videoPlayerController: this._videoPlayerController,
-                autoPlay: true,
-                allowedScreenSleep: false,
-                aspectRatio: 16/9,
-            );
-        });
+        this._videoInitialize = this.initVideoPlayer();
 
         // windowManager.setFullScreen(true);
     }
@@ -56,9 +59,9 @@ class _MediaPageState extends State<MediaPage> {
             ),
             body: Center(
                 child: FutureBuilder(
-                    future: this._uri,
+                    future: this._videoInitialize,
                     builder: (context, snapshot) {
-                        if (snapshot.hasData)
+                        if (snapshot.connectionState == ConnectionState.done)
                             return Chewie(
                                 controller: this._chewieController,
                             );
