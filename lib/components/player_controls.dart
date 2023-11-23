@@ -24,7 +24,6 @@ class _PlayerControlsState extends State<PlayerControls> {
     late VideoPlayerController controller;
     late VideoPlayerValue _latestValue;
 
-    final double _barHeight = 48.0 * 1.5;
     Timer? _hideTimer;
     bool _hideStuff = true;
     bool _buffering = false;
@@ -82,12 +81,10 @@ class _PlayerControlsState extends State<PlayerControls> {
     }
 
     Widget _buildBuffering(BuildContext context) {
-        return Expanded(
-            child: Container(
-                color: Colors.black54,
-                child: const Center(
-                    child: CircularProgressIndicator(),
-                )
+        return const ColoredBox(
+            color: Colors.black54,
+            child: Center(
+                child: CircularProgressIndicator(),
             )
         );
     }
@@ -163,8 +160,9 @@ class _PlayerControlsState extends State<PlayerControls> {
     }
 
     Widget _buildProgressBar(BuildContext context) {
-        return Expanded(
-            child: MaterialVideoProgressBar(
+        return Padding(
+            padding: const EdgeInsets.only(right: 20, left: 20),
+                child: MaterialVideoProgressBar(
                 controller,
                 onDragStart: () {
                     this._hideTimer?.cancel();
@@ -190,44 +188,37 @@ class _PlayerControlsState extends State<PlayerControls> {
         return AnimatedOpacity(
             opacity: this._hideStuff ? 0.0 : 1.0,
             duration: const Duration(milliseconds: 300),
-            child: Container(
-                height: this._barHeight + (chewieController.isFullScreen ? 20.0 : 0),
-                padding: EdgeInsets.only(bottom: chewieController.isFullScreen ? 10.0 : 15),
-                child: SafeArea(
-                    bottom: this.chewieController.isFullScreen,
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        verticalDirection: VerticalDirection.up,
-                        children: [
-                            Padding(
-                                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                                child: Row(
-                                    children: [
-                                        this._buildPlayPause(context),
-                                        const SizedBox(width: 12),
-                                        this._buildMuteButton(context),
-                                        const SizedBox(width: 12),
-                                        if (this.chewieController.isLive)
-                                            const Text('LIVE')
-                                        else
-                                            this._buildPosition(context),
-                                        const Spacer(),
-                                        if (Platform.isWindows || Platform.isLinux)
-                                            this._buildExpandButton(context)
-                                    ]
-                                )
-                            ),
-                            if (!this.chewieController.isLive)
-                                Expanded(
-                                    child: 
-                                    Padding(
-                                        padding: const EdgeInsets.only(right: 20, left: 20),
-                                        child: this._buildProgressBar(context),
-                                    ),
-                                )
-                        ],
-                    ),
-                )
+            child: SafeArea(
+                minimum: const EdgeInsets.only(bottom: 10),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    verticalDirection: VerticalDirection.up,
+                    children: [
+                        Padding(
+                            padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                            child: Row(
+                                children: [
+                                    this._buildPlayPause(context),
+                                    const SizedBox(width: 12),
+                                    this._buildMuteButton(context),
+                                    const SizedBox(width: 12),
+                                    if (this.chewieController.isLive)
+                                        const Text('LIVE')
+                                    else
+                                        this._buildPosition(context),
+                                    const Spacer(),
+                                    if (Platform.isWindows || Platform.isLinux)
+                                        this._buildExpandButton(context)
+                                ]
+                            )
+                        ),
+                        if (!this.chewieController.isLive)
+                            SizedBox(
+                                height: 24,
+                                child: this._buildProgressBar(context),
+                            )
+                    ],
+                ),
             )
         );
     }
@@ -291,7 +282,6 @@ class _PlayerControlsState extends State<PlayerControls> {
 
     void _updateState() {
         this._buffering = controller.value.isBuffering;
-
         super.setState(() => this._latestValue = this.controller.value);
     }
 }
