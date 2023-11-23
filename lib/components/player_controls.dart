@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
-import 'package:stronzflix/components/center_play_button.dart';
 import 'package:stronzflix/utils/format.dart';
 import 'package:video_player/video_player.dart';
 import 'package:window_manager/window_manager.dart';
@@ -28,7 +27,6 @@ class _PlayerControlsState extends State<PlayerControls> {
     Timer? _hideTimer;
     bool _hideStuff = true;
     bool _buffering = false;
-    bool _dragging = false;
     double? _latestVolume;
 
     @override
@@ -77,7 +75,6 @@ class _PlayerControlsState extends State<PlayerControls> {
         return const Center(
             child: Icon(
                 Icons.error,
-                color: Colors.white,
                 size: 42,
             ),
         );
@@ -95,19 +92,16 @@ class _PlayerControlsState extends State<PlayerControls> {
     }
 
     Widget _buildHitArea(BuildContext context) {
-        final bool isFinished = this._latestValue.position >= this._latestValue.duration;
-        final bool showPlayButton = !this._hideStuff && !this._dragging;
-
         return GestureDetector(
             onTap: this._playPause,
-            child: CenterPlayButton(
-                backgroundColor: Colors.black54,
-                iconColor: Colors.white,
-                isFinished: isFinished,
-                isPlaying: controller.value.isPlaying,
-                show: showPlayButton,
-                onPressed: this._playPause,
-            ),
+            child: AnimatedOpacity(
+                opacity: !this._hideStuff ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 300), 
+                child: ColoredBox(
+                    color: Colors.black26,
+                    child: Container()
+                )
+            )
         );
     }
 
@@ -118,33 +112,23 @@ class _PlayerControlsState extends State<PlayerControls> {
         return Text(
             '${formatDuration(position)} / ${formatDuration(duration)}',
             style: const TextStyle(
-                fontSize: 14.0,
-                color: Colors.white,
+                fontSize: 14.0
             ),
         );
     }
 
     Widget _buildPlayPause(BuildContext context) {
-        return GestureDetector(
-        onTap: this._playPause,
-            child: Container(
-                height: this._barHeight,
-                color: Colors.transparent,
-                margin: const EdgeInsets.only(left: 8.0, right: 4.0),
-                padding: const EdgeInsets.only(
-                    left: 12.0,
-                    right: 12.0,
-                ),
-                child: AnimatedPlayPause(
-                    playing: this.controller.value.isPlaying
-                ),
-            ),
+        return IconButton(
+            onPressed: this._playPause,
+            icon: AnimatedPlayPause(
+                playing: this.controller.value.isPlaying
+            )
         );
     }
 
     Widget _buildMuteButton(BuildContext context) {
-        return GestureDetector(
-            onTap: () {
+        return IconButton(
+            onPressed: () {
                 this._cancelAndRestartTimer();
 
                 if (this._latestValue.volume == 0)
@@ -154,53 +138,24 @@ class _PlayerControlsState extends State<PlayerControls> {
                     this.controller.setVolume(0.0);
                 }
             },
-            child: AnimatedOpacity(
+            icon: AnimatedOpacity(
                 opacity: this._hideStuff ? 0.0 : 1.0,
                 duration: const Duration(milliseconds: 300),
-                child: ClipRect(
-                    child: Container(
-                        height: this._barHeight,
-                            padding: const EdgeInsets.only(
-                                right: 15.0,
-                            ),
-                            child: Icon(
-                                this._latestValue.volume > 0 ? Icons.volume_up : Icons.volume_off
-                            ),
-                        ),
-                    ),
+                child: Icon(
+                    this._latestValue.volume > 0 ? Icons.volume_up : Icons.volume_off
                 ),
-            );
-    }
-
-    void _onExpandCollapse() {
-        super.setState(() {
-            this._cancelAndRestartTimer();
-            windowManager.setFullScreen(!this.chewieController.isFullScreen).then((_) =>
-                this.chewieController.toggleFullScreen()
-            );
-        });
+            )
+        );
     }
 
     Widget _buildExpandButton(BuildContext context) {
-        return GestureDetector(
-            onTap: this._onExpandCollapse,
-            child: AnimatedOpacity(
+        return IconButton(
+            onPressed: this._onExpandCollapse,
+            icon: AnimatedOpacity(
                 opacity: this._hideStuff ? 0.0 : 1.0,
                 duration: const Duration(milliseconds: 300),
-                child: Container(
-                    height: this._barHeight + (chewieController.isFullScreen ? 15.0 : 0),
-                    margin: const EdgeInsets.only(right: 12.0),
-                    padding: const EdgeInsets.only(
-                        left: 8.0,
-                        right: 8.0,
-                    ),
-                    child: Center(
-                        child: Icon(
-                            chewieController.isFullScreen
-                                ? Icons.fullscreen_exit
-                                : Icons.fullscreen
-                        ),
-                    ),
+                child: Icon(
+                    this.chewieController.isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen
                 ),
             ),
         );
@@ -211,20 +166,12 @@ class _PlayerControlsState extends State<PlayerControls> {
             child: MaterialVideoProgressBar(
                 controller,
                 onDragStart: () {
-                    super.setState(() {
-                        this._dragging = true;
-                    });
-
                     this._hideTimer?.cancel();
                 },
                 onDragUpdate: () {
                     this._hideTimer?.cancel();
                 },
                 onDragEnd: () {
-                    super.setState(() {
-                        this._dragging = false;
-                    });
-
                     this._startHideTimer();
                 },
                 colors: chewieController.materialProgressColors ??
@@ -249,17 +196,18 @@ class _PlayerControlsState extends State<PlayerControls> {
                     bottom: this.chewieController.isFullScreen,
                     child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
                         verticalDirection: VerticalDirection.up,
                         children: [
-                            Flexible(
+                            Padding(
+                                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                                 child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                         this._buildPlayPause(context),
+                                        const SizedBox(width: 12),
                                         this._buildMuteButton(context),
+                                        const SizedBox(width: 12),
                                         if (this.chewieController.isLive)
-                                            const Expanded(child: Text('LIVE'))
+                                            const Text('LIVE')
                                         else
                                             this._buildPosition(context),
                                         const Spacer(),
@@ -269,17 +217,10 @@ class _PlayerControlsState extends State<PlayerControls> {
                             ),
                             if (!this.chewieController.isLive)
                                 Expanded(
-                                    child: Container(
-                                        padding: EdgeInsets.only(
-                                            right: 20,
-                                            left: 20,
-                                            bottom: this.chewieController.isFullScreen ? 5.0 : 0,
-                                        ),
-                                        child: Row(
-                                            children: [
-                                                this._buildProgressBar(context),
-                                            ],
-                                        ),
+                                    child: 
+                                    Padding(
+                                        padding: const EdgeInsets.only(right: 20, left: 20),
+                                        child: this._buildProgressBar(context),
                                     ),
                                 )
                         ],
@@ -287,6 +228,15 @@ class _PlayerControlsState extends State<PlayerControls> {
                 )
             )
         );
+    }
+
+    void _onExpandCollapse() {
+        super.setState(() {
+            this._cancelAndRestartTimer();
+            windowManager.setFullScreen(!this.chewieController.isFullScreen).then((_) =>
+                this.chewieController.toggleFullScreen()
+            );
+        });
     }
 
     void _dispose() {
