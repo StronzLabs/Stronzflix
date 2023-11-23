@@ -17,6 +17,7 @@ class Stronzflix extends StatelessWidget {
                     colorScheme: ColorScheme.dark(
                         brightness: Brightness.dark,
                         primary: Colors.orange,
+                        secondary: Colors.orangeAccent,
                         background: (Colors.grey[900])!,
                         surface: const Color(0xff121212),
                         surfaceTint: Colors.transparent,
