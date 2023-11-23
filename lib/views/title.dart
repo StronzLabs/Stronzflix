@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/media.dart';
 import 'package:stronzflix/backend/media.dart' as SF;
 import 'package:stronzflix/backend/result.dart';
-import 'package:stronzflix/media.dart';
+import 'package:stronzflix/views/media.dart';
 
 class TitlePage extends StatefulWidget {
     final Result result;

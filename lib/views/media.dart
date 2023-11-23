@@ -1,9 +1,11 @@
+import 'dart:io';
+
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/media.dart';
 import 'package:video_player/video_player.dart';
 
-import 'components/player_controls.dart';
+import '../components/player_controls.dart';
 
 class MediaPage extends StatefulWidget {
 
@@ -34,6 +36,7 @@ class _MediaPageState extends State<MediaPage> {
             aspectRatio: this._videoPlayerController.value.aspectRatio,
             customControls: const PlayerControls(),
             hideControlsTimer: const Duration(seconds: 1, milliseconds: 500),
+            fullScreenByDefault: !Platform.isWindows || !Platform.isLinux,
         );
     }
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
@@ -211,7 +212,8 @@ class _PlayerControlsState extends State<PlayerControls> {
                                         else
                                             this._buildPosition(context),
                                         const Spacer(),
-                                        this._buildExpandButton(context)
+                                        if (Platform.isWindows || Platform.isLinux)
+                                            this._buildExpandButton(context)
                                     ]
                                 )
                             ),

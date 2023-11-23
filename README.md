@@ -16,9 +16,11 @@ Builds for:
 
 ---
 TODO:
-- [ ] VideoPlayer
+- [x] VideoPlayer
 - [ ] Chromecast
 - [ ] Keep watching
+- [ ] Subtitles
+- [ ] Qualities
 
 Known Bugs:
-- Search button doesn't work with AndroidTV remote (works with a keyboard attached)
+- Fullscreen doesn't start automagically

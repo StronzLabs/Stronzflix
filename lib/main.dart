@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/streamingcommunity.dart';
 import 'package:stronzflix/backend/vixxcloud.dart';
@@ -11,7 +13,8 @@ void main() async {
 
     WidgetsFlutterBinding.ensureInitialized();
     registerWith(options: {'platforms': ['android', 'linux', 'windows']});
-    await windowManager.ensureInitialized();
-    
+    if(Platform.isWindows || Platform.isLinux)
+        await windowManager.ensureInitialized();
+
     runApp(const Stronzflix());
 }
