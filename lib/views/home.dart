@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stronzflix/search.dart';
+import 'package:stronzflix/views/search.dart';
 
 class HomePage extends StatefulWidget {
     const HomePage({super.key});

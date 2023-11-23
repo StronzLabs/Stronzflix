@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/media.dart';
 import 'package:video_player/video_player.dart';
 
-import 'player_controls.dart';
+import 'components/player_controls.dart';
 
 class MediaPage extends StatefulWidget {
 
