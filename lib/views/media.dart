@@ -36,7 +36,7 @@ class _MediaPageState extends State<MediaPage> {
             aspectRatio: this._videoPlayerController.value.aspectRatio,
             customControls: const PlayerControls(),
             hideControlsTimer: const Duration(seconds: 1, milliseconds: 500),
-            fullScreenByDefault: !Platform.isWindows || !Platform.isLinux,
+            fullScreenByDefault: !Platform.isWindows && !Platform.isLinux,
         );
     }
 
