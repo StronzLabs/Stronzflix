@@ -3,10 +3,15 @@ import 'package:stronzflix/backend/streamingcommunity.dart';
 import 'package:stronzflix/backend/vixxcloud.dart';
 import 'package:stronzflix/stronzflix.dart';
 import 'package:fvp/fvp.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() {
+void main() async {
     StreamingCommunity.instance;
     VixxCloud.instance;
+
+    WidgetsFlutterBinding.ensureInitialized();
     registerWith(options: {'platforms': ['android', 'linux', 'windows']});
+    await windowManager.ensureInitialized();
+    
     runApp(const Stronzflix());
 }

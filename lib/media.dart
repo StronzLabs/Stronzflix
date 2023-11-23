@@ -2,7 +2,8 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/media.dart';
 import 'package:video_player/video_player.dart';
-// import 'package:window_manager/window_manager.dart';
+
+import 'player_controls.dart';
 
 class MediaPage extends StatefulWidget {
 
@@ -15,12 +16,10 @@ class MediaPage extends StatefulWidget {
 
 class _MediaPageState extends State<MediaPage> {
 
-    late Future<void> _videoInitialize;
-
     late VideoPlayerController _videoPlayerController;
     late ChewieController _chewieController;
 
-    Future<void> initVideoPlayer() async {
+    Future<void> _initVideoPlayer() async {
         Uri uri = await super.widget.media.player.getSource(super.widget.media);
         this._videoPlayerController = VideoPlayerController.networkUrl(
             Uri.parse("$uri#.m3u8")
@@ -33,15 +32,9 @@ class _MediaPageState extends State<MediaPage> {
             autoPlay: true,
             allowedScreenSleep: false,
             aspectRatio: this._videoPlayerController.value.aspectRatio,
+            customControls: const PlayerControls(),
+            hideControlsTimer: const Duration(seconds: 1, milliseconds: 500),
         );
-    }
-
-    @override
-    void initState() {
-        super.initState();
-        this._videoInitialize = this.initVideoPlayer();
-
-        // windowManager.setFullScreen(true);
     }
 
     @override
@@ -59,7 +52,7 @@ class _MediaPageState extends State<MediaPage> {
             ),
             body: Center(
                 child: FutureBuilder(
-                    future: this._videoInitialize,
+                    future: this._initVideoPlayer(),
                     builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done)
                             return Chewie(
