@@ -16,9 +16,7 @@ Builds for:
 
 ---
 TODO:
-- [x] VideoPlayer
 - [ ] Chromecast
-- [ ] Keep watching
 - [ ] Subtitles
 - [ ] Qualities
 
