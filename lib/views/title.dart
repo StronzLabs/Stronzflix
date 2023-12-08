@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/media.dart';
 import 'package:stronzflix/backend/media.dart' as SF;
 import 'package:stronzflix/backend/result.dart';
+import 'package:stronzflix/components/result_card.dart';
 import 'package:stronzflix/views/media.dart';
 
 class TitlePage extends StatefulWidget {
@@ -24,7 +25,7 @@ class _TitlePageState extends State<TitlePage> {
         this._title = super.widget.result.site.getTitle(super.widget.result);
     }
 
-    void _playMedia(BuildContext context, Playable media) {
+    void _playMedia(BuildContext context, IWatchable media) {
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => MediaPage(media: media)
         ));
@@ -34,37 +35,8 @@ class _TitlePageState extends State<TitlePage> {
         return Center(
             child: TextButton(
                 onPressed: () => this._playMedia(context, film),
-                child: const Text("Guarda ora"),
+                child: const Text("Guarda ora")
             )
-        );
-    }
-
-    Widget buildCard(BuildContext context, Episode episode) {
-        return Card(
-            clipBehavior: Clip.hardEdge,
-            child: InkWell(
-                onTap: () => this._playMedia(context, episode),
-                child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                        children: [
-                            Expanded(
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: NetworkImage(episode.cover),
-                                            fit: BoxFit.contain
-                                        ),
-                                    ),
-                                )
-                            ),
-                            Text(episode.name,
-                                overflow: TextOverflow.ellipsis
-                            )
-                        ],
-                    ),
-                ),
-            ),
         );
     }
 
@@ -77,9 +49,13 @@ class _TitlePageState extends State<TitlePage> {
             children: episodes.map((Episode episode) =>
                 Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: this.buildCard(context, episode),
+                    child: ResultCard(
+                        onTap: () => this._playMedia(context, episode),
+                        imageUrl: episode.cover,
+                        text: episode.name
+                    )
                 )
-            ).toList(),
+            ).toList()
         );
     }
 
@@ -98,12 +74,12 @@ class _TitlePageState extends State<TitlePage> {
             items: List.generate(title.seasons.length, (index) =>
                 DropdownMenuItem<int>(
                     value: index + 1,
-                    child: Text("Stagione ${index + 1}"),
+                    child: Text("Stagione ${index + 1}")
                 )
             ),
             onChanged: (value) => setState(() =>
                 this._selectedSeason = value!
-            ),
+            )
         );
     }
 
@@ -123,14 +99,14 @@ class _TitlePageState extends State<TitlePage> {
                             return Container();
                         }
                     )
-                ],
+                ]
             ),
             body: FutureBuilder(
                 future: this._title,
                 builder: (context, snapshot) => snapshot.hasData ?
                     this.buildTitle(context, snapshot.data as SF.Title) :
                     const Center(
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator()
                     )
             )
         );

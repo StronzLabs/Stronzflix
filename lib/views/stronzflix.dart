@@ -23,6 +23,9 @@ class Stronzflix extends StatelessWidget {
                         surfaceTint: Colors.transparent,
                     ),
                     useMaterial3: true,
+                    cardTheme: const CardTheme(
+                        clipBehavior: Clip.hardEdge,
+                    ),
                 ),
                 home: const HomePage(),
                 debugShowCheckedModeBanner: false

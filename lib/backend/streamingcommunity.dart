@@ -8,7 +8,7 @@ import 'package:stronzflix/utils/simple_http.dart' as http;
 
 class StreamingCommunity extends Site {
     
-    static Site instance = StreamingCommunity._("https://streamingcommunity.care");
+    static Site instance = StreamingCommunity._("https://streamingcommunity.broker");
 
     final String _cdn;
     final Map<String, String> _inhertia;
@@ -49,7 +49,7 @@ class StreamingCommunity extends Site {
         return results;
     }
 
-    Future<List<Episode>> getEpisodes(String seasonUrl) async {
+    Future<List<Episode>> getEpisodes(Series series, String seasonUrl) async {
         String body = await http.get("${super.url}${seasonUrl}", headers: this._inhertia);
         dynamic json = jsonDecode(body);
 
@@ -64,7 +64,8 @@ class StreamingCommunity extends Site {
                 url: "/watch/${titleId}?e=${episode["id"]}",
                 name: episode["name"],
                 cover: "${this._cdn}/images/${cover}",
-                player: Player.get("VixxCloud")!
+                player: Player.get("VixxCloud")!,
+                series: series
             ));
         }
 
@@ -72,24 +73,28 @@ class StreamingCommunity extends Site {
     }
 
     Future<Series> getSeries(String url, dynamic title) async {
-        List<List<Episode>> seasons = [];
-
-        for(dynamic season in title["seasons"]) {
-            String seasonUrl = "${url}/stagione-${season["number"]}";
-            seasons.add(await this.getEpisodes(seasonUrl));
-        }
-
-        return Series(
+        return await Series.fromEpisodes(
             name: title["name"],
-            seasons: seasons
+            generator: (series) async {
+                List<List<Episode>> seasons = [];
+
+                for(dynamic season in title["seasons"]) {
+                    String seasonUrl = "${url}/stagione-${season["number"]}";
+                    seasons.add(await this.getEpisodes(series, seasonUrl));
+                }
+
+                return seasons;
+            }
         );
     }
 
     Film getFilm(dynamic title) {
+        String cover = title["images"].firstWhere((dynamic image) => image["type"] == "cover")["filename"];
         return Film(
             name: title["name"],
             url: "/watch/${title["id"]}",
-            player: Player.get("VixxCloud")!
+            player: Player.get("VixxCloud")!,
+            cover: "${this._cdn}/images/${cover}"
         );
     }
     

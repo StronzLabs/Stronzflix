@@ -1,17 +1,23 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:stronzflix/backend/media.dart';
+import 'package:stronzflix/backend/media.dart' as SF;
+import 'package:stronzflix/components/progress_bar.dart';
 import 'package:stronzflix/utils/format.dart';
+import 'package:stronzflix/utils/platform.dart';
+import 'package:stronzflix/views/media.dart';
 import 'package:video_player/video_player.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:chewie/src/material/material_progress_bar.dart';
 import 'package:chewie/src/animated_play_pause.dart';
 
 class PlayerControls extends StatefulWidget {
   
-    const PlayerControls({super.key});
+    final IWatchable media;
+
+    const PlayerControls({super.key, required this.media});
 
     @override
     State<PlayerControls> createState() => _PlayerControlsState();
@@ -27,27 +33,81 @@ class _PlayerControlsState extends State<PlayerControls> {
     Timer? _hideTimer;
     bool _hideStuff = true;
     bool _buffering = false;
+    late bool _fullscreen;
     double? _latestVolume;
+
+    late IWatchable _currentMedia;
+    IWatchable? _nextMedia;
+
+    KeyEventResult _handleKeyControls(RawKeyEvent event) {
+        if(event is! RawKeyDownEvent)
+            return KeyEventResult.ignored;
+
+        if(event.logicalKey == LogicalKeyboardKey.arrowUp) {
+            this._cancelAndRestartTimer();
+            return KeyEventResult.handled;
+        }
+
+        if(event.logicalKey == LogicalKeyboardKey.arrowDown) {
+            super.setState(() => this._hideStuff = true);
+            return KeyEventResult.handled;
+        }
+
+        if(event.logicalKey == LogicalKeyboardKey.select || event.logicalKey == LogicalKeyboardKey.space) {
+            this._playPause();
+            return KeyEventResult.handled;
+        }
+
+        if(event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+            this._cancelAndRestartTimer();
+            final position = this._latestValue.position;
+            final seekTo = position - const Duration(seconds: 10);
+            this.controller.seekTo(seekTo > Duration.zero ? seekTo : Duration.zero);
+            return KeyEventResult.handled;
+        }
+
+        if(event.logicalKey == LogicalKeyboardKey.arrowRight) {
+            this._cancelAndRestartTimer();
+            final position = this._latestValue.position;
+            final seekTo = position + const Duration(seconds: 10);
+            this.controller.seekTo(seekTo < this._latestValue.duration ? seekTo : this._latestValue.duration);
+            return KeyEventResult.handled;
+        }
+
+        return KeyEventResult.ignored;
+    }
 
     @override
     Widget build(BuildContext context) {
         if (this._latestValue.hasError)
             return this._buildError(context);
 
-        return MouseRegion(
-            onHover: (_) => this._cancelAndRestartTimer(),
-                child: Stack(
-                children: [
-                    if (this._buffering)
-                        this._buildBuffering(context)
-                    else
-                        this._buildHitArea(context),
-                    Align(
-                        alignment: Alignment.bottomCenter,
-                        child: this._buildBottomBar(context),
-                    )
-                ],
-            ),
+        return FocusScope(
+            autofocus: true,
+            child: Focus(
+                autofocus: true,
+                canRequestFocus: true,
+                onKey: (data, event) => this._handleKeyControls(event),
+                child: MouseRegion(
+                    onHover: (_) => this._cancelAndRestartTimer(),
+                    child: Stack(
+                        children: [
+                            if (this._buffering)
+                                this._buildBuffering(context)
+                            else
+                                this._buildHitArea(context),
+                            Align(
+                                alignment: Alignment.topCenter,
+                                child: this._buildTitleBar(context),
+                            ),
+                            Align(
+                                alignment: Alignment.bottomCenter,
+                                child: this._buildBottomBar(context),
+                            )
+                        ],
+                    ),
+                )
+            )
         );
     }
 
@@ -89,9 +149,55 @@ class _PlayerControlsState extends State<PlayerControls> {
         );
     }
 
+    Widget _buildTitle(BuildContext context) {
+        late String title;
+        if (super.widget.media is Film) {
+            title = (super.widget.media as Film).name;
+        }
+        else if (super.widget.media is Episode){
+            Episode ep = super.widget.media as Episode;
+            title = "${ep.series.name} - ${ep.name}";
+        } else {
+            title = super.widget.media.name;
+        }
+        return Text(title);
+    }
+
+    Widget _buildTitleBar(BuildContext context) {
+        return AnimatedOpacity(
+            opacity: this._hideStuff ? 0.0 : 1.0,
+            duration: const Duration(milliseconds: 300),
+            child: SafeArea(
+                minimum: const EdgeInsets.only(bottom: 10),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    verticalDirection: VerticalDirection.up,
+                    children: [
+                        Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Row(
+                                children: [
+                                    IconButton(
+                                        icon: const Icon(Icons.arrow_back),
+                                        onPressed: () {
+                                            if(this._fullscreen)
+                                                this._onExpandCollapse();
+                                            Navigator.of(context).pop();
+                                        }
+                                    ),
+                                    this._buildTitle(context)
+                                ]
+                            )
+                        ),
+                    ],
+                ),
+            )
+        );
+    }
+
     Widget _buildHitArea(BuildContext context) {
         return GestureDetector(
-            onTap: this._playPause,
+            onTap: () { if(SPlatform.isDesktop) this._playPause(); },
             child: AnimatedOpacity(
                 opacity: !this._hideStuff ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 300), 
@@ -153,7 +259,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                 opacity: this._hideStuff ? 0.0 : 1.0,
                 duration: const Duration(milliseconds: 300),
                 child: Icon(
-                    this.chewieController.isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen
+                    this._fullscreen ? Icons.fullscreen_exit : Icons.fullscreen
                 ),
             ),
         );
@@ -169,6 +275,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                 },
                 onDragUpdate: () {
                     this._hideTimer?.cancel();
+                    this._updateState();
                 },
                 onDragEnd: () {
                     this._startHideTimer();
@@ -180,6 +287,17 @@ class _PlayerControlsState extends State<PlayerControls> {
                         bufferedColor: Theme.of(context).colorScheme.background.withOpacity(0.5),
                         backgroundColor: Theme.of(context).disabledColor.withOpacity(.5),
                     ),
+            ),
+        );
+    }
+
+    Widget _buildNextButton(BuildContext context) {
+        return IconButton(
+            onPressed: this._onNextMedia,
+            icon: AnimatedOpacity(
+                opacity: this._hideStuff ? 0.0 : 1.0,
+                duration: const Duration(milliseconds: 300),
+                child: const Icon(Icons.skip_next_sharp),
             ),
         );
     }
@@ -207,7 +325,9 @@ class _PlayerControlsState extends State<PlayerControls> {
                                     else
                                         this._buildPosition(context),
                                     const Spacer(),
-                                    if (Platform.isWindows || Platform.isLinux)
+                                    if (this._nextMedia != null)
+                                        this._buildNextButton(context),
+                                    if (SPlatform.isDesktop)
                                         this._buildExpandButton(context)
                                 ]
                             )
@@ -223,12 +343,19 @@ class _PlayerControlsState extends State<PlayerControls> {
         );
     }
 
+    void _onNextMedia() {
+        this._dispose();
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => MediaPage(media: this._nextMedia!),
+        ));
+    }
+
     void _onExpandCollapse() {
+        this._fullscreen = !this._fullscreen;
+        this._cancelAndRestartTimer();
         super.setState(() {
-            this._cancelAndRestartTimer();
-            windowManager.setFullScreen(!this.chewieController.isFullScreen).then((_) =>
-                this.chewieController.toggleFullScreen()
-            );
+            if(SPlatform.isDesktop)
+                windowManager.setFullScreen(this._fullscreen);
         });
     }
 
@@ -240,6 +367,60 @@ class _PlayerControlsState extends State<PlayerControls> {
     Future<void> _initialize() async {
         this.controller.addListener(this._updateState);
         this._updateState();
+        // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+        this.chewieController.notifyListeners();
+        this._fullscreen = this.chewieController.isFullScreen;
+        this._currentMedia = super.widget.media;
+        this.resolveLate().then((_) => this._findNextMedia());
+    }
+
+    Future<void> resolveLate() async {
+        IWatchable media = super.widget.media;
+        if (media is LateTitle) {
+            SF.Title resolved = await media.watchable;
+            
+            if (resolved is Film)
+                this._currentMedia = resolved;
+            else if (resolved is Series) {
+                for (List<Episode> season in resolved.seasons) {
+                    for (Episode episode in season) {
+                        if (episode.url == media.url) {
+                            this._currentMedia = episode;
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+                throw Exception("Unknown media type: ${resolved.runtimeType}");
+        }
+    }
+
+    void _findNextMedia() {
+        if(this._currentMedia is! Episode)
+            return;
+
+        Series series = (this._currentMedia as Episode).series;
+
+        late int seasonIdx, episodeIdx;
+        for (List<Episode> season in series.seasons) {
+            for (Episode episode in season) {
+                if (episode.url == (this._currentMedia as Episode).url) {
+                    episodeIdx = season.indexOf(episode);
+                    seasonIdx = series.seasons.indexOf(season);
+                    break;
+                }
+            }
+        }
+        Episode? nextEpisode;
+        if (episodeIdx < series.seasons[seasonIdx].length - 1) {
+            nextEpisode = series.seasons[seasonIdx][episodeIdx + 1];
+        }
+        else if (seasonIdx < series.seasons.length - 1) {
+            nextEpisode = series.seasons[seasonIdx + 1][0];
+        }
+
+        this._nextMedia = nextEpisode;
     }
 
     void _playPause() {

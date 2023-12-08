@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/result.dart';
 import 'package:stronzflix/backend/site.dart';
+import 'package:stronzflix/components/result_card.dart';
 import 'package:stronzflix/views/title.dart';
 
 class SearchPage extends SearchDelegate {
@@ -37,42 +38,7 @@ class SearchPage extends SearchDelegate {
     }
 
     @override
-    Widget buildSuggestions(BuildContext context) {
-        return this.buildResults(context);
-    }
-
-    Widget buildCard(BuildContext context, Result result) {
-        return Card(
-            clipBehavior: Clip.hardEdge,
-            child: InkWell(
-                onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) =>
-                        TitlePage(result: result)
-                    )
-                ),
-                child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                        children: [
-                            Expanded(
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: NetworkImage(result.poster),
-                                            fit: BoxFit.contain
-                                        )
-                                    )
-                                )
-                            ),
-                            Text(result.name,
-                                overflow: TextOverflow.ellipsis
-                            )
-                        ]
-                    )
-                )
-            )
-        );
-    }
+    Widget buildSuggestions(BuildContext context) => this.buildResults(context);
 
     Widget buildGrid(BuildContext context, List<Result> results) {
         return GridView.extent(
@@ -81,7 +47,15 @@ class SearchPage extends SearchDelegate {
             children: results.map((Result result) =>
                 Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: this.buildCard(context, result)
+                    child: ResultCard(
+                        onTap: () => Navigator.push(context,
+                            MaterialPageRoute(builder: (context) =>
+                                TitlePage(result: result)
+                            )
+                        ),
+                        imageUrl: result.poster,
+                        text: result.name
+                    )
                 )
             ).toList()
         );
@@ -96,9 +70,9 @@ class SearchPage extends SearchDelegate {
                     return this.buildGrid(context, snapshot.data!);
                 else
                     return const Center(
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator()
                     );
-            },
+            }
         );
     }
 }

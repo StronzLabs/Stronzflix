@@ -8,7 +8,8 @@ abstract class Player {
     }
 
     Future<void> prepare() async {}
-    Future<Uri> getSource(Playable media);
+    Future<Uri> getSource(IWatchable media);
+    Future<Title> recoverLate(LateTitle title);
 
     static final Map<String, Player> _registry = {};
     static Player? get(String name) => _registry[name];

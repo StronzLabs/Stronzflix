@@ -5,32 +5,51 @@ abstract class Title {
     const Title({required this.name});
 }
 
-abstract class Playable {
+abstract class IWatchable {
     String get name;
     String get url;
     Player get player;
+    String get cover;
 }
 
-class Film extends Title implements Playable {
-    @override
-    final String url;
-    @override
-    final Player player;
-    const Film({required super.name, required this.url, required this.player});
+class LateTitle implements IWatchable {
+    @override final String name;
+    @override final String url;
+    @override final Player player;
+    @override final String cover;
+    Future<Title> get watchable async => await this.player.recoverLate(this);
+    const LateTitle({required this.name, required this.url, required this.player, required this.cover});
 }
 
-class Episode implements Playable {
-    @override
-    final String url;
-    @override
-    final String name;
-    @override
-    final Player player;
-    final String cover;
-    const Episode({required this.name, required this.cover, required this.url, required this.player});
+class Film extends Title implements IWatchable {
+    @override final String url;
+    @override final Player player;
+    @override final String cover;
+    const Film({required super.name, required this.url, required this.player, required this.cover});
+}
+
+class Episode implements IWatchable {
+    @override final String url;
+    @override final String name;
+    @override final Player player;
+    @override final String cover;
+    final Series series;
+    const Episode({required this.name, required this.cover, required this.url, required this.player, required this.series});
 }
 
 class Series extends Title {
-    final List<List<Episode>> seasons;
-    const Series({required super.name, required this.seasons});
+    late final List<List<Episode>> seasons;
+    Series({required super.name, required this.seasons});
+
+    Series._({required super.name, required Future<List<List<Episode>>> Function(Series) generator}) {
+        this._ensureInitialized = generator(this).then((value) => this.seasons = value);
+    }
+
+    late final Future<void> _ensureInitialized;
+
+    static Future<Series> fromEpisodes({required String name, required Future<List<List<Episode>>> Function(Series) generator}) async {
+        Series series = Series._(name: name, generator: generator);
+        await series._ensureInitialized;
+        return series;
+    }
 }

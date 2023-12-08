@@ -29,4 +29,4 @@ String formatDuration(Duration position) {
             '${hoursString == '00' ? '' : '$hoursString:'}$minutesString:$secondsString';
 
         return formattedTime;
-    }
+}
