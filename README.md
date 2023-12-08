@@ -19,6 +19,3 @@ TODO:
 - [ ] Chromecast
 - [ ] Subtitles
 - [ ] Qualities
-
-Known Bugs:
-- Fullscreen doesn't start automagically
