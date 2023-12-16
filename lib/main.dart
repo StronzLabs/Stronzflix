@@ -8,11 +8,12 @@ import 'package:window_manager/window_manager.dart';
 import 'package:stronzflix/utils/platform.dart';
 
 void main() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    
     await Storage.init();
     StreamingCommunity.instance;
     VixxCloud.instance;
 
-    WidgetsFlutterBinding.ensureInitialized();
     registerWith(options: {'platforms': ['android', 'linux', 'windows']});
     if(SPlatform.isDesktop)
         await windowManager.ensureInitialized();
