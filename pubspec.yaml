@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   video_player: ^2.8.1
   fvp: ^0.11.0
+  video_player_web_hls: ^1.1.0
   chewie: ^1.7.1
   http: ^1.1.0
   html_unescape: ^2.0.0
