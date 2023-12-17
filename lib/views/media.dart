@@ -85,12 +85,12 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
                     child: FutureBuilder(
                         future: this._initVideoPlayer(),
                         builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.done)
+                            if (snapshot.hasError)
+                                return const Icon(Icons.error);
+                            else if (snapshot.connectionState == ConnectionState.done)
                                 return Chewie(
                                     controller: this._chewieController,
                                 );
-                            else if (snapshot.hasError)
-                                return const Text("Errore");
                             else
                                 return const CircularProgressIndicator();
                         }
