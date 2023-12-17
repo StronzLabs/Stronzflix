@@ -33,32 +33,28 @@ class TimeStamp {
 }
 
 final class Storage {
-    static late SharedPreferences prefs;
+    static late SharedPreferences _prefs;
 
     static late Map<String, TimeStamp> _keepWatchingList;
     static Map<String, TimeStamp> get keepWatching => Storage._keepWatchingList;
 
     static Future<void> init() async {
-        prefs = await SharedPreferences.getInstance();
+        Storage._prefs = await SharedPreferences.getInstance();
 
-        if (!prefs.containsKey("TimeStamps")) {
-            prefs.setStringList("TimeStamps", []);
-        }
-        var timeStamps =
-            prefs.getStringList("TimeStamps")!.map((e) => jsonDecode(e));
+        if (!Storage._prefs.containsKey("TimeStamps"))
+            Storage._prefs.setStringList("TimeStamps", []);
+
+        Iterable<dynamic> timeStamps = Storage._prefs.getStringList("TimeStamps")!.map((e) => jsonDecode(e));
 
         Storage._keepWatchingList = {
-            for (var timeStamp in timeStamps)
+            for (dynamic timeStamp in timeStamps)
                 "${timeStamp["player"]}_${timeStamp["url"]}" : TimeStamp.fromJson(timeStamp)
         };
     }
 
     static void serialize() {
-        prefs.setStringList(
-            "TimeStamps",
-            Storage._keepWatchingList.values
-            .map<String>((element) => element.toString())
-            .toList());
+        List<String> timestamps = Storage._keepWatchingList.values.map<String>((element) => element.toString()).toList();
+        Storage._prefs.setStringList("TimeStamps", timestamps);
     }
 
     static String _calcID(IWatchable watchable) => "${watchable.player.name}_${watchable.url}";
