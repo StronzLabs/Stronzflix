@@ -1,7 +1,6 @@
-import 'dart:io';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:path_provider/path_provider.dart';
 import 'package:stronzflix/backend/media.dart';
 
 class TimeStamp {
@@ -30,41 +29,36 @@ class TimeStamp {
     );
 
     @override
-    String toString() => this.toJson().toString();
+    String toString() => json.encode(this.toJson());
 }
 
 final class Storage {
+    static late SharedPreferences prefs;
 
-    static late Directory _dir;
-
-    static late File _keepWatchingFile;
     static late Map<String, TimeStamp> _keepWatchingList;
     static Map<String, TimeStamp> get keepWatching => Storage._keepWatchingList;
 
     static Future<void> init() async {
-        Storage._dir = Directory("${(await getApplicationDocumentsDirectory()).path}/Stronzflix");
-        await Storage._dir.create(recursive: true);
-        Storage._keepWatchingFile = File("${Storage._dir.path}/keep_watching.json");
+        prefs = await SharedPreferences.getInstance();
 
-        if (!await Storage._keepWatchingFile.exists()) {
-            await Storage._keepWatchingFile.create();
-            await Storage._keepWatchingFile.writeAsString('{"TimeStamps":[]}');
+        if (!prefs.containsKey("TimeStamps")) {
+            prefs.setStringList("TimeStamps", []);
         }
+        var timeStamps =
+            prefs.getStringList("TimeStamps")!.map((e) => jsonDecode(e));
 
-        dynamic timeStamps = jsonDecode(await Storage._keepWatchingFile.readAsString())["TimeStamps"];
         Storage._keepWatchingList = {
             for (var timeStamp in timeStamps)
                 "${timeStamp["player"]}_${timeStamp["url"]}" : TimeStamp.fromJson(timeStamp)
         };
     }
 
-    static void serialize() async {
-        await Storage._keepWatchingFile.writeAsString(jsonEncode({
-            "TimeStamps": [
-                for (var timeStamp in Storage._keepWatchingList.values)
-                    timeStamp.toJson()
-            ]
-        }));
+    static void serialize() {
+        prefs.setStringList(
+            "TimeStamps",
+            Storage._keepWatchingList.values
+            .map<String>((element) => element.toString())
+            .toList());
     }
 
     static String _calcID(IWatchable watchable) => "${watchable.player.name}_${watchable.url}";

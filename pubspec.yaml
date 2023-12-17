@@ -43,6 +43,7 @@ dependencies:
   html_unescape: ^2.0.0
   window_manager: ^0.3.7
   path_provider: ^2.1.1
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
