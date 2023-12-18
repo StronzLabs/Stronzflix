@@ -23,7 +23,7 @@ class VixxCloud extends Player {
         String iframeSrc = "/iframe/${titleId}?episode_id=${episodeId}";
 
         var html = HtmlUnescape();
-        String iframe = await http.get("${this._streamingCommunityUrl}${iframeSrc}", headers: { "User-Agent": "Stronzflix" });
+        String iframe = await http.get("${this._streamingCommunityUrl}${iframeSrc}");
         String src = html.convert(RegExp(r'src="(.+?)"').firstMatch(iframe)!.group(1)!);
     
         String data = await http.get(src);

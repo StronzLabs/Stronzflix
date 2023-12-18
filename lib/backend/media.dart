@@ -1,4 +1,5 @@
 import 'package:stronzflix/backend/player.dart';
+import 'package:stronzflix/utils/storage.dart';
 
 abstract class Title {
     final String name;
@@ -19,6 +20,15 @@ class LateTitle implements IWatchable {
     @override final String cover;
     Future<Title> get watchable async => await this.player.recoverLate(this);
     const LateTitle({required this.name, required this.url, required this.player, required this.cover});
+
+    factory LateTitle.fromTimestamp({required TimeStamp timeStamp}) {
+        return LateTitle(
+            name: timeStamp.name,
+            url: timeStamp.url,
+            player: Player.get(timeStamp.player)!,
+            cover: timeStamp.cover
+        );
+    }
 }
 
 class Film extends Title implements IWatchable {
