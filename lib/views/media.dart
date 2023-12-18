@@ -39,7 +39,7 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
             aspectRatio: this._videoPlayerController.value.aspectRatio,
             customControls: PlayerControls(media: super.widget.media),
             hideControlsTimer: const Duration(seconds: 1, milliseconds: 500),
-            startAt: super.widget.startAt,
+            startAt: super.widget.startAt
         );
     }
 
@@ -61,11 +61,11 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
 
     @override
     void dispose() {
+        this._saveState();
         this._videoPlayerController.dispose();
         this._chewieController.dispose();
         WidgetsBinding.instance.removeObserver(this);
         this._lifecycleListener.dispose();
-        this._saveState();
         super.dispose();
     }
 
@@ -89,7 +89,7 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
                                 return const Icon(Icons.error);
                             else if (snapshot.connectionState == ConnectionState.done)
                                 return Chewie(
-                                    controller: this._chewieController,
+                                    controller: this._chewieController
                                 );
                             else
                                 return const CircularProgressIndicator();

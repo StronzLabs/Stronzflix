@@ -16,13 +16,14 @@ class TitlePage extends StatefulWidget {
 
 class _TitlePageState extends State<TitlePage> {
 
-    int _selectedSeason = 1;
+    late int _selectedSeason;
     late Future<SF.Title> _title;
 
     @override
     void initState() {
         super.initState();
         this._title = super.widget.result.site.getTitle(super.widget.result);
+        this._selectedSeason = 1;
     }
 
     void _playMedia(BuildContext context, IWatchable media) {
@@ -31,7 +32,7 @@ class _TitlePageState extends State<TitlePage> {
         ));
     }
 
-    Widget buildFilm(BuildContext context, Film film) {
+    Widget _buildFilm(BuildContext context, Film film) {
         return Center(
             child: TextButton(
                 onPressed: () => this._playMedia(context, film),
@@ -40,7 +41,7 @@ class _TitlePageState extends State<TitlePage> {
         );
     }
 
-    Widget buildSeries(BuildContext context, Series series) {
+    Widget _buildSeries(BuildContext context, Series series) {
         List<Episode> episodes = series.seasons[this._selectedSeason - 1];
         
         return GridView.extent(
@@ -59,20 +60,20 @@ class _TitlePageState extends State<TitlePage> {
         );
     }
 
-    Widget buildTitle(BuildContext context, SF.Title title) {
+    Widget _buildTitle(BuildContext context, SF.Title title) {
         if (title is Film)
-            return this.buildFilm(context, title);
+            return this._buildFilm(context, title);
         else if (title is Series)
-            return this.buildSeries(context, title);
+            return this._buildSeries(context, title);
         else
             throw Exception("Unknown title type");
     }
 
-    Widget buldDropdownSeasons(BuildContext context, Series title) {
-        return DropdownButton<int>(
+    Widget _buldDropdownSeasons(BuildContext context, Series title) {
+        return DropdownButton(
             value: this._selectedSeason,
             items: List.generate(title.seasons.length, (index) =>
-                DropdownMenuItem<int>(
+                DropdownMenuItem(
                     value: index + 1,
                     child: Text("Stagione ${index + 1}")
                 )
@@ -90,12 +91,16 @@ class _TitlePageState extends State<TitlePage> {
                 title: Center(
                     child: Text(super.widget.result.name)
                 ),
+                leading: IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => Navigator.of(context).maybePop()
+                ),
                 actions: [
                     FutureBuilder(
                         future: this._title,
                         builder: (context, snapshot) {
                             if (snapshot.hasData && snapshot.data is Series)
-                                return this.buldDropdownSeasons(context, snapshot.data as Series);
+                                return this._buldDropdownSeasons(context, snapshot.data as Series);
                             return Container();
                         }
                     )
@@ -103,11 +108,14 @@ class _TitlePageState extends State<TitlePage> {
             ),
             body: FutureBuilder(
                 future: this._title,
-                builder: (context, snapshot) => snapshot.hasData ?
-                    this.buildTitle(context, snapshot.data as SF.Title) :
-                    const Center(
-                        child: CircularProgressIndicator()
-                    )
+                builder: (context, snapshot) {
+                    if(snapshot.hasData)
+                        return this._buildTitle(context, snapshot.data as SF.Title);
+                    else
+                        return const Center(
+                            child: CircularProgressIndicator()
+                        );
+                }
             )
         );
     }

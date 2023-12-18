@@ -182,7 +182,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                                         onPressed: () {
                                             if(this._fullscreen)
                                                 this._onExpandCollapse();
-                                            Navigator.of(context).pop();
+                                            Navigator.of(context).maybePop();
                                         }
                                     ),
                                     this._buildTitle(context)

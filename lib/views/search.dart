@@ -6,14 +6,10 @@ import 'package:stronzflix/views/title.dart';
 
 class SearchPage extends SearchDelegate {
 
+    // fluterr doesn't propagate the theme to the search bar automatically
     @override
     ThemeData appBarTheme(BuildContext context) {
-        final ThemeData theme = Theme.of(context);
-        return theme.copyWith(
-            colorScheme: theme.colorScheme.copyWith(
-                background: theme.colorScheme.surface
-            )
-        );
+        return Theme.of(context);
     }
 
     @override
@@ -22,9 +18,12 @@ class SearchPage extends SearchDelegate {
     @override
     List<Widget> buildActions(BuildContext context) {
         return [
-            IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () => super.query = ""
+            Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () => super.query = ""
+                )
             )
         ];
     }
@@ -37,10 +36,7 @@ class SearchPage extends SearchDelegate {
         );
     }
 
-    @override
-    Widget buildSuggestions(BuildContext context) => this.buildResults(context);
-
-    Widget buildGrid(BuildContext context, List<Result> results) {
+    Widget _buildGrid(BuildContext context, List<Result> results) {
         return GridView.extent(
             childAspectRatio: 2 / 3,
             maxCrossAxisExtent: 250,
@@ -67,7 +63,7 @@ class SearchPage extends SearchDelegate {
             future: Site.get("StreamingCommunity")?.search(super.query),
             builder: (context, snapshot) {
                 if (snapshot.hasData)
-                    return this.buildGrid(context, snapshot.data!);
+                    return this._buildGrid(context, snapshot.data!);
                 else
                     return const Center(
                         child: CircularProgressIndicator()
@@ -75,4 +71,7 @@ class SearchPage extends SearchDelegate {
             }
         );
     }
+
+    @override
+    Widget buildSuggestions(BuildContext context) => this.buildResults(context);
 }
