@@ -26,6 +26,9 @@ class Stronzflix extends StatelessWidget {
                     cardTheme: const CardTheme(
                         clipBehavior: Clip.hardEdge,
                     ),
+                    appBarTheme: const AppBarTheme(
+                        centerTitle: true
+                    )
                 ),
                 home: const HomePage(),
                 debugShowCheckedModeBanner: false
