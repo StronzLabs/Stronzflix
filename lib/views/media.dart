@@ -10,8 +10,7 @@ import 'package:video_player/video_player.dart';
 class MediaPage extends StatefulWidget {
 
     final IWatchable media;
-    final Duration startAt;
-    const MediaPage({super.key, required this.media, this.startAt = const Duration()});
+    const MediaPage({super.key, required this.media});
 
     @override
     State<MediaPage> createState() => _MediaPageState();
@@ -22,6 +21,16 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
     late VideoPlayerController _videoPlayerController;
     late ChewieController _chewieController;
     late final AppLifecycleListener _lifecycleListener;
+
+    late Duration startAt;
+
+    Duration _startAt() {
+        TimeStamp? t = Storage.find(super.widget.media);
+        if (t != null)
+            return Duration(milliseconds: t.time);
+        else
+            return Duration.zero;
+    }
 
     Future<void> _initVideoPlayer() async {
         Uri uri = await super.widget.media.player.getSource(super.widget.media);
@@ -38,7 +47,7 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
             aspectRatio: this._videoPlayerController.value.aspectRatio,
             customControls: PlayerControls(media: super.widget.media),
             hideControlsTimer: const Duration(seconds: 1, milliseconds: 500),
-            startAt: super.widget.startAt
+            startAt: this.startAt
         );
     }
 
@@ -58,7 +67,8 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
             onStateChange: (_) => this._saveState,
             onExitRequested: () async { this._saveState(); return AppExitResponse.exit; }
         );
-        Storage.startWatching(super.widget.media);
+        this.startAt = this._startAt();
+        Storage.startWatching(super.widget.media, at: this.startAt);
     }
 
     @override

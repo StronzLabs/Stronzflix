@@ -69,8 +69,7 @@ class _HomePageState extends State<HomePage> {
     void _playMedia(BuildContext context, TimeStamp timeStamp) {
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => MediaPage(
-                media: LateTitle.fromTimestamp(timeStamp: timeStamp),
-                startAt: Duration(milliseconds: timeStamp.time)
+                media: LateTitle.fromTimestamp(timeStamp: timeStamp)
             )
         )).then((value) => super.setState(() {}));
     }

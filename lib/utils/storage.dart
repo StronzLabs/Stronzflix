@@ -66,14 +66,18 @@ final class Storage {
             throw Exception("Invalid type");
     }
 
-    static void startWatching(IWatchable media) {
+    static void startWatching(IWatchable media, {Duration at = Duration.zero}) {
         Storage.keepWatching[Storage._calcID(media)] = TimeStamp(
             cover: media.cover,
             name: media.name,
             player: media.player.name,
-            time: 0,
+            time: at.inMilliseconds,
             url: media.url
         );
+    }
+
+    static TimeStamp? find(IWatchable media) {
+        return Storage.keepWatching[Storage._calcID(media)];
     }
 
     static void removeWatching<T>(T toRemove) {
