@@ -3,10 +3,9 @@ import 'dart:ui';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/media.dart';
+import 'package:stronzflix/components/player_controls.dart';
 import 'package:stronzflix/utils/storage.dart';
 import 'package:video_player/video_player.dart';
-
-import '../components/player_controls.dart';
 
 class MediaPage extends StatefulWidget {
 
