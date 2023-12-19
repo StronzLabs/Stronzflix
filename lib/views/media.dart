@@ -45,6 +45,9 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
 
     void _saveState() async {
         Storage.updateWatching(super.widget.media, this._videoPlayerController.value.position.inMilliseconds);
+        if (this._videoPlayerController.value.position.inMilliseconds >= this._videoPlayerController.value.duration.inMilliseconds * 0.9)
+            Storage.removeWatching(super.widget.media);
+
         Storage.serialize();
     }
 
