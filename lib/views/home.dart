@@ -75,6 +75,10 @@ class _HomePageState extends State<HomePage> {
         )).then((value) => super.setState(() {}));
     }
 
+    void _removeMedia(TimeStamp timeStamp) {
+        super.setState(() => Storage.removeWatching(timeStamp));
+    }
+
     Widget _buildContent(BuildContext context) {
         if(Storage.keepWatching.isEmpty)
             return const Center(
@@ -86,9 +90,10 @@ class _HomePageState extends State<HomePage> {
                 maxCrossAxisExtent: 400,
                 children: Storage.keepWatching.values.map(
                     (timestamp) => ResultCard(
-                        onTap: () => this._playMedia(context, timestamp),
                         imageUrl: timestamp.cover,
-                        text: timestamp.name
+                        text: timestamp.name,
+                        onTap: () => this._playMedia(context, timestamp),
+                        onLongPress: () => this._removeMedia(timestamp)
                     )
                 ).toList(),
             );
