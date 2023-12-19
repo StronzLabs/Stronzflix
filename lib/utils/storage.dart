@@ -57,8 +57,14 @@ final class Storage {
         Storage._prefs.setStringList("TimeStamps", timestamps);
     }
 
-    static String _calcID(IWatchable watchable) => "${watchable.player.name}_${watchable.url}";
-    static String _calcIDT(TimeStamp timeStamp) => "${timeStamp.player}_${timeStamp.url}";
+    static String _calcID<T>(T toCalc) {
+        if (toCalc is IWatchable)
+            return "${toCalc.player.name}_${toCalc.url}";
+        else if (toCalc is TimeStamp)
+            return "${toCalc.player}_${toCalc.url}";
+        else
+            throw Exception("Invalid type");
+    }
 
     static void startWatching(IWatchable media) {
         Storage.keepWatching[Storage._calcID(media)] = TimeStamp(
@@ -70,8 +76,8 @@ final class Storage {
         );
     }
 
-    static void removeWatching(TimeStamp timeStamp) {
-        Storage._keepWatchingList.remove(Storage._calcIDT(timeStamp));
+    static void removeWatching<T>(T toRemove) {
+        Storage._keepWatchingList.remove(Storage._calcID(toRemove));
         Storage.serialize();
     }
 
