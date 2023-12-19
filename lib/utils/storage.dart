@@ -58,6 +58,7 @@ final class Storage {
     }
 
     static String _calcID(IWatchable watchable) => "${watchable.player.name}_${watchable.url}";
+    static String _calcIDT(TimeStamp timeStamp) => "${timeStamp.player}_${timeStamp.url}";
 
     static void startWatching(IWatchable media) {
         Storage.keepWatching[Storage._calcID(media)] = TimeStamp(
@@ -67,6 +68,11 @@ final class Storage {
             time: 0,
             url: media.url
         );
+    }
+
+    static void removeWatching(TimeStamp timeStamp) {
+        Storage._keepWatchingList.remove(Storage._calcIDT(timeStamp));
+        Storage.serialize();
     }
 
     static void updateWatching(IWatchable media, int time) {
