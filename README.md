@@ -13,7 +13,6 @@ Builds for:
 - linux: `$ flutter build linux`
 - windows `$ flutter build windows`
 
-
 ---
 TODO:
 - [ ] Chromecast
