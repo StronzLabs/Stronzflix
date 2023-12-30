@@ -1,4 +1,4 @@
-package com.example.stronzflix
+package com.stronzflix.app
 
 import io.flutter.embedding.android.FlutterActivity
 
