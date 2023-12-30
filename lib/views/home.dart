@@ -30,7 +30,8 @@ class _HomePageState extends State<HomePage> {
                             TextSpan(
                                 text: "GitHub",
                                 style: TextStyle(
-                                    color: Theme.of(context).colorScheme.secondary
+                                    color: Theme.of(context).colorScheme.secondary,
+                                    decoration: TextDecoration.underline
                                 ),
                                 recognizer: TapGestureRecognizer()..onTap = () => SPlatform.launchURL("https://github.com/Bonfra04/Stronzflix")
                             ),
