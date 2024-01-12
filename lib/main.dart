@@ -14,7 +14,7 @@ void main() async {
     StreamingCommunity.instance;
     VixxCloud.instance;
 
-    registerWith(options: {'platforms': ['android', 'linux', 'windows']});
+    registerWith(options: {'platforms': [ 'linux', 'windows']});
     if(SPlatform.isDesktop)
         await windowManager.ensureInitialized();
 

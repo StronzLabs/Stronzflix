@@ -34,9 +34,8 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
 
     Future<void> _initVideoPlayer() async {
         Uri uri = await super.widget.media.player.getSource(super.widget.media);
-        this._videoPlayerController = VideoPlayerController.networkUrl(
-            Uri.parse("$uri#.m3u8")
-        );
+        uri = Uri.parse(uri.toString().split('?').join('.m3u8?'));
+        this._videoPlayerController = VideoPlayerController.networkUrl(uri);
 
         await this._videoPlayerController.initialize();
 
