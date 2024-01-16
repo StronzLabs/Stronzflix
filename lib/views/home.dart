@@ -17,11 +17,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-    void _showInfo(BuildContext context) {
+    void _showInfo(BuildContext context) async {
+        String version = await VersionChecker.getCurrentVersion();
+        // ignore: use_build_context_synchronously
         showDialog(
             context: context,
             builder: (context) => AlertDialog(
-                title: const Text("Crediti"),
+                title: Text("Stronzflix ${version}"),
                 content: RichText(
                     text: TextSpan(
                         children: [
@@ -77,13 +79,31 @@ class _HomePageState extends State<HomePage> {
                     ),
                     TextButton(
                         child: Text(action),
-                        onPressed: () {
-                            VersionChecker.update();
-                            Navigator.of(context).pop();
+                        onPressed: () async {
+                            VersionChecker.update().then((updated) {
+                                if(!updated)
+                                    return;
+                                if(SPlatform.isMobile)
+                                    ScaffoldMessenger.of(context).showSnackBar(this._buildUpdateSnackBar());
+                                Navigator.of(context).pop();
+                            });
                         }
                     )
                 ]
             )
+        );
+    }
+
+    SnackBar _buildUpdateSnackBar() {
+        return const SnackBar(
+            content: Column(
+                children: [
+                    Text("Aggiornamento in corso..."),
+                    Padding(padding: EdgeInsets.only(top: 8)),
+                    LinearProgressIndicator()
+                ],
+            ),
+            duration: Duration(hours: 1)
         );
     }
 

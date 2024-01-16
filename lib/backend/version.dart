@@ -31,7 +31,7 @@ class VersionChecker
         return version;
     }
 
-    static Future<String> _getCurrentVersion() async
+    static Future<String> getCurrentVersion() async
     {
         PackageInfo packageInfo = await PackageInfo.fromPlatform();
         return packageInfo.version;
@@ -40,7 +40,7 @@ class VersionChecker
     static Future<bool> shouldUpdate() async
     {
         try {
-            String currentVersion = await _getCurrentVersion();
+            String currentVersion = await getCurrentVersion();
             String lastVersion = await _getLastVersion();
             return currentVersion != lastVersion;
         } catch (_) {
@@ -126,8 +126,7 @@ class VersionChecker
             else
                 throw Exception("Unsupported platform");
             return true;
-        } finally {
-            return false;
-        }
+        } catch (_) {}
+        return false;
     }
 }
