@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:stronzflix/backend/streamingcommunity.dart';
 import 'package:stronzflix/backend/vixxcloud.dart';
 import 'package:stronzflix/utils/storage.dart';
@@ -15,6 +16,8 @@ void main() async {
     VixxCloud.instance;
 
     registerWith(options: {'platforms': [ 'linux', 'windows']});
+    if(SPlatform.isMobile)
+        await FlutterDownloader.initialize();
     if(SPlatform.isDesktop)
         await windowManager.ensureInitialized();
 
