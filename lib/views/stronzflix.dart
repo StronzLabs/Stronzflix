@@ -28,6 +28,18 @@ class Stronzflix extends StatelessWidget {
                     ),
                     appBarTheme: const AppBarTheme(
                         centerTitle: true
+                    ),
+                    snackBarTheme: const SnackBarThemeData(
+                        backgroundColor: Color(0xff121212),
+                        behavior: SnackBarBehavior.floating,
+                        showCloseIcon: true,
+                        closeIconColor: Colors.white,
+                        contentTextStyle: TextStyle(
+                            color: Colors.white
+                        ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20))
+                        )
                     )
                 ),
                 home: const HomePage(),
