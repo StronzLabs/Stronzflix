@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/media.dart';
+import 'package:stronzflix/backend/version.dart';
 import 'package:stronzflix/components/result_card.dart';
 import 'package:stronzflix/utils/platform.dart';
 import 'package:stronzflix/utils/storage.dart';
@@ -41,6 +42,47 @@ class _HomePageState extends State<HomePage> {
                         ]
                     )
                 )
+            )
+        );
+    }
+
+    void _checkVersion() async {
+        if(SPlatform.isMobile)
+            await VersionChecker.cleanCache();
+        if(!await VersionChecker.shouldUpdate())
+            return;
+
+        String action = SPlatform.isMobile ? "Installa" : "Scarica";
+
+        // ignore: use_build_context_synchronously
+        showDialog(
+            context: super.context,
+            builder: (context) => AlertDialog(
+                title: const Text('Aggiornamento disponibile!'),
+                content: RichText(
+                    text: const TextSpan(
+                        children: [
+                            TextSpan(
+                                text: 'Una nuova versione di Stronzflix è disponibile.\n',
+                            ),
+                            TextSpan(
+                                text: 'Vuoi aggiornare?',
+                            )]
+                    )
+                ),
+                actions: [
+                    TextButton(
+                        child: const Text('Ignora'),
+                        onPressed: () => Navigator.of(context).pop()
+                    ),
+                    TextButton(
+                        child: Text(action),
+                        onPressed: () {
+                            VersionChecker.update();
+                            Navigator.of(context).pop();
+                        }
+                    )
+                ]
             )
         );
     }
@@ -97,6 +139,12 @@ class _HomePageState extends State<HomePage> {
                     )
                 ).toList(),
             );
+    }
+
+    @override
+    void initState() {
+        super.initState();
+        WidgetsBinding.instance.addPostFrameCallback((_) => this._checkVersion());
     }
 
     @override
