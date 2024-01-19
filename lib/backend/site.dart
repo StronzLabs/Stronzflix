@@ -1,5 +1,4 @@
 import 'package:stronzflix/backend/media.dart';
-import 'package:stronzflix/backend/result.dart';
 
 abstract class Site {
 
@@ -11,8 +10,8 @@ abstract class Site {
     }
 
     Future<void> prepare() async {}
-    Future<List<Result>> search(String query);
-    Future<Title> getTitle(Result result);
+    Future<List<SearchResult>> search(String query);
+    Future<Title> getTitle(SearchResult result);
 
     static final Map<String, Site> _registry = {};
     static Site? get(String name) => _registry[name];

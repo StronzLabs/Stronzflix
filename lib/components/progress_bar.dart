@@ -10,6 +10,7 @@ class MaterialVideoProgressBar extends StatelessWidget {
     final Function()? onDragStart;
     final Function()? onDragEnd;
     final Function()? onDragUpdate;
+    final Function(Duration)? onSeek;
 
     MaterialVideoProgressBar(
         this.controller, {
@@ -18,6 +19,7 @@ class MaterialVideoProgressBar extends StatelessWidget {
         this.onDragEnd,
         this.onDragStart,
         this.onDragUpdate,
+        this.onSeek,
         super.key,
     })  : colors = colors ?? ChewieProgressColors();
 
@@ -32,6 +34,7 @@ class MaterialVideoProgressBar extends StatelessWidget {
             onDragEnd: onDragEnd,
             onDragStart: onDragStart,
             onDragUpdate: onDragUpdate,
+            onSeek: onSeek,
         );
     }
 }
@@ -43,6 +46,7 @@ class VideoProgressBar extends StatefulWidget {
     final Function()? onDragStart;
     final Function()? onDragEnd;
     final Function()? onDragUpdate;
+    final Function(Duration)? onSeek;
 
     final double barHeight;
     final double handleHeight;
@@ -54,6 +58,7 @@ class VideoProgressBar extends StatefulWidget {
         this.onDragEnd,
         this.onDragStart,
         this.onDragUpdate,
+        this.onSeek,
         super.key,
         required this.barHeight,
         required this.handleHeight,
@@ -89,10 +94,12 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
     }
 
     void _seekToRelativePosition(Offset globalPosition) {
-        controller.seekTo(context.calcRelativePosition(
+        Duration positon = context.calcRelativePosition(
             controller.value.duration,
             globalPosition,
-        ));
+        );
+        controller.seekTo(positon);
+        widget.onSeek?.call(positon);
     }
 
     @override

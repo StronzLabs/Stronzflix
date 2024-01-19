@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
+  flutter_webrtc
   fvp
   screen_retriever
   url_launcher_windows

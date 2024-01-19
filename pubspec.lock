@@ -121,6 +121,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.4"
+  crypto:
+    dependency: transitive
+    description:
+      name: crypto
+      sha256: ff625774173754681d66daaf4a448684fb04b78f902da9cb3d308c19cc5e8bab
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.3"
   csslib:
     dependency: transitive
     description:
@@ -137,6 +145,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.6"
+  dart_webrtc:
+    dependency: transitive
+    description:
+      name: dart_webrtc
+      sha256: "5897a3bdd6c7fded07e80e250260ca4c9cd61f9080911aa308b516e1206745a9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.3"
   dbus:
     dependency: transitive
     description:
@@ -145,6 +161,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.10"
+  events_emitter:
+    dependency: transitive
+    description:
+      name: events_emitter
+      sha256: a075477bdf9c8c0c31bb7c7b7bdd357b4486c34f30163119f96de4e7f54abeff
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.2"
   fake_async:
     dependency: transitive
     description:
@@ -208,6 +232,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_webrtc:
+    dependency: transitive
+    description:
+      name: flutter_webrtc
+      sha256: "577216727181cb13776a65d3e7cb33e783e740c5496335011aed4a038b28c3fe"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.47"
   fvp:
     dependency: "direct main"
     description:
@@ -384,6 +416,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+  peerdart:
+    dependency: "direct main"
+    description:
+      name: peerdart
+      sha256: a6b066f1ca2c1b44c9ffb30539e94772b62ee199c75d7d277b24f4ef1497568b
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.4"
   petitparser:
     dependency: transitive
     description:
@@ -400,6 +440,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.3"
+  platform_detect:
+    dependency: transitive
+    description:
+      name: platform_detect
+      sha256: "08f4ee79c0e1c4858d37e06b22352a3ebdef5466b613749a3adb03e703d4f5b0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.11"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -424,6 +472,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.1"
+  pub_semver:
+    dependency: transitive
+    description:
+      name: pub_semver
+      sha256: "40d3ab1bbd474c4c2328c91e3a7df8c6dd629b79ece4c4bd04bee496a224fb0c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.4"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.27.7"
   screen_retriever:
     dependency: transitive
     description:
@@ -629,6 +693,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
+  uuid:
+    dependency: "direct main"
+    description:
+      name: uuid
+      sha256: "648e103079f7c64a36dc7d39369cabb358d377078a051d6ae2ad3aa539519313"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.7"
   vector_math:
     dependency: transitive
     description:
@@ -709,6 +781,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.0"
+  web_socket_channel:
+    dependency: transitive
+    description:
+      name: web_socket_channel
+      sha256: d88238e5eac9a42bb43ca4e721edba3c08c6354d4a53063afaa568516217621b
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
+  webrtc_interface:
+    dependency: transitive
+    description:
+      name: webrtc_interface
+      sha256: "2efbd3e4e5ebeb2914253bcc51dafd3053c4b87b43f3076c74835a9deecbae3a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2"
   win32:
     dependency: transitive
     description:

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:stronzflix/backend/media.dart';
 import 'package:stronzflix/backend/player.dart';
-import 'package:stronzflix/backend/result.dart';
 import 'package:stronzflix/backend/streamingcommunity.dart';
 import 'package:stronzflix/utils/simple_http.dart' as http;
 
@@ -17,9 +16,9 @@ class VixxCloud extends Player {
         : _streamingCommunityUrl = StreamingCommunity.instance.url, super(name: "VixxCloud");
 
     @override
-    Future<Uri> getSource(IWatchable media) async {
-        String titleId = RegExp(r"watch/(\d+)").firstMatch(media.url)!.group(1)!;
-        String episodeId = RegExp(r"\?e=(\d+)").firstMatch(media.url)?.group(1) ?? "";
+    Future<Uri> getSource(Watchable media) async {
+        String titleId = RegExp(r"watch/(\d+)").firstMatch(media.playerUrl)!.group(1)!;
+        String episodeId = RegExp(r"\?e=(\d+)").firstMatch(media.playerUrl)?.group(1) ?? "";
         String iframeSrc = "/iframe/${titleId}?episode_id=${episodeId}";
 
         var html = HtmlUnescape();
@@ -40,15 +39,15 @@ class VixxCloud extends Player {
         return Uri.parse(playlist);
     }
     
-      @override
-      Future<Title> recoverLate(LateTitle title) {
-        String id = RegExp(r"watch/(\d+)").firstMatch(title.url)!.group(1)!;
-        String titleUrl = "/titles/${id}--";
-        return StreamingCommunity.instance.getTitle(Result(
-            url: titleUrl,
-            name: title.name,
-            poster: "",
-            site: StreamingCommunity.instance
-        ));
-    }
+    //   @override
+    //   Future<Title> recoverLate(LateTitle title) {
+    //     String id = RegExp(r"watch/(\d+)").firstMatch(title.url)!.group(1)!;
+    //     String titleUrl = "/titles/${id}--";
+    //     return StreamingCommunity.instance.getTitle(Result(
+    //         url: titleUrl,
+    //         name: title.name,
+    //         poster: "",
+    //         site: StreamingCommunity.instance
+    //     ));
+    // }
 }
