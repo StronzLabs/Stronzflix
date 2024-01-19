@@ -1,12 +1,15 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:stronzflix/backend/media.dart';
+import 'package:stronzflix/backend/backend.dart';
+import 'package:stronzflix/backend/peer_manager.dart';
 import 'package:stronzflix/backend/version.dart';
 import 'package:stronzflix/components/result_card.dart';
 import 'package:stronzflix/utils/platform.dart';
-import 'package:stronzflix/utils/storage.dart';
+import 'package:stronzflix/backend/storage.dart';
+import 'package:stronzflix/views/info_dialog.dart';
 import 'package:stronzflix/views/media.dart';
 import 'package:stronzflix/views/search.dart';
+import 'package:stronzflix/views/sink_dialog.dart';
+import 'package:stronzflix/views/update_dialog.dart';
 
 class HomePage extends StatefulWidget {
     const HomePage({super.key});
@@ -17,34 +20,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-    void _showInfo(BuildContext context) async {
-        String version = await VersionChecker.getCurrentVersion();
-        // ignore: use_build_context_synchronously
+    late bool _connected;
+
+    void _showInfo(BuildContext context) {
         showDialog(
             context: context,
-            builder: (context) => AlertDialog(
-                title: Text("Stronzflix ${version}"),
-                content: RichText(
-                    text: TextSpan(
-                        children: [
-                            const TextSpan(
-                                text: "Stronzflix è un progetto open source rilasciato sotto licenza GNU GPLv3.\nIl codice sorgente è disponibile su "
-                            ),
-                            TextSpan(
-                                text: "GitHub",
-                                style: TextStyle(
-                                    color: Theme.of(context).colorScheme.secondary,
-                                    decoration: TextDecoration.underline
-                                ),
-                                recognizer: TapGestureRecognizer()..onTap = () => SPlatform.launchURL("https://github.com/Bonfra04/Stronzflix")
-                            ),
-                            const TextSpan(
-                                text: "."
-                            ),
-                        ]
-                    )
-                )
-            )
+            builder: (context) => const InfoDialog()
         );
     }
 
@@ -54,56 +35,17 @@ class _HomePageState extends State<HomePage> {
         if(!await VersionChecker.shouldUpdate())
             return;
 
-        String action = SPlatform.isMobile ? "Installa" : "Scarica";
-
         // ignore: use_build_context_synchronously
         showDialog(
             context: super.context,
-            builder: (context) => AlertDialog(
-                title: const Text('Aggiornamento disponibile!'),
-                content: RichText(
-                    text: const TextSpan(
-                        children: [
-                            TextSpan(
-                                text: 'Una nuova versione di Stronzflix è disponibile.\n',
-                            ),
-                            TextSpan(
-                                text: 'Vuoi aggiornare?',
-                            )]
-                    )
-                ),
-                actions: [
-                    TextButton(
-                        child: const Text('Ignora'),
-                        onPressed: () => Navigator.of(context).pop()
-                    ),
-                    TextButton(
-                        child: Text(action),
-                        onPressed: () async {
-                            VersionChecker.update().then((updated) {
-                                if(!updated)
-                                    return;
-                                if(SPlatform.isMobile)
-                                    ScaffoldMessenger.of(context).showSnackBar(this._buildUpdateSnackBar());
-                                Navigator.of(context).pop();
-                            });
-                        }
-                    )
-                ]
-            )
+            builder: (context) => const UpdateDialog()
         );
     }
 
-    SnackBar _buildUpdateSnackBar() {
-        return const SnackBar(
-            content: Column(
-                children: [
-                    Text("Aggiornamento in corso..."),
-                    Padding(padding: EdgeInsets.only(top: 8)),
-                    LinearProgressIndicator()
-                ],
-            ),
-            duration: Duration(hours: 1)
+    void _showSink(BuildContext context) {
+        showDialog(
+            context: context,
+            builder: (context) => const SinkDialog()
         );
     }
 
@@ -129,16 +71,8 @@ class _HomePageState extends State<HomePage> {
         );        
     }
 
-    void _playMedia(BuildContext context, TimeStamp timeStamp) {
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => MediaPage(
-                media: LateTitle.fromTimestamp(timeStamp: timeStamp)
-            )
-        )).then((value) => super.setState(() {}));
-    }
-
-    void _removeMedia(TimeStamp timeStamp) {
-        super.setState(() => Storage.removeWatching(timeStamp));
+    void _removeMedia(SerialInfo serialInfo) {
+        super.setState(() => Storage.removeWatching(serialInfo: serialInfo));
     }
 
     Widget _buildContent(BuildContext context) {
@@ -151,20 +85,48 @@ class _HomePageState extends State<HomePage> {
                 childAspectRatio: 3 / 2,
                 maxCrossAxisExtent: 400,
                 children: Storage.keepWatching.values.map(
-                    (timestamp) => ResultCard(
-                        imageUrl: timestamp.cover,
-                        text: timestamp.name,
-                        onTap: () => this._playMedia(context, timestamp),
-                        onLongPress: () => this._removeMedia(timestamp)
+                    (serialInfo) => ResultCard(
+                        imageUrl: serialInfo.cover,
+                        text: serialInfo.name,
+                        onTap: () => MediaPage.playMedia(context, serialInfo),
+                        onLongPress: () => this._removeMedia(serialInfo)
                     )
                 ).toList(),
             );
+    }
+
+    void _initPeer() {
+        this._connected = false;
+
+        PeerManager.init(
+            onConnect: () => super.setState(() => this._connected = true),
+            onDisconnect: () => super.setState(() => this._connected = false)
+        );
+
+        PeerManager.registerHandler(
+            PeerMessageIntent.startWatching,
+            (data) {
+                SerialInfo serialInfo = SerialInfo.fromJson(data);
+                MediaPage.playMedia(super.context, serialInfo, peer: false);
+            }
+        );
     }
 
     @override
     void initState() {
         super.initState();
         WidgetsBinding.instance.addPostFrameCallback((_) => this._checkVersion());
+        this._initPeer();
+    }
+
+    Widget _buildSinkButton(BuildContext context) {
+        return FloatingActionButton(
+            backgroundColor: this._connected ?
+                Theme.of(context).colorScheme.primary :
+                Theme.of(context).disabledColor,
+            child: const Icon(Icons.people),
+            onPressed: () => this._showSink(context)
+        );
     }
 
     @override
@@ -173,7 +135,8 @@ class _HomePageState extends State<HomePage> {
             appBar: this._buildSearchBar(context),
             body: Center(
                 child: this._buildContent(context)
-            )
+            ),
+            floatingActionButton: SPlatform.isDesktop ? this._buildSinkButton(context) : null
         );
     }
 }

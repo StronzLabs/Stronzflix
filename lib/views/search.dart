@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stronzflix/backend/result.dart';
+import 'package:stronzflix/backend/media.dart';
 import 'package:stronzflix/backend/site.dart';
 import 'package:stronzflix/components/result_card.dart';
 import 'package:stronzflix/views/title.dart';
@@ -36,19 +36,24 @@ class SearchPage extends SearchDelegate {
         );
     }
 
-    Widget _buildGrid(BuildContext context, List<Result> results) {
+    void _openResult(BuildContext context, SearchResult result) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TitlePage(result: result)
+            )
+        );
+    }
+
+    Widget _buildGrid(BuildContext context, List<SearchResult> results) {
         return GridView.extent(
             childAspectRatio: 2 / 3,
             maxCrossAxisExtent: 250,
-            children: results.map((Result result) =>
+            children: results.map((SearchResult result) =>
                 Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ResultCard(
-                        onTap: () => Navigator.push(context,
-                            MaterialPageRoute(builder: (context) =>
-                                TitlePage(result: result)
-                            )
-                        ),
+                        onTap: () => this._openResult(context, result),
                         imageUrl: result.poster,
                         text: result.name
                     )

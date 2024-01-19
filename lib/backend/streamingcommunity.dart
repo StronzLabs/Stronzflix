@@ -2,13 +2,12 @@ import 'dart:convert';
 
 import 'package:stronzflix/backend/media.dart';
 import 'package:stronzflix/backend/player.dart';
-import 'package:stronzflix/backend/result.dart';
 import 'package:stronzflix/backend/site.dart';
 import 'package:stronzflix/utils/simple_http.dart' as http;
 
 class StreamingCommunity extends Site {
     
-    static Site instance = StreamingCommunity._("https://streamingcommunity.cz");
+    static Site instance = StreamingCommunity._("https://streamingcommunity.estate");
 
     final String _cdn;
     final Map<String, String> _inhertia;
@@ -29,19 +28,19 @@ class StreamingCommunity extends Site {
     }
 
     @override
-    Future<List<Result>> search(String query) async {
+    Future<List<SearchResult>> search(String query) async {
         String body = await http.get("${super.url}/search?q=${Uri.encodeQueryComponent(query)}", headers: this._inhertia);
         dynamic json = jsonDecode(body);
         dynamic titles = json["props"]["titles"];
 
-        List<Result> results = [];
+        List<SearchResult> results = [];
         for (dynamic title in titles) {
             String poster = title["images"].firstWhere((dynamic image) => image["type"] == "poster")["filename"];
 
-            results.add(Result(
+            results.add(SearchResult(
                 site: this,
                 name: title["name"],
-                url: "/titles/${title["id"]}-${title["slug"]}",
+                siteUrl: "/titles/${title["id"]}-${title["slug"]}",
                 poster:  "${this._cdn}/images/${poster}" 
             ));
         }
@@ -61,7 +60,7 @@ class StreamingCommunity extends Site {
             String cover = episode["images"].firstWhere((dynamic image) => image["type"] == "cover")["filename"];
 
             episodes.add(Episode(
-                url: "/watch/${titleId}?e=${episode["id"]}",
+                playerUrl: "/watch/${titleId}?e=${episode["id"]}",
                 name: episode["name"],
                 cover: "${this._cdn}/images/${cover}",
                 player: Player.get("VixxCloud")!,
@@ -92,21 +91,21 @@ class StreamingCommunity extends Site {
         String cover = title["images"].firstWhere((dynamic image) => image["type"] == "cover")["filename"];
         return Film(
             name: title["name"],
-            url: "/watch/${title["id"]}",
+            playerUrl: "/watch/${title["id"]}",
             player: Player.get("VixxCloud")!,
             cover: "${this._cdn}/images/${cover}"
         );
     }
     
     @override
-    Future<Title> getTitle(Result result) async {
-        String body = await http.get("${super.url}${result.url}", headers: this._inhertia);
+    Future<Title> getTitle(SearchResult result) async {
+        String body = await http.get("${super.url}${result.siteUrl}", headers: this._inhertia);
         dynamic json = jsonDecode(body);
 
         dynamic title = json["props"]["title"];
 
         if(title["type"] == "tv")
-            return await this.getSeries(result.url, title);
+            return await this.getSeries(result.siteUrl, title);
         else
             return this.getFilm(title);
     }

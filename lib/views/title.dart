@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:stronzflix/backend/backend.dart';
 import 'package:stronzflix/backend/media.dart';
-import 'package:stronzflix/backend/media.dart' as SF;
-import 'package:stronzflix/backend/result.dart';
+import 'package:stronzflix/backend/media.dart' as sf;
 import 'package:stronzflix/components/result_card.dart';
 import 'package:stronzflix/views/media.dart';
 
 class TitlePage extends StatefulWidget {
-    final Result result;
+    final SearchResult result;
 
     const TitlePage({super.key, required this.result});
 
@@ -17,7 +17,7 @@ class TitlePage extends StatefulWidget {
 class _TitlePageState extends State<TitlePage> {
 
     late int _selectedSeason;
-    late Future<SF.Title> _title;
+    late Future<sf.Title> _title;
 
     @override
     void initState() {
@@ -26,9 +26,14 @@ class _TitlePageState extends State<TitlePage> {
         this._selectedSeason = 1;
     }
 
-    void _playMedia(BuildContext context, IWatchable media) {
+    void _playMedia(BuildContext context, Watchable watchable) {
+        int startAt = Backend.startWatching(this.widget.result.site.name, this.widget.result.siteUrl);
+        watchable = watchable.startsAt(startAt);
+
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => MediaPage(media: media)
+            builder: (context) => MediaPage(
+                playable: watchable
+            )
         ));
     }
 
@@ -60,7 +65,7 @@ class _TitlePageState extends State<TitlePage> {
         );
     }
 
-    Widget _buildTitle(BuildContext context, SF.Title title) {
+    Widget _buildTitle(BuildContext context, sf.Title title) {
         if (title is Film)
             return this._buildFilm(context, title);
         else if (title is Series)
@@ -110,7 +115,7 @@ class _TitlePageState extends State<TitlePage> {
                 future: this._title,
                 builder: (context, snapshot) {
                     if(snapshot.hasData)
-                        return this._buildTitle(context, snapshot.data as SF.Title);
+                        return this._buildTitle(context, snapshot.data as sf.Title);
                     else
                         return const Center(
                             child: CircularProgressIndicator()

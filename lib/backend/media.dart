@@ -1,50 +1,118 @@
+import 'package:stronzflix/backend/backend.dart';
 import 'package:stronzflix/backend/player.dart';
-import 'package:stronzflix/utils/storage.dart';
+import 'package:stronzflix/backend/site.dart';
 
 abstract class Title {
     final String name;
-    const Title({required this.name});
+    const Title({
+        required this.name
+    });
 }
 
-abstract class IWatchable {
-    String get name;
-    String get url;
-    Player get player;
-    String get cover;
+class SearchResult {
+    final String name;
+    final String siteUrl;
+    final Site site;
+    final String poster;
+
+    const SearchResult({
+        required this.name,
+        required this.siteUrl,
+        required this.site,
+        required this.poster
+    });
 }
 
-class LateTitle implements IWatchable {
-    @override final String name;
-    @override final String url;
-    @override final Player player;
-    @override final String cover;
-    Future<Title> get watchable async => await this.player.recoverLate(this);
-    const LateTitle({required this.name, required this.url, required this.player, required this.cover});
+abstract class Playable {
+    Future<Watchable> resolve();
+}
 
-    factory LateTitle.fromTimestamp({required TimeStamp timeStamp}) {
-        return LateTitle(
-            name: timeStamp.name,
-            url: timeStamp.url,
-            player: Player.get(timeStamp.player)!,
-            cover: timeStamp.cover
+class LatePlayable implements Playable {
+    final SerialInfo serialInfo;
+
+    LatePlayable({
+        required this.serialInfo
+    });
+
+    @override
+    Future<Watchable> resolve() async {
+        Site site = Site.get(this.serialInfo.site)!;
+        SearchResult searchResult = SearchResult(
+            name: this.serialInfo.name,
+            siteUrl: this.serialInfo.siteUrl,
+            site: site,
+            poster: ""
         );
+        Title title = await site.getTitle(searchResult);
+
+        if(title is Film)
+            return title.startsAt(this.serialInfo.startAt);
+        else
+            throw Exception("Unknown title type");
     }
 }
 
-class Film extends Title implements IWatchable {
-    @override final String url;
-    @override final Player player;
-    @override final String cover;
-    const Film({required super.name, required this.url, required this.player, required this.cover});
+abstract class Watchable implements Playable {
+    final String name;
+    final String playerUrl;
+    final Player player;
+    final String cover;
+    final int startAt;
+
+    const Watchable({
+        required this.name,
+        required this.playerUrl,
+        required this.player,
+        required this.cover,
+        this.startAt = 0
+    });
+
+    Watchable startsAt(int time);
+
+    @override
+    Future<Watchable> resolve() async => this;
 }
 
-class Episode implements IWatchable {
-    @override final String url;
-    @override final String name;
-    @override final Player player;
-    @override final String cover;
+class Film extends Watchable implements Title {
+    const Film({
+        required super.name,
+        required super.playerUrl,
+        required super.player,
+        required super.cover,
+        super.startAt = 0
+    });
+
+    @override
+    Film startsAt(int time) => Film(
+        name: this.name,
+        playerUrl: this.playerUrl,
+        player: this.player,
+        cover: this.cover,
+        startAt: time
+    );
+}
+
+class Episode extends Watchable {
     final Series series;
-    const Episode({required this.name, required this.cover, required this.url, required this.player, required this.series});
+
+    const Episode({
+        required super.name,
+        required super.cover,
+        required super.playerUrl,
+        required super.player,
+        required this.series,
+        super.startAt = 0
+    });
+
+    @override
+    Episode startsAt(int time) => Episode(
+        name: this.name,
+        playerUrl: this.playerUrl,
+        player: this.player,
+        cover: this.cover,
+        series: this.series,
+        startAt: time
+    );
 }
 
 class Series extends Title {

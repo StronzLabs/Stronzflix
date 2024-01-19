@@ -4,18 +4,19 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stronzflix/backend/media.dart';
-import 'package:stronzflix/backend/media.dart' as SF;
+import 'package:stronzflix/backend/peer_manager.dart';
 import 'package:stronzflix/components/progress_bar.dart';
 import 'package:stronzflix/utils/format.dart';
 import 'package:stronzflix/utils/platform.dart';
 import 'package:stronzflix/views/media.dart';
 import 'package:video_player/video_player.dart';
 import 'package:window_manager/window_manager.dart';
+// ignore: implementation_imports
 import 'package:chewie/src/animated_play_pause.dart';
 
 class PlayerControls extends StatefulWidget {
   
-    final IWatchable media;
+    final Watchable media;
 
     const PlayerControls({super.key, required this.media});
 
@@ -36,8 +37,8 @@ class _PlayerControlsState extends State<PlayerControls> {
     late bool _fullscreen;
     double? _latestVolume;
 
-    late IWatchable _currentMedia;
-    IWatchable? _nextMedia;
+    late Watchable _currentMedia;
+    Watchable? _nextMedia;
 
     KeyEventResult _handleKeyControls(RawKeyEvent event) {
         if(event is! RawKeyDownEvent)
@@ -280,6 +281,9 @@ class _PlayerControlsState extends State<PlayerControls> {
                 onDragEnd: () {
                     this._startHideTimer();
                 },
+                onSeek: (position) {
+                    PeerManager.seek(position.inMilliseconds);
+                },
                 colors: chewieController.materialProgressColors ??
                     ChewieProgressColors(
                         playedColor: Theme.of(context).colorScheme.secondary,
@@ -346,7 +350,7 @@ class _PlayerControlsState extends State<PlayerControls> {
     void _onNextMedia() {
         this._dispose();
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => MediaPage(media: this._nextMedia!),
+            builder: (context) => MediaPage(playable: this._nextMedia!),
         ));
     }
 
@@ -371,29 +375,25 @@ class _PlayerControlsState extends State<PlayerControls> {
         this.chewieController.notifyListeners();
         this._fullscreen = this.chewieController.isFullScreen;
         this._currentMedia = super.widget.media;
-        this.resolveLate().then((_) => this._findNextMedia());
-    }
+        this._findNextMedia();
 
-    Future<void> resolveLate() async {
-        IWatchable media = super.widget.media;
-        if (media is LateTitle) {
-            SF.Title resolved = await media.watchable;
-            
-            if (resolved is Film)
-                this._currentMedia = resolved;
-            else if (resolved is Series) {
-                for (List<Episode> season in resolved.seasons) {
-                    for (Episode episode in season) {
-                        if (episode.url == media.url) {
-                            this._currentMedia = episode;
-                            break;
-                        }
-                    }
-                }
+        PeerManager.registerHandler(PeerMessageIntent.seek,
+            (at) => this.controller.seekTo(Duration(milliseconds: at["time"]))
+        );
+
+        PeerManager.registerHandler(PeerMessageIntent.pause,
+            (_) {
+                if(this.controller.value.isPlaying)
+                    this._playPause(peer: false);
             }
-            else
-                throw Exception("Unknown media type: ${resolved.runtimeType}");
-        }
+        );
+
+        PeerManager.registerHandler(PeerMessageIntent.play,
+            (_) {
+                if(!this.controller.value.isPlaying)
+                    this._playPause(peer: false);
+            }
+        );
     }
 
     void _findNextMedia() {
@@ -405,7 +405,7 @@ class _PlayerControlsState extends State<PlayerControls> {
         late int seasonIdx, episodeIdx;
         for (List<Episode> season in series.seasons) {
             for (Episode episode in season) {
-                if (episode.url == (this._currentMedia as Episode).url) {
+                if (episode.playerUrl == (this._currentMedia as Episode).playerUrl) {
                     episodeIdx = season.indexOf(episode);
                     seasonIdx = series.seasons.indexOf(season);
                     break;
@@ -423,7 +423,7 @@ class _PlayerControlsState extends State<PlayerControls> {
         this._nextMedia = nextEpisode;
     }
 
-    void _playPause() {
+    void _playPause({bool peer = true}) {
         final bool isFinished = this._latestValue.position >= this._latestValue.duration;
 
         super.setState(() {
@@ -432,6 +432,9 @@ class _PlayerControlsState extends State<PlayerControls> {
                 this._hideTimer?.cancel();
                 this.controller.pause();
                 this._hideStuff = false;
+
+                if (peer)
+                    PeerManager.pause();
             } else {
                 this._hideStuff = true;
 
@@ -441,6 +444,9 @@ class _PlayerControlsState extends State<PlayerControls> {
                     this.controller.seekTo(Duration.zero);
                 
                 this.controller.play();
+
+                if (peer)
+                    PeerManager.play();
             }
         });
     }

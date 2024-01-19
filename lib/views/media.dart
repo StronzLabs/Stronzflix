@@ -2,18 +2,29 @@ import 'dart:ui';
 
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:stronzflix/backend/backend.dart';
 import 'package:stronzflix/backend/media.dart';
+import 'package:stronzflix/backend/peer_manager.dart';
 import 'package:stronzflix/components/player_controls.dart';
-import 'package:stronzflix/utils/storage.dart';
 import 'package:video_player/video_player.dart';
 
 class MediaPage extends StatefulWidget {
 
-    final IWatchable media;
-    const MediaPage({super.key, required this.media});
+    final Playable playable;
+    const MediaPage({super.key, required this.playable});
 
     @override
     State<MediaPage> createState() => _MediaPageState();
+
+    static Future<void> playMedia(BuildContext context, SerialInfo serialInfo, {bool peer = true}) async {
+        Backend.startWatching(serialInfo.site, serialInfo.siteUrl, startAt: serialInfo.startAt, peer: peer);
+        
+        await Navigator.push(context, MaterialPageRoute(
+            builder: (context) => MediaPage(
+                playable: LatePlayable(serialInfo: serialInfo)
+            )
+        ));
+    }
 }
 
 class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
@@ -22,18 +33,11 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
     late ChewieController _chewieController;
     late final AppLifecycleListener _lifecycleListener;
 
-    late Duration startAt;
-
-    Duration _startAt() {
-        TimeStamp? t = Storage.find(super.widget.media);
-        if (t != null)
-            return Duration(milliseconds: t.time);
-        else
-            return Duration.zero;
-    }
+    late final Watchable _watchable;
 
     Future<void> _initVideoPlayer() async {
-        Uri uri = await super.widget.media.player.getSource(super.widget.media);
+        this._watchable = await super.widget.playable.resolve();
+        Uri uri = await this._watchable.player.getSource(this._watchable);
         uri = Uri.parse(uri.toString().split('?').join('.m3u8?'));
         this._videoPlayerController = VideoPlayerController.networkUrl(uri);
 
@@ -44,35 +48,41 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
             autoPlay: true,
             allowedScreenSleep: false,
             aspectRatio: this._videoPlayerController.value.aspectRatio,
-            customControls: PlayerControls(media: super.widget.media),
+            customControls: PlayerControls(media: this._watchable),
             hideControlsTimer: const Duration(seconds: 1, milliseconds: 500),
-            startAt: this.startAt
+            startAt: Duration(milliseconds: this._watchable.startAt),
         );
     }
 
-    void _saveState() async {
-        Storage.updateWatching(super.widget.media, this._videoPlayerController.value.position.inMilliseconds);
+    void _saveState() {
+        Backend.updateWatching(this._watchable, this._videoPlayerController.value.position.inMilliseconds);
         if (this._videoPlayerController.value.position.inMilliseconds >= this._videoPlayerController.value.duration.inMilliseconds * 0.9)
-            Storage.removeWatching(super.widget.media);
-
-        Storage.serialize();
+            Backend.removeWatching();
+        Backend.serialize();
     }
 
     @override
     void initState() {
         super.initState();
+
         WidgetsBinding.instance.addObserver(this);
         this._lifecycleListener = AppLifecycleListener(
             onStateChange: (_) => this._saveState,
             onExitRequested: () async { this._saveState(); return AppExitResponse.exit; }
         );
-        this.startAt = this._startAt();
-        Storage.startWatching(super.widget.media, at: this.startAt);
+
+        PeerManager.registerHandler(PeerMessageIntent.stopWatching,
+            (_) {
+                Navigator.of(super.context).pop();
+                PeerManager.isNotWatching();
+            }
+        );
     }
 
     @override
     void dispose() {
         this._saveState();
+        Backend.stopWatching();
         this._videoPlayerController.dispose();
         this._chewieController.dispose();
         WidgetsBinding.instance.removeObserver(this);
