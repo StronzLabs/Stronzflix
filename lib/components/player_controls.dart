@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stronzflix/backend/backend.dart';
 import 'package:stronzflix/backend/media.dart';
 import 'package:stronzflix/backend/peer_manager.dart';
 import 'package:stronzflix/components/progress_bar.dart';
@@ -183,6 +184,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                                         onPressed: () {
                                             if(this._fullscreen)
                                                 this._onExpandCollapse();
+                                            Backend.stopWatching();
                                             Navigator.of(context).maybePop();
                                         }
                                     ),

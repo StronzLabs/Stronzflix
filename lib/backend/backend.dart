@@ -42,7 +42,7 @@ class SerialInfo {
 
 class Backend {
 
-    static int startWatching(String site, String siteUrl, {int? startAt, bool peer = false}) {
+    static int startWatching(String site, String siteUrl, {int? startAt}) {
         int startTime = Storage.startWatching(site, siteUrl, startAt: startAt);
 
         SerialInfo serialInfo = SerialInfo(
@@ -50,24 +50,21 @@ class Backend {
             site: site,
             startAt: startTime
         );
-        if (peer)
-            PeerManager.startWatching(serialInfo);
-        PeerManager.isWatching(serialInfo);
+        PeerManager.startWatching(serialInfo);
 
         return startTime;
     }
 
     static void stopWatching() {
         PeerManager.stopWatching();
-        Storage.stopWatching();
     }
 
     static void updateWatching(Watchable watchable, int time) {
         Storage.updateWatching(watchable, time);
     }
 
-    static void removeWatching() {
-        Storage.removeWatching();
+    static void removeWatching(String site, String siteUrl) {
+        Storage.removeWatching(site, siteUrl);
     }
 
     static void serialize() {
