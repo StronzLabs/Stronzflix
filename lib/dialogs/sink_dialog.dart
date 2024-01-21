@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/peer_manager.dart';
 
 class SinkDialog extends StatelessWidget {
-    const SinkDialog({super.key});
+    
+    final TextEditingController _controller = TextEditingController();
+    
+    SinkDialog({super.key});
 
     @override
     Widget build(BuildContext context) {
@@ -34,9 +37,19 @@ class SinkDialog extends StatelessWidget {
                             PeerManager.connect(value);
                             Navigator.pop(context);
                         },
+                        controller: this._controller,
                     )
                 ],
-            )
+            ),
+            actions: [
+                TextButton(
+                    onPressed: () {
+                        PeerManager.connect(this._controller.text);
+                        Navigator.pop(context);
+                    },
+                    child: const Text("Connetti")
+                )
+            ]
         );
     }
 }

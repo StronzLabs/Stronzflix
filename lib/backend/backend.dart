@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:stronzflix/backend/media.dart';
+import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/peer_manager.dart';
-import 'package:stronzflix/backend/streamingcommunity.dart';
-import 'package:stronzflix/backend/vixxcloud.dart';
+import 'package:stronzflix/backend/api/streamingcommunity.dart';
+import 'package:stronzflix/backend/api/vixxcloud.dart';
 import 'package:stronzflix/backend/storage.dart';
 
 class SerialInfo {

@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
     void _showSink(BuildContext context) {
         showDialog(
             context: context,
-            builder: (context) => const SinkDialog()
+            builder: (context) => SinkDialog()
         );
     }
 

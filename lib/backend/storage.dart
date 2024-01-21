@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stronzflix/backend/backend.dart';
-import 'package:stronzflix/backend/media.dart';
+import 'package:stronzflix/backend/api/media.dart';
 
 final class Storage {
     static late SharedPreferences _prefs;
