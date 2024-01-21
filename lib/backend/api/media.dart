@@ -47,6 +47,12 @@ class LatePlayable implements Playable {
 
         if(title is Film)
             return title.startsAt(this.serialInfo.startAt);
+        else if (title is Series) {
+            List<String> seasonXepisode = this.serialInfo.episode.split("x");
+            int season = int.parse(seasonXepisode[0]) - 1;
+            int episode = int.parse(seasonXepisode[1]) - 1;
+            return title.seasons[season][episode].startsAt(this.serialInfo.startAt);
+        }
         else
             throw Exception("Unknown title type");
     }

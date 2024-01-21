@@ -31,14 +31,15 @@ final class Storage {
 
     static String _calcID(String site, String siteUrl) => "${site}_${siteUrl}";
 
-    static int startWatching(String site, String siteUrl, {int? startAt}) {
+    static int startWatching(String site, String siteUrl, {int? startAt, String episode = ""}) {
         Storage._lastId = Storage._calcID(site, siteUrl);
 
         if (!Storage.keepWatching.containsKey(Storage._lastId))
             Storage.keepWatching[Storage._lastId!] = SerialInfo(
                 siteUrl: siteUrl,
                 site: site,
-                startAt: startAt ?? 0
+                startAt: startAt ?? 0,
+                episode: episode
             );
 
         return Storage.keepWatching[Storage._lastId]!.startAt;
