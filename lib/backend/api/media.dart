@@ -1,6 +1,6 @@
 import 'package:stronzflix/backend/backend.dart';
-import 'package:stronzflix/backend/player.dart';
-import 'package:stronzflix/backend/site.dart';
+import 'package:stronzflix/backend/api/player.dart';
+import 'package:stronzflix/backend/api/site.dart';
 
 abstract class Title {
     final String name;

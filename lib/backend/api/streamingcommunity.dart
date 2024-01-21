@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:stronzflix/backend/media.dart';
-import 'package:stronzflix/backend/player.dart';
-import 'package:stronzflix/backend/site.dart';
+import 'package:stronzflix/backend/api/media.dart';
+import 'package:stronzflix/backend/api/player.dart';
+import 'package:stronzflix/backend/api/site.dart';
 import 'package:stronzflix/utils/simple_http.dart' as http;
 
 class StreamingCommunity extends Site {

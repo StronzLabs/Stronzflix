@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/backend.dart';
-import 'package:stronzflix/backend/media.dart';
+import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/peer_manager.dart';
 import 'package:stronzflix/components/player_controls.dart';
 import 'package:video_player/video_player.dart';

@@ -4,12 +4,12 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stronzflix/backend/backend.dart';
-import 'package:stronzflix/backend/media.dart';
+import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/peer_manager.dart';
 import 'package:stronzflix/components/progress_bar.dart';
 import 'package:stronzflix/utils/format.dart';
 import 'package:stronzflix/utils/platform.dart';
-import 'package:stronzflix/views/media.dart';
+import 'package:stronzflix/pages/media_page.dart';
 import 'package:video_player/video_player.dart';
 import 'package:window_manager/window_manager.dart';
 // ignore: implementation_imports

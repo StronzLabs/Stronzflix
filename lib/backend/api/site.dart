@@ -1,4 +1,4 @@
-import 'package:stronzflix/backend/media.dart';
+import 'package:stronzflix/backend/api/media.dart';
 
 abstract class Site {
 
