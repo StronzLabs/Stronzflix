@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:html_unescape/html_unescape_small.dart';
-import 'package:stronzflix/backend/media.dart';
-import 'package:stronzflix/backend/player.dart';
-import 'package:stronzflix/backend/streamingcommunity.dart';
+import 'package:stronzflix/backend/api/media.dart';
+import 'package:stronzflix/backend/api/player.dart';
+import 'package:stronzflix/backend/api/streamingcommunity.dart';
 import 'package:stronzflix/utils/simple_http.dart' as http;
 
 class VixxCloud extends Player {

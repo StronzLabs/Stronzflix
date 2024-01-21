@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/backend.dart';
-import 'package:stronzflix/backend/media.dart';
-import 'package:stronzflix/backend/media.dart' as sf;
+import 'package:stronzflix/backend/api/media.dart';
+import 'package:stronzflix/backend/api/media.dart' as sf;
 import 'package:stronzflix/components/result_card.dart';
-import 'package:stronzflix/views/media.dart';
+import 'package:stronzflix/pages/media_page.dart';
 
 class TitlePage extends StatefulWidget {
     final SearchResult result;

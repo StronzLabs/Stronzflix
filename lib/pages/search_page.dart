@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:stronzflix/backend/media.dart';
-import 'package:stronzflix/backend/site.dart';
+import 'package:stronzflix/backend/api/media.dart';
+import 'package:stronzflix/backend/api/site.dart';
 import 'package:stronzflix/components/result_card.dart';
-import 'package:stronzflix/views/title.dart';
+import 'package:stronzflix/pages/title_page.dart';
 
 class SearchPage extends SearchDelegate {
 

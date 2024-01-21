@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/backend.dart';
-import 'package:stronzflix/backend/media.dart';
+import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/peer_manager.dart';
 import 'package:stronzflix/backend/version.dart';
 import 'package:stronzflix/components/result_card.dart';
 import 'package:stronzflix/utils/platform.dart';
 import 'package:stronzflix/backend/storage.dart';
-import 'package:stronzflix/views/info_dialog.dart';
-import 'package:stronzflix/views/media.dart';
-import 'package:stronzflix/views/search.dart';
-import 'package:stronzflix/views/sink_dialog.dart';
-import 'package:stronzflix/views/update_dialog.dart';
+import 'package:stronzflix/dialogs/info_dialog.dart';
+import 'package:stronzflix/pages/media_page.dart';
+import 'package:stronzflix/pages/search_page.dart';
+import 'package:stronzflix/dialogs/sink_dialog.dart';
+import 'package:stronzflix/dialogs/update_dialog.dart';
 
 class HomePage extends StatefulWidget {
     const HomePage({super.key});

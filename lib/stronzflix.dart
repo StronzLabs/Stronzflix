@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stronzflix/views/home.dart';
+import 'package:stronzflix/pages/home_page.dart';
 
 class Stronzflix extends StatelessWidget {
     const Stronzflix({super.key});

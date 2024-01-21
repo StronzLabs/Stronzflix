@@ -1,4 +1,4 @@
-import 'package:stronzflix/backend/media.dart';
+import 'package:stronzflix/backend/api/media.dart';
 
 abstract class Player {
     final String name;
@@ -9,7 +9,6 @@ abstract class Player {
 
     Future<void> prepare() async {}
     Future<Uri> getSource(Watchable media);
-    // Future<Title> recoverLate(LateTitle title);
 
     static final Map<String, Player> _registry = {};
     static Player? get(String name) => _registry[name];
