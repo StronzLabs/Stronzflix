@@ -12,6 +12,7 @@ class SerialInfo {
     String site;
     int startAt;
     String cover;
+    String episode;
 
     SerialInfo({
         required this.siteUrl,
@@ -19,6 +20,7 @@ class SerialInfo {
         this.startAt = 0,
         this.cover = "",
         this.name = "",
+        this.episode = ""
     });
 
     SerialInfo.fromJson(Map<String, dynamic> json) :
@@ -26,14 +28,16 @@ class SerialInfo {
         this.siteUrl = json["siteUrl"],
         this.site = json["site"],
         this.startAt = json["startAt"],
-        this.cover = json["cover"];
+        this.cover = json["cover"],
+        this.episode = json["episode"];
 
     Map<String, dynamic> toJson() => {
         "name": this.name,
         "siteUrl": this.siteUrl,
         "site": this.site,
         "startAt": this.startAt,
-        "cover": this.cover
+        "cover": this.cover,
+        "episode": this.episode
     };
 
     @override
@@ -42,13 +46,14 @@ class SerialInfo {
 
 class Backend {
 
-    static int startWatching(String site, String siteUrl, {int? startAt}) {
-        int startTime = Storage.startWatching(site, siteUrl, startAt: startAt);
+    static int startWatching(String site, String siteUrl, {int? startAt, String episode = ""}) {
+        int startTime = Storage.startWatching(site, siteUrl, startAt: startAt, episode: episode);
 
         SerialInfo serialInfo = SerialInfo(
             siteUrl: siteUrl,
             site: site,
-            startAt: startTime
+            startAt: startTime,
+            episode: episode
         );
         PeerManager.startWatching(serialInfo);
 

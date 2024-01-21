@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
                         text: serialInfo.name,
                         onLongPress: () => this._removeMedia(serialInfo),
                         onTap: () {
-                            Backend.startWatching(serialInfo.site, serialInfo.siteUrl);
+                            Backend.startWatching(serialInfo.site, serialInfo.siteUrl, episode: serialInfo.episode);
                             this._playMedia(context, serialInfo);
                         }
                     )

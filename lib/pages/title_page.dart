@@ -26,8 +26,8 @@ class _TitlePageState extends State<TitlePage> {
         this._selectedSeason = 1;
     }
 
-    void _playMedia(BuildContext context, Watchable watchable) {
-        int startAt = Backend.startWatching(this.widget.result.site.name, this.widget.result.siteUrl);
+    void _playMedia(BuildContext context, Watchable watchable, {String episode = ""}) {
+        int startAt = Backend.startWatching(this.widget.result.site.name, this.widget.result.siteUrl, episode: episode);
         watchable = watchable.startsAt(startAt);
 
         Navigator.push(context, MaterialPageRoute(
@@ -56,7 +56,10 @@ class _TitlePageState extends State<TitlePage> {
                 Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ResultCard(
-                        onTap: () => this._playMedia(context, episode),
+                        onTap: () {
+                            String episodeNo = "${this._selectedSeason}x${episodes.indexOf(episode) + 1}";
+                            this._playMedia(context, episode, episode: episodeNo);
+                        },
                         imageUrl: episode.cover,
                         text: episode.name
                     )
