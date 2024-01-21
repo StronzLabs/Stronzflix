@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/backend.dart';
+import 'package:stronzflix/backend/media.dart';
 import 'package:stronzflix/backend/peer_manager.dart';
 import 'package:stronzflix/backend/version.dart';
 import 'package:stronzflix/components/result_card.dart';
@@ -21,6 +22,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
     late bool _connected;
+
+    void _playMedia(BuildContext context, SerialInfo serialInfo) {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => MediaPage(
+                playable: LatePlayable(serialInfo: serialInfo)
+            )
+        )).then((_) => super.setState(() {}));
+    }
 
     void _showInfo(BuildContext context) {
         showDialog(
@@ -72,7 +81,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     void _removeMedia(SerialInfo serialInfo) {
-        super.setState(() => Storage.removeWatching(serialInfo: serialInfo));
+        super.setState(() => Storage.removeWatching(serialInfo.site, serialInfo.siteUrl));
     }
 
     Widget _buildContent(BuildContext context) {
@@ -88,8 +97,11 @@ class _HomePageState extends State<HomePage> {
                     (serialInfo) => ResultCard(
                         imageUrl: serialInfo.cover,
                         text: serialInfo.name,
-                        onTap: () => MediaPage.playMedia(context, serialInfo),
-                        onLongPress: () => this._removeMedia(serialInfo)
+                        onLongPress: () => this._removeMedia(serialInfo),
+                        onTap: () {
+                            Backend.startWatching(serialInfo.site, serialInfo.siteUrl);
+                            this._playMedia(context, serialInfo);
+                        }
                     )
                 ).toList(),
             );
@@ -107,7 +119,7 @@ class _HomePageState extends State<HomePage> {
             PeerMessageIntent.startWatching,
             (data) {
                 SerialInfo serialInfo = SerialInfo.fromJson(data);
-                MediaPage.playMedia(super.context, serialInfo, peer: false);
+                this._playMedia(super.context, serialInfo);
             }
         );
     }

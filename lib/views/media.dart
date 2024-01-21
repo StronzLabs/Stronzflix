@@ -15,16 +15,6 @@ class MediaPage extends StatefulWidget {
 
     @override
     State<MediaPage> createState() => _MediaPageState();
-
-    static Future<void> playMedia(BuildContext context, SerialInfo serialInfo, {bool peer = true}) async {
-        Backend.startWatching(serialInfo.site, serialInfo.siteUrl, startAt: serialInfo.startAt, peer: peer);
-        
-        await Navigator.push(context, MaterialPageRoute(
-            builder: (context) => MediaPage(
-                playable: LatePlayable(serialInfo: serialInfo)
-            )
-        ));
-    }
 }
 
 class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
@@ -56,8 +46,6 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
 
     void _saveState() {
         Backend.updateWatching(this._watchable, this._videoPlayerController.value.position.inMilliseconds);
-        if (this._videoPlayerController.value.position.inMilliseconds >= this._videoPlayerController.value.duration.inMilliseconds * 0.9)
-            Backend.removeWatching();
         Backend.serialize();
     }
 
@@ -72,17 +60,13 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
         );
 
         PeerManager.registerHandler(PeerMessageIntent.stopWatching,
-            (_) {
-                Navigator.of(super.context).pop();
-                PeerManager.isNotWatching();
-            }
+            (_) => Navigator.of(super.context).pop()
         );
     }
 
     @override
     void dispose() {
         this._saveState();
-        Backend.stopWatching();
         this._videoPlayerController.dispose();
         this._chewieController.dispose();
         WidgetsBinding.instance.removeObserver(this);

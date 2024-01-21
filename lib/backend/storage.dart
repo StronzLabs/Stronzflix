@@ -7,6 +7,7 @@ final class Storage {
     static late SharedPreferences _prefs;
 
     static late Map<String, SerialInfo> _keepWatchingList;
+    static String? _lastId;
     static Map<String, SerialInfo> get keepWatching => Storage._keepWatchingList;
 
     static Future<void> init() async {
@@ -30,34 +31,29 @@ final class Storage {
 
     static String _calcID(String site, String siteUrl) => "${site}_${siteUrl}";
 
-    static String? _currentlyWatching;
-
     static int startWatching(String site, String siteUrl, {int? startAt}) {
-        Storage._currentlyWatching = Storage._calcID(site, siteUrl);
+        Storage._lastId = Storage._calcID(site, siteUrl);
 
-        if (!Storage.keepWatching.containsKey(Storage._currentlyWatching!))
-            Storage.keepWatching[Storage._currentlyWatching!] = SerialInfo(
+        if (!Storage.keepWatching.containsKey(Storage._lastId))
+            Storage.keepWatching[Storage._lastId!] = SerialInfo(
                 siteUrl: siteUrl,
                 site: site,
                 startAt: startAt ?? 0
             );
 
-        return Storage.keepWatching[Storage._currentlyWatching!]!.startAt;
+        return Storage.keepWatching[Storage._lastId]!.startAt;
     }
 
-    static void stopWatching() {
-        Storage._currentlyWatching = null;
-    }
-
-    static void removeWatching({SerialInfo? serialInfo}) {
-        String id = serialInfo == null ? Storage._currentlyWatching! : Storage._calcID(serialInfo.site, serialInfo.siteUrl);
+    static void removeWatching(String site, String siteUrl) {
+        String id = Storage._calcID(site, siteUrl);
         Storage._keepWatchingList.remove(id);
-        Storage.stopWatching();
     }
 
     static void updateWatching(Watchable media, int time) {
-        Storage.keepWatching[_currentlyWatching]!.name = media.name;
-        Storage.keepWatching[_currentlyWatching]!.cover = media.cover;
-        Storage.keepWatching[_currentlyWatching]!.startAt = time;
+        if (Storage.keepWatching.containsKey(Storage._lastId)) {
+            Storage.keepWatching[Storage._lastId]!.name = media.name;
+            Storage.keepWatching[Storage._lastId]!.cover = media.cover;
+            Storage.keepWatching[Storage._lastId]!.startAt = time;
+        }
     }
 }

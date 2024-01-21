@@ -25,17 +25,18 @@ enum PeerMessageIntent {
 
 class PeerManager {
     static late final Peer _peer;
-    static bool _initialized = false;
     static DataConnection? _connection;
-    static bool get connected => PeerManager._connection != null;
 
     static late final Function()? onConnect;
     static late final Function()? onDisconnect;
     static late Map<PeerMessageIntent, Function(Map<String, dynamic>)> intentHandlers;
 
-    static SerialInfo? _currentlyPlaying;
-
     static String get id => _peer.id!;
+
+    static bool _initialized = false;
+    static bool get _connected => PeerManager._connection != null;
+    static bool get _ready => PeerManager._initialized && PeerManager._connected;
+    static bool get _notReady => !PeerManager._ready;
 
     static void init({Function()? onConnect, Function()? onDisconnect}) {
         if(PeerManager._initialized)
@@ -81,8 +82,6 @@ class PeerManager {
             if(PeerManager.intentHandlers.containsKey(intent))
                 PeerManager.intentHandlers[intent]!(message);
         });
-
-        PeerManager._currentlyPlaying = null;
     }
 
     static void connect(String peer) {
@@ -90,24 +89,8 @@ class PeerManager {
         PeerManager._initConnection(dataConnection);
     }
 
-    static void isWatching(SerialInfo serialInfo) {
-        if(!PeerManager._initialized)
-            return;
-        PeerManager._currentlyPlaying = serialInfo;
-    }
-
-    static void isNotWatching() {
-        if(!PeerManager._initialized)
-            return;
-        PeerManager._currentlyPlaying = null;
-    }
-
     static void startWatching(SerialInfo serialInfo) {
-        if(!PeerManager._initialized)
-            return;
-        if(!PeerManager.connected)
-            return;
-        if(PeerManager._currentlyPlaying?.siteUrl == serialInfo.siteUrl)
+        if(PeerManager._notReady)
             return;
 
         Map<String, dynamic> message = {
@@ -116,16 +99,10 @@ class PeerManager {
         };
         String json = jsonEncode(message);
         PeerManager._connection!.send(json);
-
-        PeerManager.isWatching(serialInfo);
     }
 
     static void stopWatching() {
-        if(!PeerManager._initialized)
-            return;
-        if(!PeerManager.connected)
-            return;
-        if(PeerManager._currentlyPlaying == null)
+        if(PeerManager._notReady)
             return;
 
         Map<String, dynamic> message = {
@@ -134,16 +111,10 @@ class PeerManager {
         };
         String json = jsonEncode(message);
         PeerManager._connection!.send(json);
-
-        PeerManager.isNotWatching();
     }
 
     static void seek(int time) {
-        if(!PeerManager._initialized)
-            return;
-        if(!PeerManager.connected)
-            return;
-        if(PeerManager._currentlyPlaying == null)
+        if(PeerManager._notReady)
             return;
 
         Map<String, dynamic> message = {
@@ -157,11 +128,7 @@ class PeerManager {
     }
 
     static void pause() {
-        if(!PeerManager._initialized)
-            return;
-        if(!PeerManager.connected)
-            return;
-        if(PeerManager._currentlyPlaying == null)
+        if(PeerManager._notReady)
             return;
 
         Map<String, dynamic> message = {
@@ -173,11 +140,7 @@ class PeerManager {
     }
 
     static void play() {
-        if(!PeerManager._initialized)
-            return;
-        if(!PeerManager.connected)
-            return;
-        if(PeerManager._currentlyPlaying == null)
+        if(PeerManager._notReady)
             return;
 
         Map<String, dynamic> message = {
