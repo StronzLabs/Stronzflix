@@ -85,6 +85,8 @@ class PeerManager {
     }
 
     static void connect(String peer) {
+        if(peer == PeerManager.id)
+            return;
         DataConnection dataConnection = PeerManager._peer.connect(peer);
         PeerManager._initConnection(dataConnection);
     }
