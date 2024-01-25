@@ -23,7 +23,7 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
     late ChewieController _chewieController;
     late final AppLifecycleListener _lifecycleListener;
 
-    late final Watchable _watchable;
+    late Watchable _watchable;
 
     Future<void> _initVideoPlayer() async {
         this._watchable = await super.widget.playable.resolve();
@@ -38,7 +38,7 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
             autoPlay: true,
             allowedScreenSleep: false,
             aspectRatio: this._videoPlayerController.value.aspectRatio,
-            customControls: PlayerControls(media: this._watchable),
+            customControls: PlayerControls(media: this._watchable, controller: this._videoPlayerController),
             hideControlsTimer: const Duration(seconds: 1, milliseconds: 500),
             startAt: Duration(milliseconds: this._watchable.startAt),
         );
