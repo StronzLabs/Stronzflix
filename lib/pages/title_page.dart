@@ -101,7 +101,7 @@ class _TitlePageState extends State<TitlePage> {
                 ),
                 leading: IconButton(
                     icon: const Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.of(context).maybePop()
+                    onPressed: () => Navigator.of(context).pop()
                 ),
                 actions: [
                     FutureBuilder(

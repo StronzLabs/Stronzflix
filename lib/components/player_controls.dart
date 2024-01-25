@@ -6,20 +6,22 @@ import 'package:flutter/services.dart';
 import 'package:stronzflix/backend/backend.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/peer_manager.dart';
+import 'package:stronzflix/components/animated_play_pause.dart';
+import 'package:stronzflix/components/chat_drawer.dart';
+import 'package:stronzflix/components/control_widget.dart';
 import 'package:stronzflix/components/progress_bar.dart';
 import 'package:stronzflix/utils/format.dart';
 import 'package:stronzflix/utils/platform.dart';
 import 'package:stronzflix/pages/media_page.dart';
 import 'package:video_player/video_player.dart';
 import 'package:window_manager/window_manager.dart';
-// ignore: implementation_imports
-import 'package:chewie/src/animated_play_pause.dart';
 
 class PlayerControls extends StatefulWidget {
   
+    final VideoPlayerController controller;
     final Watchable media;
 
-    const PlayerControls({super.key, required this.media});
+    const PlayerControls({super.key, required this.media, required this.controller});
 
     @override
     State<PlayerControls> createState() => _PlayerControlsState();
@@ -27,16 +29,13 @@ class PlayerControls extends StatefulWidget {
 
 class _PlayerControlsState extends State<PlayerControls> {
 
-    ChewieController? _chewieController;
-    ChewieController get chewieController => _chewieController!;
-    late VideoPlayerController controller;
-    late VideoPlayerValue _latestValue;
+    late VideoPlayerController _controller;
 
     Timer? _hideTimer;
-    bool _hideStuff = true;
+    bool _hidden = true;
     bool _buffering = false;
-    late bool _fullscreen;
-    double? _latestVolume;
+    bool _fullscreen = false;
+    bool _chatOpened = false;
 
     late Watchable _currentMedia;
     Watchable? _nextMedia;
@@ -51,7 +50,7 @@ class _PlayerControlsState extends State<PlayerControls> {
         }
 
         if(event.logicalKey == LogicalKeyboardKey.arrowDown) {
-            super.setState(() => this._hideStuff = true);
+            super.setState(() => this._hidden = true);
             return KeyEventResult.handled;
         }
 
@@ -62,17 +61,17 @@ class _PlayerControlsState extends State<PlayerControls> {
 
         if(event.logicalKey == LogicalKeyboardKey.arrowLeft) {
             this._cancelAndRestartTimer();
-            final position = this._latestValue.position;
+            final position = this._controller.value.position;
             final seekTo = position - const Duration(seconds: 10);
-            this.controller.seekTo(seekTo > Duration.zero ? seekTo : Duration.zero);
+            this._controller.seekTo(seekTo > Duration.zero ? seekTo : Duration.zero);
             return KeyEventResult.handled;
         }
 
         if(event.logicalKey == LogicalKeyboardKey.arrowRight) {
             this._cancelAndRestartTimer();
-            final position = this._latestValue.position;
+            final position = this._controller.value.position;
             final seekTo = position + const Duration(seconds: 10);
-            this.controller.seekTo(seekTo < this._latestValue.duration ? seekTo : this._latestValue.duration);
+            this._controller.seekTo(seekTo < this._controller.value.duration ? seekTo : this._controller.value.duration);
             return KeyEventResult.handled;
         }
 
@@ -80,57 +79,53 @@ class _PlayerControlsState extends State<PlayerControls> {
     }
 
     @override
+    void initState() {
+        super.initState();
+        this._initialize();
+    }
+
+    @override
     Widget build(BuildContext context) {
-        if (this._latestValue.hasError)
+        if (this._controller.value.hasError)
             return this._buildError(context);
 
         return FocusScope(
             autofocus: true,
-            child: Focus(
-                autofocus: true,
-                canRequestFocus: true,
-                onKey: (data, event) => this._handleKeyControls(event),
-                child: MouseRegion(
-                    onHover: (_) => this._cancelAndRestartTimer(),
-                    child: Stack(
-                        children: [
-                            if (this._buffering)
-                                this._buildBuffering(context)
-                            else
-                                this._buildHitArea(context),
-                            Align(
-                                alignment: Alignment.topCenter,
-                                child: this._buildTitleBar(context),
-                            ),
-                            Align(
-                                alignment: Alignment.bottomCenter,
-                                child: this._buildBottomBar(context),
-                            )
-                        ],
+            canRequestFocus: true,
+            onKey: (data, event) => this._handleKeyControls(event),
+            child: Stack(
+                children: [
+                    if (this._buffering)
+                        this._buildBuffering(context)
+                    else
+                        this._buildHitArea(context),
+                    Align(
+                        alignment: Alignment.topCenter,
+                        child: this._buildTitleBar(context),
                     ),
-                )
+                    Align(
+                        alignment: Alignment.bottomCenter,
+                        child: this._buildBottomBar(context),
+                    ),
+                    Align(
+                        alignment: Alignment.centerRight,
+                        child: this._buildChatDrawer(context),
+                    )
+                ]
             )
         );
-    }
-
-    @override
-    void didChangeDependencies() {
-        final ChewieController? oldController = this._chewieController;
-        this._chewieController = ChewieController.of(context);
-        this.controller = this.chewieController.videoPlayerController;
-
-        if (oldController != this.chewieController) {
-            this._dispose();
-            this._initialize();
-        }
-
-        super.didChangeDependencies();
     }
 
     @override
     void dispose() {
         this._dispose();
         super.dispose();
+    }
+
+    Widget _buildChatDrawer(BuildContext context) {
+        return ChatDrawer(
+            shown: this._chatOpened,
+        );
     }
 
     Widget _buildError(BuildContext context) {
@@ -156,65 +151,64 @@ class _PlayerControlsState extends State<PlayerControls> {
         if (super.widget.media is Film) {
             title = (super.widget.media as Film).name;
         }
-        else if (super.widget.media is Episode){
+        else if (super.widget.media is Episode) {
             Episode ep = super.widget.media as Episode;
             title = "${ep.series.name} - ${ep.name}";
-        } else {
-            title = super.widget.media.name;
-        }
+        } else
+            throw Exception("Unknown media type");
         return Text(title);
     }
 
     Widget _buildTitleBar(BuildContext context) {
-        return AnimatedOpacity(
-            opacity: this._hideStuff ? 0.0 : 1.0,
-            duration: const Duration(milliseconds: 300),
-            child: SafeArea(
-                minimum: const EdgeInsets.only(bottom: 10),
-                child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    verticalDirection: VerticalDirection.up,
+        return ControlWidget(
+            hidden: this._hidden,
+            child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
                     children: [
-                        Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Row(
-                                children: [
-                                    IconButton(
-                                        icon: const Icon(Icons.arrow_back),
-                                        onPressed: () {
-                                            if(this._fullscreen)
-                                                this._onExpandCollapse();
-                                            Backend.stopWatching();
-                                            Navigator.of(context).maybePop();
-                                        }
-                                    ),
-                                    this._buildTitle(context)
-                                ]
-                            )
+                        IconButton(
+                            icon: const Icon(Icons.arrow_back),
+                            onPressed: () {
+                                if(this._fullscreen)
+                                    this._onExpandCollapse();
+                                Backend.stopWatching();
+                                Navigator.of(context).pop();
+                            }
                         ),
-                    ],
-                ),
-            )
-        );
-    }
-
-    Widget _buildHitArea(BuildContext context) {
-        return GestureDetector(
-            onTap: () { if(SPlatform.isDesktop) this._playPause(); },
-            child: AnimatedOpacity(
-                opacity: !this._hideStuff ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 300), 
-                child: ColoredBox(
-                    color: Colors.black26,
-                    child: Container()
+                        this._buildTitle(context),
+                        const Spacer(),
+                        if (PeerManager.connected)
+                            IconButton(
+                                icon: const Icon(Icons.chat),
+                                onPressed: () => super.setState(() =>
+                                    this._chatOpened = !this._chatOpened
+                                )
+                            )
+                    ]
                 )
             )
         );
     }
 
+    Widget _buildHitArea(BuildContext context) {
+        return ControlWidget(
+            hidden: this._hidden,
+            ignorePointer: false,
+            child: ColoredBox(
+                color: Colors.black26,
+                child: Container()
+            ),
+            onHover: (_) => this._cancelAndRestartTimer(),
+            onTap: () {
+                if(SPlatform.isDesktop)
+                this._playPause(); 
+            }
+        );
+    }
+
     Widget _buildPosition(BuildContext context) {
-        final position = _latestValue.position;
-        final duration = _latestValue.duration;
+        Duration position = this._controller.value.position;
+        Duration duration = this._controller.value.duration;
 
         return Text(
             '${formatDuration(position)} / ${formatDuration(duration)}',
@@ -228,7 +222,7 @@ class _PlayerControlsState extends State<PlayerControls> {
         return IconButton(
             onPressed: this._playPause,
             icon: AnimatedPlayPause(
-                playing: this.controller.value.isPlaying
+                playing: this._controller.value.isPlaying
             )
         );
     }
@@ -238,19 +232,13 @@ class _PlayerControlsState extends State<PlayerControls> {
             onPressed: () {
                 this._cancelAndRestartTimer();
 
-                if (this._latestValue.volume == 0)
-                    this.controller.setVolume(this._latestVolume ?? 0.5);
-                else {
-                    this._latestVolume = this.controller.value.volume;
-                    this.controller.setVolume(0.0);
-                }
+                if (this._controller.value.volume == 0)
+                    this._controller.setVolume(1.0);
+                else
+                    this._controller.setVolume(0.0);
             },
-            icon: AnimatedOpacity(
-                opacity: this._hideStuff ? 0.0 : 1.0,
-                duration: const Duration(milliseconds: 300),
-                child: Icon(
-                    this._latestValue.volume > 0 ? Icons.volume_up : Icons.volume_off
-                ),
+            icon: Icon(
+                this._controller.value.volume > 0 ? Icons.volume_up : Icons.volume_off
             )
         );
     }
@@ -258,41 +246,31 @@ class _PlayerControlsState extends State<PlayerControls> {
     Widget _buildExpandButton(BuildContext context) {
         return IconButton(
             onPressed: this._onExpandCollapse,
-            icon: AnimatedOpacity(
-                opacity: this._hideStuff ? 0.0 : 1.0,
-                duration: const Duration(milliseconds: 300),
-                child: Icon(
-                    this._fullscreen ? Icons.fullscreen_exit : Icons.fullscreen
-                ),
-            ),
+            icon: Icon(this._fullscreen ? Icons.fullscreen_exit : Icons.fullscreen)
         );
     }
 
     Widget _buildProgressBar(BuildContext context) {
-        return Padding(
-            padding: const EdgeInsets.only(right: 20, left: 20),
-                child: MaterialVideoProgressBar(
-                controller,
-                onDragStart: () {
-                    this._hideTimer?.cancel();
-                },
-                onDragUpdate: () {
-                    this._hideTimer?.cancel();
-                    this._updateState();
-                },
-                onDragEnd: () {
-                    this._startHideTimer();
-                },
-                onSeek: (position) {
-                    PeerManager.seek(position.inMilliseconds);
-                },
-                colors: chewieController.materialProgressColors ??
-                    ChewieProgressColors(
-                        playedColor: Theme.of(context).colorScheme.secondary,
-                        handleColor: Theme.of(context).colorScheme.secondary,
-                        bufferedColor: Theme.of(context).colorScheme.background.withOpacity(0.5),
-                        backgroundColor: Theme.of(context).disabledColor.withOpacity(.5),
-                    ),
+        return MaterialVideoProgressBar(
+            _controller,
+            onDragStart: () {
+                this._hideTimer?.cancel();
+            },
+            onDragUpdate: () {
+                this._hideTimer?.cancel();
+                this._updateState();
+            },
+            onDragEnd: () {
+                this._startHideTimer();
+            },
+            onSeek: (position) {
+                PeerManager.seek(position.inMilliseconds);
+            },
+            colors: ChewieProgressColors(
+                playedColor: Theme.of(context).colorScheme.secondary,
+                handleColor: Theme.of(context).colorScheme.secondary,
+                bufferedColor: Theme.of(context).colorScheme.background.withOpacity(0.5),
+                backgroundColor: Theme.of(context).disabledColor.withOpacity(.5),
             ),
         );
     }
@@ -300,57 +278,45 @@ class _PlayerControlsState extends State<PlayerControls> {
     Widget _buildNextButton(BuildContext context) {
         return IconButton(
             onPressed: this._onNextMedia,
-            icon: AnimatedOpacity(
-                opacity: this._hideStuff ? 0.0 : 1.0,
-                duration: const Duration(milliseconds: 300),
-                child: const Icon(Icons.skip_next_sharp),
-            ),
+            icon: const Icon(Icons.skip_next_sharp)
         );
     }
 
     Widget _buildBottomBar(BuildContext context) {
-        return AnimatedOpacity(
-            opacity: this._hideStuff ? 0.0 : 1.0,
-            duration: const Duration(milliseconds: 300),
-            child: SafeArea(
-                minimum: const EdgeInsets.only(bottom: 10),
+        return ControlWidget(
+            hidden: this._hidden,
+            child: Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
                     verticalDirection: VerticalDirection.up,
                     children: [
-                        Padding(
-                            padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                            child: Row(
-                                children: [
-                                    this._buildPlayPause(context),
-                                    const SizedBox(width: 12),
-                                    this._buildMuteButton(context),
-                                    const SizedBox(width: 12),
-                                    if (this.chewieController.isLive)
-                                        const Text('LIVE')
-                                    else
-                                        this._buildPosition(context),
-                                    const Spacer(),
-                                    if (this._nextMedia != null)
-                                        this._buildNextButton(context),
-                                    if (SPlatform.isDesktop)
-                                        this._buildExpandButton(context)
-                                ]
-                            )
+                        Row(
+                            children: [
+                            this._buildPlayPause(context),
+                            const SizedBox(width: 12),
+                            this._buildMuteButton(context),
+                            const SizedBox(width: 12),
+                            this._buildPosition(context),
+                            const Spacer(),
+                            if (this._nextMedia != null)
+                                this._buildNextButton(context),
+                            if (SPlatform.isDesktop)
+                                this._buildExpandButton(context)
+                            ]
                         ),
-                        if (!this.chewieController.isLive)
-                            SizedBox(
-                                height: 24,
-                                child: this._buildProgressBar(context),
-                            )
-                    ],
-                ),
+                        SizedBox(
+                            height: 24,
+                            child: this._buildProgressBar(context),
+                        )
+                    ]
+                )
             )
         );
     }
 
     void _onNextMedia() {
-        this._dispose();
+        // TODO: backend shits
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => MediaPage(playable: this._nextMedia!),
         ));
@@ -359,40 +325,35 @@ class _PlayerControlsState extends State<PlayerControls> {
     void _onExpandCollapse() {
         this._fullscreen = !this._fullscreen;
         this._cancelAndRestartTimer();
-        super.setState(() {
-            if(SPlatform.isDesktop)
-                windowManager.setFullScreen(this._fullscreen);
-        });
+        windowManager.setFullScreen(this._fullscreen);
     }
 
     void _dispose() {
-        this.controller.removeListener(this._updateState);
+        this._controller.removeListener(this._updateState);
         this._hideTimer?.cancel();
     }
 
     Future<void> _initialize() async {
-        this.controller.addListener(this._updateState);
+        this._controller = super.widget.controller;
+        this._controller.addListener(this._updateState);
         this._updateState();
-        // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-        this.chewieController.notifyListeners();
-        this._fullscreen = this.chewieController.isFullScreen;
         this._currentMedia = super.widget.media;
         this._findNextMedia();
 
         PeerManager.registerHandler(PeerMessageIntent.seek,
-            (at) => this.controller.seekTo(Duration(milliseconds: at["time"]))
+            (at) => this._controller.seekTo(Duration(milliseconds: at["time"]))
         );
 
         PeerManager.registerHandler(PeerMessageIntent.pause,
             (_) {
-                if(this.controller.value.isPlaying)
+                if(this._controller.value.isPlaying)
                     this._playPause(peer: false);
             }
         );
 
         PeerManager.registerHandler(PeerMessageIntent.play,
             (_) {
-                if(!this.controller.value.isPlaying)
+                if(!this._controller.value.isPlaying)
                     this._playPause(peer: false);
             }
         );
@@ -426,26 +387,26 @@ class _PlayerControlsState extends State<PlayerControls> {
     }
 
     void _playPause({bool peer = true}) {
-        final bool isFinished = this._latestValue.position >= this._latestValue.duration;
+        final bool isFinished = this._controller.value.position >= this._controller.value.duration;
 
         super.setState(() {
 
-            if (this.controller.value.isPlaying) {
+            if (this._controller.value.isPlaying) {
                 this._hideTimer?.cancel();
-                this.controller.pause();
-                this._hideStuff = false;
+                this._controller.pause();
+                this._hidden = false;
 
                 if (peer)
                     PeerManager.pause();
             } else {
-                this._hideStuff = true;
+                this._hidden = true;
 
-                if (!this.controller.value.isInitialized)
-                    this.controller.initialize().then((_) => controller.play());
+                if (!this._controller.value.isInitialized)
+                    this._controller.initialize().then((_) => _controller.play());
                 else if (isFinished)
-                    this.controller.seekTo(Duration.zero);
+                    this._controller.seekTo(Duration.zero);
                 
-                this.controller.play();
+                this._controller.play();
 
                 if (peer)
                     PeerManager.play();
@@ -457,21 +418,15 @@ class _PlayerControlsState extends State<PlayerControls> {
         this._hideTimer?.cancel();
         this._startHideTimer();
 
-        super.setState(() {
-            this._hideStuff = false;
-        });
+        super.setState(() => this._hidden = false);
     }
 
     void _startHideTimer() {
-        final Duration  hideControlsTimer = chewieController.hideControlsTimer.isNegative
-            ? ChewieController.defaultHideControlsTimer
-            : chewieController.hideControlsTimer;
-        this._hideTimer = Timer(hideControlsTimer, () => super.setState(() => this._hideStuff = true));
+        const Duration hideControlsTimer = Duration(seconds: 1, milliseconds: 500);
+        this._hideTimer = Timer(hideControlsTimer, () => super.setState(() => this._hidden = true));
     }
 
     void _updateState() {
-        this._buffering = controller.value.isBuffering;
-        super.setState(() => this._latestValue = this.controller.value);
+        super.setState(() => this._buffering = this._controller.value.isBuffering);
     }
 }
-

@@ -40,7 +40,10 @@ class Stronzflix extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(20))
                         )
-                    )
+                    ),
+                    drawerTheme: const DrawerThemeData(
+                        backgroundColor: Color.fromARGB(200, 18, 18, 18),
+                    ),
                 ),
                 home: const HomePage(),
                 debugShowCheckedModeBanner: false
