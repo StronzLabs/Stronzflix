@@ -41,6 +41,10 @@ class _PlayerControlsState extends State<PlayerControls> {
     Watchable? _nextMedia;
 
     KeyEventResult _handleKeyControls(RawKeyEvent event) {
+        // TODO: maybe implement a better way to handle this
+        if(FocusManager.instance.primaryFocus is! FocusScopeNode)
+            return KeyEventResult.ignored;
+
         if(event is! RawKeyDownEvent)
             return KeyEventResult.ignored;
 
