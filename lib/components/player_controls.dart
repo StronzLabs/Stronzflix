@@ -39,10 +39,10 @@ class _PlayerControlsState extends State<PlayerControls> {
 
     late Watchable _currentMedia;
     Watchable? _nextMedia;
+    late FocusScopeNode _focusNode;
 
     KeyEventResult _handleKeyControls(RawKeyEvent event) {
-        // TODO: maybe implement a better way to handle this
-        if(FocusManager.instance.primaryFocus is! FocusScopeNode)
+        if(FocusManager.instance.primaryFocus != this._focusNode)
             return KeyEventResult.ignored;
 
         if(event is! RawKeyDownEvent)
@@ -79,6 +79,22 @@ class _PlayerControlsState extends State<PlayerControls> {
             return KeyEventResult.handled;
         }
 
+        if(event.logicalKey == LogicalKeyboardKey.keyM) {
+            this._cancelAndRestartTimer();
+
+            if (this._controller.value.volume == 0)
+                this._controller.setVolume(1.0);
+            else
+                this._controller.setVolume(0.0);
+
+            return KeyEventResult.handled;
+        }
+
+        if(event.logicalKey == LogicalKeyboardKey.keyF) {
+            this._onExpandCollapse();
+            return KeyEventResult.handled;
+        }
+
         return KeyEventResult.ignored;
     }
 
@@ -86,6 +102,7 @@ class _PlayerControlsState extends State<PlayerControls> {
     void initState() {
         super.initState();
         this._initialize();
+        this._focusNode = FocusScopeNode();
     }
 
     @override
@@ -94,6 +111,7 @@ class _PlayerControlsState extends State<PlayerControls> {
             return this._buildError(context);
 
         return FocusScope(
+            node: this._focusNode,
             autofocus: true,
             canRequestFocus: true,
             onKey: (data, event) => this._handleKeyControls(event),
@@ -181,7 +199,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                         ),
                         this._buildTitle(context),
                         const Spacer(),
-                        if (PeerManager.connected)
+                        // if (PeerManager.connected)
                             IconButton(
                                 icon: const Icon(Icons.chat),
                                 onPressed: () => super.setState(() =>
