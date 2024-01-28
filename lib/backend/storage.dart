@@ -45,6 +45,23 @@ final class Storage {
         return Storage.keepWatching[Storage._lastId]!.startAt;
     }
 
+    static void watchNext(List<int> seasons) {
+        SerialInfo serialInfo = Storage.keepWatching[Storage._lastId]!;
+        serialInfo.startAt = 0;
+        List<String> seasonXepisode = serialInfo.episode.split("x");
+        int season = int.parse(seasonXepisode[0]) - 1;
+        int episode = int.parse(seasonXepisode[1]) - 1;
+
+        if (episode + 1 < seasons[season])
+            serialInfo.episode = "${season + 1}x${episode + 2}";
+        else if (season + 1 < seasons.length)
+            serialInfo.episode = "${season + 2}x1";
+        else
+            throw Exception("No more episodes");
+
+        Storage.keepWatching[Storage._lastId!] = serialInfo;
+    }
+
     static void removeWatching(String site, String siteUrl) {
         String id = Storage._calcID(site, siteUrl);
         Storage._keepWatchingList.remove(id);
