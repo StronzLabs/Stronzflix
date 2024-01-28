@@ -41,68 +41,16 @@ class _PlayerControlsState extends State<PlayerControls> {
     Watchable? _nextMedia;
     late FocusScopeNode _focusNode;
 
-    KeyEventResult _handleKeyControls(RawKeyEvent event) {
-        if(FocusManager.instance.primaryFocus != this._focusNode)
-            return KeyEventResult.ignored;
-
-        if(event is! RawKeyDownEvent)
-            return KeyEventResult.ignored;
-
-        if(event.logicalKey == LogicalKeyboardKey.arrowUp) {
-            this._cancelAndRestartTimer();
-            return KeyEventResult.handled;
-        }
-
-        if(event.logicalKey == LogicalKeyboardKey.arrowDown) {
-            super.setState(() => this._hidden = true);
-            return KeyEventResult.handled;
-        }
-
-        if(event.logicalKey == LogicalKeyboardKey.select || event.logicalKey == LogicalKeyboardKey.space) {
-            this._playPause();
-            return KeyEventResult.handled;
-        }
-
-        if(event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-            this._cancelAndRestartTimer();
-            final position = this._controller.value.position;
-            final seekTo = position - const Duration(seconds: 10);
-            this._controller.seekTo(seekTo > Duration.zero ? seekTo : Duration.zero);
-            return KeyEventResult.handled;
-        }
-
-        if(event.logicalKey == LogicalKeyboardKey.arrowRight) {
-            this._cancelAndRestartTimer();
-            final position = this._controller.value.position;
-            final seekTo = position + const Duration(seconds: 10);
-            this._controller.seekTo(seekTo < this._controller.value.duration ? seekTo : this._controller.value.duration);
-            return KeyEventResult.handled;
-        }
-
-        if(event.logicalKey == LogicalKeyboardKey.keyM) {
-            this._cancelAndRestartTimer();
-
-            if (this._controller.value.volume == 0)
-                this._controller.setVolume(1.0);
-            else
-                this._controller.setVolume(0.0);
-
-            return KeyEventResult.handled;
-        }
-
-        if(event.logicalKey == LogicalKeyboardKey.keyF) {
-            this._onExpandCollapse();
-            return KeyEventResult.handled;
-        }
-
-        return KeyEventResult.ignored;
-    }
-
     @override
     void initState() {
         super.initState();
         this._initialize();
-        this._focusNode = FocusScopeNode();
+    }
+
+    @override
+    void dispose() {
+        this._dispose();
+        super.dispose();
     }
 
     @override
@@ -136,12 +84,6 @@ class _PlayerControlsState extends State<PlayerControls> {
                 ]
             )
         );
-    }
-
-    @override
-    void dispose() {
-        this._dispose();
-        super.dispose();
     }
 
     Widget _buildChatDrawer(BuildContext context) {
@@ -199,7 +141,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                         ),
                         this._buildTitle(context),
                         const Spacer(),
-                        // if (PeerManager.connected)
+                        if (PeerManager.connected)
                             IconButton(
                                 icon: const Icon(Icons.chat),
                                 onPressed: () => super.setState(() =>
@@ -338,7 +280,8 @@ class _PlayerControlsState extends State<PlayerControls> {
     }
 
     void _onNextMedia() {
-        // TODO: backend shits
+        Backend.watchNext((this._currentMedia as Episode).series.seasons.map((e) => e.length).toList());
+        
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => MediaPage(playable: this._nextMedia!),
         ));
@@ -356,6 +299,7 @@ class _PlayerControlsState extends State<PlayerControls> {
     }
 
     Future<void> _initialize() async {
+        this._focusNode = FocusScopeNode();
         this._controller = super.widget.controller;
         this._controller.addListener(this._updateState);
         this._updateState();
@@ -450,5 +394,62 @@ class _PlayerControlsState extends State<PlayerControls> {
 
     void _updateState() {
         super.setState(() => this._buffering = this._controller.value.isBuffering);
+    }
+
+    KeyEventResult _handleKeyControls(RawKeyEvent event) {
+        if(FocusManager.instance.primaryFocus != this._focusNode)
+            return KeyEventResult.ignored;
+
+        if(event is! RawKeyDownEvent)
+            return KeyEventResult.ignored;
+
+        if(event.logicalKey == LogicalKeyboardKey.arrowUp) {
+            this._cancelAndRestartTimer();
+            return KeyEventResult.handled;
+        }
+
+        if(event.logicalKey == LogicalKeyboardKey.arrowDown) {
+            super.setState(() => this._hidden = true);
+            return KeyEventResult.handled;
+        }
+
+        if(event.logicalKey == LogicalKeyboardKey.select || event.logicalKey == LogicalKeyboardKey.space) {
+            this._playPause();
+            return KeyEventResult.handled;
+        }
+
+        if(event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+            this._cancelAndRestartTimer();
+            final position = this._controller.value.position;
+            final seekTo = position - const Duration(seconds: 10);
+            this._controller.seekTo(seekTo > Duration.zero ? seekTo : Duration.zero);
+            return KeyEventResult.handled;
+        }
+
+        if(event.logicalKey == LogicalKeyboardKey.arrowRight) {
+            this._cancelAndRestartTimer();
+            final position = this._controller.value.position;
+            final seekTo = position + const Duration(seconds: 10);
+            this._controller.seekTo(seekTo < this._controller.value.duration ? seekTo : this._controller.value.duration);
+            return KeyEventResult.handled;
+        }
+
+        if(event.logicalKey == LogicalKeyboardKey.keyM) {
+            this._cancelAndRestartTimer();
+
+            if (this._controller.value.volume == 0)
+                this._controller.setVolume(1.0);
+            else
+                this._controller.setVolume(0.0);
+
+            return KeyEventResult.handled;
+        }
+
+        if(event.logicalKey == LogicalKeyboardKey.keyF) {
+            this._onExpandCollapse();
+            return KeyEventResult.handled;
+        }
+
+        return KeyEventResult.ignored;
     }
 }

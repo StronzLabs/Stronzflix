@@ -64,6 +64,10 @@ class Backend {
         PeerManager.stopWatching();
     }
 
+    static void watchNext(List<int> seasons) {
+        Storage.watchNext(seasons);
+    }
+
     static void updateWatching(Watchable watchable, int time) {
         Storage.updateWatching(watchable, time);
     }
