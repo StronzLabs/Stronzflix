@@ -1,5 +1,7 @@
 {
     "files.exclude": {
+        ".github/": true,
+
         ".dart_tool/": true,
         "build/": true,
         ".metadata": true,
