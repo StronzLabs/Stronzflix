@@ -84,27 +84,51 @@ class _HomePageState extends State<HomePage> {
         super.setState(() => Storage.removeWatching(serialInfo.site, serialInfo.siteUrl));
     }
 
-    Widget _buildContent(BuildContext context) {
-        if(Storage.keepWatching.isEmpty)
-            return const Center(
-                child: Text("Non hai ancora iniziato a guardare nulla")
-            );
-        else
-            return GridView.extent(
-                childAspectRatio: 3 / 2,
-                maxCrossAxisExtent: 400,
-                children: Storage.keepWatching.values.map(
-                    (serialInfo) => ResultCard(
-                        imageUrl: serialInfo.cover,
-                        text: serialInfo.name,
-                        onLongPress: () => this._removeMedia(serialInfo),
-                        onTap: () {
-                            Backend.startWatching(serialInfo.site, serialInfo.siteUrl, episode: serialInfo.episode);
-                            this._playMedia(context, serialInfo);
-                        }
+    Widget _cardEntry(BuildContext context, SerialInfo serialInfo, {bool removeable = false}) {
+        return ResultCard(
+            width: MediaQuery.of(context).size.width / 5.5,
+            imageUrl: serialInfo.cover,
+            text: serialInfo.name,
+            onLongPress: removeable ? () => this._removeMedia(serialInfo) : null,
+            onTap: () {
+                Backend.startWatching(serialInfo.site, serialInfo.siteUrl, episode: serialInfo.episode);
+                this._playMedia(context, serialInfo);
+            }
+        );
+    }
+
+    Widget _buildCardsRow(BuildContext context, String title, Iterable<SerialInfo> values, {bool removeable = false}) {
+        if(values.isEmpty)
+            return Container();
+
+        return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+                Text(title,
+                    style: const TextStyle(
+                        fontSize: 30,
+                        overflow: TextOverflow.ellipsis
                     )
-                ).toList(),
-            );
+                ),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                        children: values.map(
+                            (serialInfo) => this._cardEntry(context, serialInfo, removeable: removeable)
+                        ).toList(),
+                    )
+                )
+            ]
+        );
+    }
+
+    Widget _buildContent(BuildContext context) {
+        return ListView(
+            padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
+            children: [
+                this._buildCardsRow(context, "Continua a guardare", Storage.keepWatching.values, removeable: true)
+            ],
+        );
     }
 
     void _initPeer() {
@@ -145,9 +169,7 @@ class _HomePageState extends State<HomePage> {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: this._buildSearchBar(context),
-            body: Center(
-                child: this._buildContent(context)
-            ),
+            body: this._buildContent(context),
             floatingActionButton: SPlatform.isDesktop ? this._buildSinkButton(context) : null
         );
     }
