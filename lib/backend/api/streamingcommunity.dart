@@ -27,15 +27,15 @@ class StreamingCommunity extends Site {
         this._inhertia["X-Inertia-Version"] = match.namedGroup("inertia")!;
     }
 
-    @override
-    Future<List<SearchResult>> search(String query) async {
-        String body = await http.get("${super.url}/search?q=${Uri.encodeQueryComponent(query)}", headers: this._inhertia);
+    Future<List<SearchResult>> _fetch(String url, {bool vertical = true}) async {
+        String body = await http.get("${super.url}${url}", headers: this._inhertia);
         dynamic json = jsonDecode(body);
         dynamic titles = json["props"]["titles"];
 
         List<SearchResult> results = [];
         for (dynamic title in titles) {
-            String poster = title["images"].firstWhere((dynamic image) => image["type"] == "poster")["filename"];
+            String posterField = vertical ? "poster" : "cover";
+            String poster = title["images"].firstWhere((dynamic image) => image["type"] == posterField)["filename"];
 
             results.add(SearchResult(
                 site: this,
@@ -46,6 +46,16 @@ class StreamingCommunity extends Site {
         }
 
         return results;
+    }
+
+    @override
+    Future<List<SearchResult>> search(String query) {
+        return this._fetch("/search?q=${Uri.encodeQueryComponent(query)}");
+    }
+
+    @override
+    Future<List<SearchResult>> latests() {
+        return this._fetch("/browse/latest", vertical: false);
     }
 
     Future<List<Episode>> getEpisodes(Series series, String seasonUrl) async {

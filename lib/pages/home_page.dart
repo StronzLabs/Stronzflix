@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:stronzflix/backend/api/site.dart';
 import 'package:stronzflix/backend/backend.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/peer_manager.dart';
 import 'package:stronzflix/backend/version.dart';
 import 'package:stronzflix/components/result_card.dart';
+import 'package:stronzflix/pages/title_page.dart';
 import 'package:stronzflix/utils/platform.dart';
 import 'package:stronzflix/backend/storage.dart';
 import 'package:stronzflix/dialogs/info_dialog.dart';
@@ -23,7 +25,7 @@ class _HomePageState extends State<HomePage> {
 
     late bool _connected;
 
-    void _playMedia(BuildContext context, SerialInfo serialInfo) {
+    void _playSerialMedia(BuildContext context, SerialInfo serialInfo) {
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => MediaPage(
                 playable: LatePlayable(serialInfo: serialInfo)
@@ -84,41 +86,68 @@ class _HomePageState extends State<HomePage> {
         super.setState(() => Storage.removeWatching(serialInfo.site, serialInfo.siteUrl));
     }
 
-    Widget _cardEntry(BuildContext context, SerialInfo serialInfo, {bool removeable = false}) {
+    Widget _buildSerialCard(BuildContext context, SerialInfo serialInfo) {
         return ResultCard(
             width: MediaQuery.of(context).size.width / 5.5,
             imageUrl: serialInfo.cover,
             text: serialInfo.name,
-            onLongPress: removeable ? () => this._removeMedia(serialInfo) : null,
+            onLongPress: () => this._removeMedia(serialInfo),
             onTap: () {
                 Backend.startWatching(serialInfo.site, serialInfo.siteUrl, episode: serialInfo.episode);
-                this._playMedia(context, serialInfo);
+                this._playSerialMedia(context, serialInfo);
             }
         );
     }
 
-    Widget _buildCardsRow(BuildContext context, String title, Iterable<SerialInfo> values, {bool removeable = false}) {
-        if(values.isEmpty)
-            return Container();
-
-        return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontSize: 30,
-                        overflow: TextOverflow.ellipsis
-                    )
-                ),
-                SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                        children: values.map(
-                            (serialInfo) => this._cardEntry(context, serialInfo, removeable: removeable)
-                        ).toList(),
-                    )
+    Widget _buildResultCard(BuildContext context, SearchResult result) {
+        return ResultCard(
+            width: MediaQuery.of(context).size.width / 5.5,
+            imageUrl: result.poster,
+            text: result.name,
+            onTap: () => Navigator.push(context, MaterialPageRoute(
+                builder: (context) => TitlePage(
+                    result: result
                 )
-            ]
+            )).then((_) => super.setState(() {}))
+        );
+    }
+
+    Widget _buildCardsRow<T>(BuildContext context, String title, Future<Iterable<T>> values) {
+        return FutureBuilder(
+            future: values,
+            builder: (context, snapshot) {
+                if(!snapshot.hasData || snapshot.data!.isEmpty)
+                    return Container();
+
+                Iterable<T> values = snapshot.data as Iterable<T>;
+
+                return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                        Text(title,
+                            style: const TextStyle(
+                                fontSize: 30,
+                                overflow: TextOverflow.ellipsis
+                            )
+                        ),
+                        SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                                children: values.map(
+                                    (data) {
+                                        if(T == SerialInfo)
+                                            return this._buildSerialCard(context, data as SerialInfo);
+                                        else if (T == SearchResult)
+                                            return this._buildResultCard(context, data as SearchResult);
+                                        else
+                                        throw Exception("Unknown type");
+                                    }
+                                ).toList(),
+                            )
+                        )
+                    ]
+                );
+            }
         );
     }
 
@@ -126,7 +155,16 @@ class _HomePageState extends State<HomePage> {
         return ListView(
             padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
             children: [
-                this._buildCardsRow(context, "Continua a guardare", Storage.keepWatching.values, removeable: true)
+                this._buildCardsRow(context, "Continua a guardare", Future.value(Storage.keepWatching.values)),
+                this._buildCardsRow(context, "Ultime aggiunte", Site.get("StreamingCommunity")!.latests())
+                // FutureBuilder(
+                //     future: Site.get("StreamingCommunity")!.latests(),
+                //     builder: (context, snapshot) {
+                //         if(!snapshot.hasData)
+                //             return Container();
+                //         List<SearchResult> results = snapshot.data as List<SearchResult>;
+                //     }
+                // )
             ],
         );
     }
@@ -143,7 +181,7 @@ class _HomePageState extends State<HomePage> {
             PeerMessageIntent.startWatching,
             (data) {
                 SerialInfo serialInfo = SerialInfo.fromJson(data);
-                this._playMedia(super.context, serialInfo);
+                this._playSerialMedia(super.context, serialInfo);
             }
         );
     }
