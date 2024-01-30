@@ -81,9 +81,9 @@ class Backend {
     }
 
     static Future<void> init() async {
-        await Storage.init();
+        await StreamingCommunity.instance.ensureInitialized();
+        await VixxCloud.instance.ensureInitialized();
 
-        StreamingCommunity.instance;
-        VixxCloud.instance;
+        await Storage.init();
     }
 }
