@@ -5,6 +5,7 @@ import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/backend.dart';
 import 'package:stronzflix/backend/peer_manager.dart';
 import 'package:stronzflix/components/stronzflix_player/stronzflix_player.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class MediaPage extends StatefulWidget {
 
@@ -32,6 +33,8 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
     void initState() {
         super.initState();
 
+        WakelockPlus.enable();
+
         WidgetsBinding.instance.addObserver(this);
         this._lifecycleListener = AppLifecycleListener(
             onStateChange: (_) => this._saveState,
@@ -45,6 +48,7 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
 
     @override
     void dispose() {
+        WakelockPlus.disable();
         WidgetsBinding.instance.removeObserver(this);
         this._lifecycleListener.dispose();
         this._saveState();
