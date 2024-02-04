@@ -4,7 +4,7 @@ import 'package:stronzflix/backend/backend.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/peer_manager.dart';
 import 'package:stronzflix/backend/version.dart';
-import 'package:stronzflix/components/result_card.dart';
+import 'package:stronzflix/components/card_row.dart';
 import 'package:stronzflix/pages/title_page.dart';
 import 'package:stronzflix/utils/platform.dart';
 import 'package:stronzflix/backend/storage.dart';
@@ -82,90 +82,34 @@ class _HomePageState extends State<HomePage> {
         );        
     }
 
-    void _removeMedia(SerialInfo serialInfo) {
-        super.setState(() => Storage.removeWatching(serialInfo.site, serialInfo.siteUrl));
-    }
-
-    Widget _buildSerialCard(BuildContext context, SerialInfo serialInfo) {
-        return ResultCard(
-            width: MediaQuery.of(context).size.width / 5.5,
-            imageUrl: serialInfo.cover,
-            text: serialInfo.name,
-            onLongPress: () => this._removeMedia(serialInfo),
-            onTap: () {
-                Backend.startWatching(serialInfo.site, serialInfo.siteUrl, episode: serialInfo.episode);
-                this._playSerialMedia(context, serialInfo);
-            }
-        );
-    }
-
-    Widget _buildResultCard(BuildContext context, SearchResult result) {
-        return ResultCard(
-            width: MediaQuery.of(context).size.width / 5.5,
-            imageUrl: result.poster,
-            text: result.name,
-            onTap: () => Navigator.push(context, MaterialPageRoute(
-                builder: (context) => TitlePage(
-                    result: result
-                )
-            )).then((_) => super.setState(() {}))
-        );
-    }
-
-    Widget _buildCardsRow<T>(BuildContext context, String title, Future<Iterable<T>> values) {
-        return FutureBuilder(
-            future: values,
-            builder: (context, snapshot) {
-                if(!snapshot.hasData || snapshot.data!.isEmpty)
-                    return Container();
-
-                Iterable<T> values = snapshot.data as Iterable<T>;
-
-                return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                        Text(title,
-                            style: const TextStyle(
-                                fontSize: 30,
-                                overflow: TextOverflow.ellipsis
-                            )
-                        ),
-                        SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                                children: values.map(
-                                    (data) {
-                                        if(T == SerialInfo)
-                                            return this._buildSerialCard(context, data as SerialInfo);
-                                        else if (T == SearchResult)
-                                            return this._buildResultCard(context, data as SearchResult);
-                                        else
-                                        throw Exception("Unknown type");
-                                    }
-                                ).toList(),
-                            )
-                        )
-                    ]
-                );
-            }
-        );
-    }
-
     Widget _buildContent(BuildContext context) {
         return ListView(
             padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
             children: [
-                this._buildCardsRow(context, "Continua a guardare", Future.value(Storage.keepWatching.values)),
-                this._buildCardsRow(context, "Ultime aggiunte", Site.get("StreamingCommunity")!.latests())
-                // FutureBuilder(
-                //     future: Site.get("StreamingCommunity")!.latests(),
-                //     builder: (context, snapshot) {
-                //         if(!snapshot.hasData)
-                //             return Container();
-                //         List<SearchResult> results = snapshot.data as List<SearchResult>;
-                //     }
-                // )
-            ],
+                CardRow(
+                    title: "Continua a guardare",
+                    values: Future.value(Storage.keepWatching.values),
+                    onTap: (serialInfo) {
+                        Backend.startWatching(serialInfo.site, serialInfo.siteUrl, episode: serialInfo.episode);
+                        this._playSerialMedia(context, serialInfo);
+                    },
+                    onLongPress: (serialInfo) {
+                        super.setState(() {
+                            Backend.removeWatching(serialInfo.site, serialInfo.siteUrl);
+                            Backend.serialize();
+                        });
+                    },
+                ),
+                CardRow(
+                    title: "Ultime aggiunte",
+                    values: Site.get("StreamingCommunity")!.latests(),
+                    onTap: (result) => Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => TitlePage(
+                            result: result
+                        )
+                    )).then((_) => super.setState(() {}))
+                )
+            ]
         );
     }
 

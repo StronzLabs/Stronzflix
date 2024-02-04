@@ -29,7 +29,13 @@ class ResultCard extends StatelessWidget {
                         padding: const EdgeInsets.all(10.0),
                         child: Column(
                             children: [
-                                Image.network(this.imageUrl),
+                                Expanded(
+                                    child: 
+                                    Image.network(
+                                        this.imageUrl,
+                                        fit: BoxFit.cover
+                                    )
+                                ),
                                 Text(this.text,
                                     overflow: TextOverflow.ellipsis
                                 )
