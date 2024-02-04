@@ -1,0 +1,4 @@
+enum StronzflixPlayerSinks {
+    local,
+    cast,
+}

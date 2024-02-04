@@ -21,34 +21,50 @@ packages:
     dependency: transitive
     description:
       name: bonsoir
-      sha256: "800d77c0581fff06cc43ef2b7723dfe5ee9b899ab0fdf80fb1c7b8829a5deb5c"
+      sha256: "4ae14caa720e5c61b4f59cf16f1832b227a7a9e2ec065a53bbb4d491769337cf"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0+1"
+    version: "5.1.8"
   bonsoir_android:
     dependency: transitive
     description:
       name: bonsoir_android
-      sha256: "7207c36fd7e0f3c7c2d8cf353f02bd640d96e2387d575837f8ac051c9cbf4aa7"
+      sha256: "19583ae34a5e5743fa2c16619e4ec699b35ae5e6cece59b99b1cf21c1b4ed618"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0+1"
+    version: "5.1.4"
   bonsoir_darwin:
     dependency: transitive
     description:
       name: bonsoir_darwin
-      sha256: "7211042c85da2d6efa80c0976bbd9568f2b63624097779847548ed4530675ade"
+      sha256: "985c4c38b4cbfa57ed5870e724a7e17aa080ee7f49d03b43e6d08781511505c6"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "5.1.2"
+  bonsoir_linux:
+    dependency: transitive
+    description:
+      name: bonsoir_linux
+      sha256: "65554b20bc169c68c311eb31fab46ccdd8ee3d3dd89a2d57c338f4cbf6ceb00d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.2"
   bonsoir_platform_interface:
     dependency: transitive
     description:
       name: bonsoir_platform_interface
-      sha256: "64d57cd52bd477b4891e9b9d419e6408da171ed9e0efc8aa716e7e343d5d93ad"
+      sha256: "4ee898bec0b5a63f04f82b06da9896ae8475f32a33b6fa395bea56399daeb9f0"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "5.1.2"
+  bonsoir_windows:
+    dependency: transitive
+    description:
+      name: bonsoir_windows
+      sha256: abbc90b73ac39e823b0c127da43b91d8906dcc530fc0cec4e169cf0d8c4404b1
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.4"
   boolean_selector:
     dependency: transitive
     description:
@@ -60,10 +76,11 @@ packages:
   cast:
     dependency: "direct main"
     description:
-      name: cast
-      sha256: b70f6be547a53481dffec93ad3cc4974fae5ed707f0b677d4a50c329d7299b98
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: updating_bonsoir_pacakge
+      resolved-ref: "33ce3de2019bec0dd949b4d9e15640de759d5e9c"
+      url: "https://github.com/guyluz11/flutter_cast.git"
+    source: git
     version: "2.0.0"
   characters:
     dependency: transitive
@@ -81,14 +98,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.1"
-  chewie:
-    dependency: "direct main"
-    description:
-      name: chewie
-      sha256: ccfce3350ae9fd419cd336cdf3380f77a08e45171e1e3cb3d499d204de5e7ea8
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.7.1"
   clock:
     dependency: transitive
     description:
@@ -105,22 +114,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
-  connectivity_plus:
-    dependency: transitive
-    description:
-      name: connectivity_plus
-      sha256: "77a180d6938f78ca7d2382d2240eb626c0f6a735d0bfdce227d8ffb80f95c48b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.2"
-  connectivity_plus_platform_interface:
-    dependency: transitive
-    description:
-      name: connectivity_plus_platform_interface
-      sha256: cf1d1c28f4416f8c654d7dc3cd638ec586076255d407cef3ddbdaf178272a71a
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.4"
   crypto:
     dependency: transitive
     description:
@@ -137,14 +130,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
-  cupertino_icons:
-    dependency: transitive
-    description:
-      name: cupertino_icons
-      sha256: d57953e10f9f8327ce64a508a355f0b1ec902193f66288e8cb5070e7c47eeb2d
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.6"
   dart_webrtc:
     dependency: transitive
     description:
@@ -268,10 +253,10 @@ packages:
     dependency: "direct main"
     description:
       name: http
-      sha256: "759d1a329847dd0f39226c688d3e06a6b8679668e350e2891a6474f8b4bb8525"
+      sha256: a2bbf9d017fcced29139daa8ed2bba4ece450ab222871df93ca9eec6f80c34ba
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   http_parser:
     dependency: transitive
     description:
@@ -328,22 +313,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
-  nested:
-    dependency: transitive
-    description:
-      name: nested
-      sha256: "03bac4c528c64c95c722ec99280375a6f2fc708eec17c7b3f07253b626cd2a20"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
-  nm:
-    dependency: transitive
-    description:
-      name: nm
-      sha256: "2c9aae4127bdc8993206464fcc063611e0e36e72018696cd9631023a31b24254"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.0"
   package_info_plus:
     dependency: "direct main"
     description:
@@ -464,14 +433,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
-  provider:
-    dependency: transitive
-    description:
-      name: provider
-      sha256: "9a96a0a19b594dbc5bf0f1f27d2bc67d5f95957359b461cd9feb44ed6ae75096"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.1.1"
   pub_semver:
     dependency: transitive
     description:
@@ -749,22 +710,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  wakelock_plus:
-    dependency: transitive
-    description:
-      name: wakelock_plus
-      sha256: f268ca2116db22e57577fb99d52515a24bdc1d570f12ac18bb762361d43b043d
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.4"
-  wakelock_plus_platform_interface:
-    dependency: transitive
-    description:
-      name: wakelock_plus_platform_interface
-      sha256: "40fabed5da06caff0796dc638e1f07ee395fb18801fbff3255a2372db2d80385"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.0"
   web:
     dependency: transitive
     description:
