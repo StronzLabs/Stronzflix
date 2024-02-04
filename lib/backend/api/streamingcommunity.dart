@@ -7,7 +7,7 @@ import 'package:stronzflix/utils/simple_http.dart' as http;
 
 class StreamingCommunity extends Site {
     
-    static Site instance = StreamingCommunity._("https://streamingcommunity.estate");
+    static Site instance = StreamingCommunity._("https://streamingcommunity.li");
 
     final String _cdn;
     final Map<String, String> _inhertia;
@@ -27,15 +27,14 @@ class StreamingCommunity extends Site {
         this._inhertia["X-Inertia-Version"] = match.namedGroup("inertia")!;
     }
 
-    Future<List<SearchResult>> _fetch(String url, {bool vertical = true}) async {
+    Future<List<SearchResult>> _fetch(String url) async {
         String body = await http.get("${super.url}${url}", headers: this._inhertia);
         dynamic json = jsonDecode(body);
         dynamic titles = json["props"]["titles"];
 
         List<SearchResult> results = [];
         for (dynamic title in titles) {
-            String posterField = vertical ? "poster" : "cover";
-            String poster = title["images"].firstWhere((dynamic image) => image["type"] == posterField)["filename"];
+            String poster = title["images"].firstWhere((dynamic image) => image["type"] == "poster")["filename"];
 
             results.add(SearchResult(
                 site: this,
@@ -55,7 +54,7 @@ class StreamingCommunity extends Site {
 
     @override
     Future<List<SearchResult>> latests() {
-        return this._fetch("/browse/latest", vertical: false);
+        return this._fetch("/browse/latest");
     }
 
     Future<List<Episode>> getEpisodes(Series series, String seasonUrl) async {
@@ -98,7 +97,7 @@ class StreamingCommunity extends Site {
     }
 
     Film getFilm(dynamic title) {
-        String cover = title["images"].firstWhere((dynamic image) => image["type"] == "cover")["filename"];
+        String cover = title["images"].firstWhere((dynamic image) => image["type"] == "poster")["filename"];
         return Film(
             name: title["name"],
             playerUrl: "/watch/${title["id"]}",
