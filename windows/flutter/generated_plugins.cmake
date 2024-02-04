@@ -3,7 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  connectivity_plus
+  bonsoir_windows
   flutter_webrtc
   fvp
   screen_retriever

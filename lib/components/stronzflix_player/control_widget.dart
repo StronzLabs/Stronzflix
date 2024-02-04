@@ -7,6 +7,8 @@ class ControlWidget extends StatelessWidget {
     final bool ignorePointer;
     final void Function()? onTap;
     final void Function(PointerHoverEvent)? onHover;
+    final void Function(PointerEnterEvent)? onEnter;
+    final void Function(PointerExitEvent)? onExit;
     
     const ControlWidget({
         super.key,
@@ -14,7 +16,9 @@ class ControlWidget extends StatelessWidget {
         required this.child,
         this.ignorePointer = true,
         this.onTap,
-        this.onHover
+        this.onHover,
+        this.onEnter,
+        this.onExit
     });
 
     @override
@@ -28,8 +32,10 @@ class ControlWidget extends StatelessWidget {
                     onTap: this.onTap,
                     child: MouseRegion(
                         onHover: this.onHover,
-                        child: this.child,
-                    ),
+                        onEnter: this.onEnter,
+                        onExit: this.onExit,
+                        child: this.child
+                    )
                 )
             )
         );

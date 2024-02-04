@@ -1,12 +1,10 @@
 import 'dart:ui';
 
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
-import 'package:stronzflix/backend/backend.dart';
 import 'package:stronzflix/backend/api/media.dart';
+import 'package:stronzflix/backend/backend.dart';
 import 'package:stronzflix/backend/peer_manager.dart';
-import 'package:stronzflix/components/player_controls.dart';
-import 'package:video_player/video_player.dart';
+import 'package:stronzflix/components/stronzflix_player/stronzflix_player.dart';
 
 class MediaPage extends StatefulWidget {
 
@@ -19,33 +17,14 @@ class MediaPage extends StatefulWidget {
 
 class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
 
-    late VideoPlayerController _videoPlayerController;
-    late ChewieController _chewieController;
     late final AppLifecycleListener _lifecycleListener;
-
     late Watchable _watchable;
 
-    Future<void> _initVideoPlayer() async {
+    Future<void> _loadWatchable() async {
         this._watchable = await super.widget.playable.resolve();
-        Uri uri = await this._watchable.player.getSource(this._watchable);
-        uri = Uri.parse(uri.toString().split('?').join('.m3u8?'));
-        this._videoPlayerController = VideoPlayerController.networkUrl(uri);
-
-        await this._videoPlayerController.initialize();
-
-        this._chewieController = ChewieController(
-            videoPlayerController: this._videoPlayerController,
-            autoPlay: true,
-            allowedScreenSleep: false,
-            aspectRatio: this._videoPlayerController.value.aspectRatio,
-            customControls: PlayerControls(media: this._watchable, controller: this._videoPlayerController),
-            hideControlsTimer: const Duration(seconds: 1, milliseconds: 500),
-            startAt: Duration(milliseconds: this._watchable.startAt),
-        );
     }
 
     void _saveState() {
-        Backend.updateWatching(this._watchable, this._videoPlayerController.value.position.inMilliseconds);
         Backend.serialize();
     }
 
@@ -66,11 +45,9 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
 
     @override
     void dispose() {
-        this._saveState();
-        this._videoPlayerController.dispose();
-        this._chewieController.dispose();
         WidgetsBinding.instance.removeObserver(this);
         this._lifecycleListener.dispose();
+        this._saveState();
         super.dispose();
     }
 
@@ -86,20 +63,18 @@ class _MediaPageState extends State<MediaPage> with WidgetsBindingObserver {
             onPopInvoked: (_) => this._saveState(),
             child: Scaffold(
                 backgroundColor: Colors.black,
-                body: Center(
-                    child: FutureBuilder(
-                        future: this._initVideoPlayer(),
-                        builder: (context, snapshot) {
-                            if (snapshot.hasError)
-                                return const Icon(Icons.error);
-                            else if (snapshot.connectionState == ConnectionState.done)
-                                return Chewie(
-                                    controller: this._chewieController
-                                );
-                            else
-                                return const CircularProgressIndicator();
-                        }
-                    )
+                body: FutureBuilder(
+                    future: this._loadWatchable(),
+                    builder: (context, snapshot) {
+                        if(snapshot.hasError)
+                            return const Icon(Icons.error);
+                        else if(snapshot.connectionState != ConnectionState.done)
+                            return const Center(child: CircularProgressIndicator());
+                        else
+                            return StronzflixPlayer(
+                                media: this._watchable,
+                            );
+                    },
                 )
             )
         );
