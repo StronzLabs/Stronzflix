@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stronzflix</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#">
+            <img class="logo" src="svg/logo.svg">
+        </a>
+        <h1 class="title">Stronzflix</h1>
+        <div class="nav-links">
+            <a href="#Informazioni">Informazioni</a>
+            <a href="#Download">Download</a>
+            <a href="#Contribuisci">Contribuisci</a>
+            <a href="#Crediti">Crediti</a>
+            <a href="#Changelog">Changelog</a>
+        </div>
+    </nav>
+
+    <div class="sections" id="Informazioni">
+        <a href="#Informazioni" class="heading">Informazioni</a>
+        <section class="info">
+            <p>
+                Stronzflix è un'applicazione open source per la visualizzazione di contenuti multimediali in streaming.<br>
+                L'applicazione è compilata nativamente e può essere eseguita su diverse piattaforme. Anche se al momento sono supportate solo le piattaforme elencate di seguito, il team di sviluppo sta lavorando per estendere il supporto ad altre piattaforme in futuro.
+            </p>
+        </section>
+    
+        <hr>
+        <section class="download" id="Download">
+            <a href="#Download" class="heading">Download</a>
+            <div class="download-buttons">
+                <a href="javascript:downloadFor('.apk')" class="download-button">
+                    <img src="svg/android.svg" alt="Android" class="download-icon">
+                    <span>Download for Android</span>
+                </a>
+                <a href="javascript:downloadFor('Windows')" class="download-button">
+                    <img src="svg/windows.svg" alt="Windows" class="download-icon">
+                    <span>Download for Windows</span>
+                </a>
+                <a href="javascript:downloadFor('Linux')" class="download-button">
+                    <img src="svg/linux.svg" alt="Linux" class="download-icon">
+                    <span>Download for Linux</span>
+                </a>
+            </div>    
+        <hr>
+        <section class="contribs" id="Contribuisci">
+            <a href="#Contribuisci" class="heading">Contribuisci</a>
+            <p>
+                Se hai interesse a contribuire al progetto, puoi inviare una pull request su <a href="https://github.com/Bonfra04/Stronzflix">GitHub</a>.
+            </p>
+        </section>
+
+        <hr>
+        <section class="credits" id="Crediti">
+            <a href="#Crediti" class="heading">Crediti</a>
+            <p>
+                Stronzflix è un progetto open source rilasciato sotto licenza GNU GPLv3.<br>Il codice sorgente è disponibile su <a href="https://github.com/Bonfra04/Stronzflix">GitHub</a>.
+            </p>
+            <p>
+                Gli sviluppatori di questa applicazione non ospitano né distribuiscono nessuno dei contenuti visualizzabili tramite la stessa né hanno alcuna affiliazione con i fornitori di contenuti.
+            </p>
+        </section>
+
+        <hr>
+        <section class="changelog" id="Changelog">
+            <a href="#Changelog" class="heading">Changelog</a>
+            <div id="changelog"></div>
+        </section>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
