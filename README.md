@@ -6,7 +6,7 @@ Stronzflix comes as both a single application client that handles everything loc
 
 ### Stronzflix single-app
 
-Run with `$ flutte run -d <platform_name>`
+Run with `$ flutter run -d <platform_name>`
 
 Builds for:
 - android: `$ flutter build apk`
