@@ -1,10 +1,12 @@
 # Stronzflix
 
-Stronzflix comes as both a single application client that handles everything locally and a centralized server hosted application allowing multiple screens (clients) to connect at the same time.
+Stronzflix is an open-source application for streaming multimedia content. The application is natively compiled and can be run on various platforms. Although only the platforms listed below are currently supported, the development team is working to extend support to other platforms in the future.
+
+Learn more on  [the official website](https://bonfra04.github.io/Stronzflix/).
 
 ---
 
-### Stronzflix single-app
+### Running the project
 
 Run with `$ flutter run -d <platform_name>`
 
@@ -14,7 +16,11 @@ Builds for:
 - windows `$ flutter build windows`
 
 ---
-TODO:
-- [ ] Chromecast
+
+The developers of this application neither host nor distribute any of the content visible through it, nor do they have any affiliation with content providers.
+
+---
+TODOs:
 - [ ] Subtitles
 - [ ] Qualities
+- [] More sources
