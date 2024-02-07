@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:stronzflix/pages/home_page.dart';
 
 class Stronzflix extends StatelessWidget {
+    
+    static final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+
     const Stronzflix({super.key});
 
     @override
@@ -13,6 +16,7 @@ class Stronzflix extends StatelessWidget {
             },
             child: MaterialApp(
                 title: 'Stronzflix',
+                navigatorObservers: [ Stronzflix.routeObserver ],
                 theme: ThemeData(
                     colorScheme: ColorScheme.dark(
                         brightness: Brightness.dark,

@@ -6,6 +6,7 @@ import 'package:stronzflix/backend/peer_manager.dart';
 import 'package:stronzflix/backend/version.dart';
 import 'package:stronzflix/components/card_row.dart';
 import 'package:stronzflix/pages/title_page.dart';
+import 'package:stronzflix/stronzflix.dart';
 import 'package:stronzflix/utils/platform.dart';
 import 'package:stronzflix/backend/storage.dart';
 import 'package:stronzflix/dialogs/info_dialog.dart';
@@ -21,7 +22,7 @@ class HomePage extends StatefulWidget {
     State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with RouteAware {
 
     late bool _connected;
 
@@ -30,7 +31,7 @@ class _HomePageState extends State<HomePage> {
             builder: (context) => MediaPage(
                 playable: LatePlayable(serialInfo: serialInfo)
             )
-        )).then((_) => super.setState(() {}));
+        ));
     }
 
     void _showInfo(BuildContext context) {
@@ -75,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                         onPressed: () => showSearch(
                             context: context,
                             delegate: SearchPage()
-                        ).then((value) => super.setState(() {}))
+                        )
                     )
                 )
             ]
@@ -107,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                         builder: (context) => TitlePage(
                             result: result
                         )
-                    )).then((_) => super.setState(() {}))
+                    ))
                 )
             ]
         );
@@ -135,6 +136,23 @@ class _HomePageState extends State<HomePage> {
         super.initState();
         WidgetsBinding.instance.addPostFrameCallback((_) => this._checkVersion());
         this._initPeer();
+    }
+
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        Stronzflix.routeObserver.subscribe(this, ModalRoute.of(context)!);
+    }
+
+    @override
+    void dispose() {
+        Stronzflix.routeObserver.unsubscribe(this);
+        super.dispose();
+    }
+
+    @override
+    void didPopNext() {
+        Future.delayed(const Duration(seconds: 1), () => super.setState(() {}));
     }
 
     Widget _buildSinkButton(BuildContext context) {
