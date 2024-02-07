@@ -34,19 +34,19 @@ final class Storage {
     static int startWatching(String site, String siteUrl, {int? startAt, String episode = ""}) {
         Storage._lastId = Storage._calcID(site, siteUrl);
 
-        if (!Storage.keepWatching.containsKey(Storage._lastId))
-            Storage.keepWatching[Storage._lastId!] = SerialInfo(
+        if (!Storage._keepWatchingList.containsKey(Storage._lastId))
+            Storage._keepWatchingList[Storage._lastId!] = SerialInfo(
                 siteUrl: siteUrl,
                 site: site,
                 startAt: startAt ?? 0,
                 episode: episode
             );
 
-        return Storage.keepWatching[Storage._lastId]!.startAt;
+        return Storage._keepWatchingList[Storage._lastId]!.startAt;
     }
 
     static void watchNext(List<int> seasons) {
-        SerialInfo serialInfo = Storage.keepWatching[Storage._lastId]!;
+        SerialInfo serialInfo = Storage._keepWatchingList[Storage._lastId]!;
         serialInfo.startAt = 0;
         List<String> seasonXepisode = serialInfo.episode.split("x");
         int season = int.parse(seasonXepisode[0]) - 1;
@@ -59,7 +59,7 @@ final class Storage {
         else
             throw Exception("No more episodes");
 
-        Storage.keepWatching[Storage._lastId!] = serialInfo;
+        Storage._keepWatchingList[Storage._lastId!] = serialInfo;
     }
 
     static void removeWatching(String site, String siteUrl) {
@@ -68,10 +68,10 @@ final class Storage {
     }
 
     static void updateWatching(Watchable media, int time) {
-        if (Storage.keepWatching.containsKey(Storage._lastId)) {
-            Storage.keepWatching[Storage._lastId]!.name = media.name;
-            Storage.keepWatching[Storage._lastId]!.cover = media.cover;
-            Storage.keepWatching[Storage._lastId]!.startAt = time;
+        if (Storage._keepWatchingList.containsKey(Storage._lastId)) {
+            Storage._keepWatchingList[Storage._lastId]!.name = media.name;
+            Storage._keepWatchingList[Storage._lastId]!.cover = media.cover;
+            Storage._keepWatchingList[Storage._lastId]!.startAt = time;
         }
     }
 }
