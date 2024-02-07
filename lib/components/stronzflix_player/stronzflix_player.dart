@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cast/cast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fullscreen_window/fullscreen_window.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/backend.dart';
 import 'package:stronzflix/backend/peer_manager.dart';
@@ -12,10 +13,10 @@ import 'package:stronzflix/components/stronzflix_player/control_widget.dart';
 import 'package:stronzflix/components/stronzflix_player/stronzflix_player_controller.dart';
 import 'package:stronzflix/components/stronzflix_player/stronzflix_player_progress_bar.dart';
 import 'package:stronzflix/components/stronzflix_player/stronzflix_player_sinks.dart';
+import 'package:stronzflix/pages/media_page.dart';
 import 'package:stronzflix/utils/format.dart';
 import 'package:stronzflix/utils/platform.dart';
 import 'package:video_player/video_player.dart';
-import 'package:window_manager/window_manager.dart';
 
 class StronzflixPlayer extends StatefulWidget {
   
@@ -31,6 +32,7 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
 
     StronzflixPlayerController? _controller;
     late StronzflixPlayerSinks _sink;
+    Watchable? _nextMedia;
 
     late CastDevice _castDevice;
 
@@ -74,7 +76,8 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
         this._sink = StronzflixPlayerSinks.local;
 
         this._focusNode = FocusScopeNode();
-        this._castDiscovery = CastDiscoveryService().search();
+        if(!SPlatform.isWeb)
+            this._castDiscovery = CastDiscoveryService().search();
     
         this._startAt = Duration(milliseconds: super.widget.media.startAt);
 
@@ -84,6 +87,7 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
         this._permanetlyShowControls = false;
 
         this._startHideTimer();
+        this._findNextMedia();
 
         PeerManager.registerHandler(PeerMessageIntent.seek,
             (at) => this.onSeek(Duration(milliseconds: at["time"]), peer: false)
@@ -262,6 +266,7 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
                     this._buildBackButton(context),
                     this._buildTitle(context),
                     const Spacer(),
+                    if(!SPlatform.isWeb)
                     this._buildCastButton(context),
                     if (PeerManager.connected)
                         this._buildChatButton(context)
@@ -329,6 +334,18 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
         );
     }
 
+    Widget _buildNextButton(BuildContext context) {
+        return ControlWidget(
+            hidden: this._hideControls,
+            onEnter: (_) => this._cancelHideTimer(),
+            onExit: (_) => this._restartHideTimer(),
+            child: IconButton(
+                onPressed: this._onNextMedia,
+                icon: const Icon(Icons.skip_next_sharp)
+            )
+        );
+    }
+
     Widget _buildBottomBar(BuildContext context) {
         return Padding(
             padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
@@ -344,7 +361,9 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
                             const SizedBox(width: 12),
                             this._buildPosition(context),
                             const Spacer(),
-                            if (this._sink == StronzflixPlayerSinks.local && SPlatform.isDesktop)
+                            if (this._nextMedia != null)
+                                this._buildNextButton(context),
+                            if (this._sink == StronzflixPlayerSinks.local && SPlatform.isDesktopWeb)
                                 this._buildExpandButton(context)
                         ]
                     ),
@@ -376,7 +395,7 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
             ),
             onHover: (_) => this._restartHideTimer(),
             onTap: () {
-                if(SPlatform.isDesktop)
+                if(SPlatform.isDesktopWeb)
                     this._onPlayPause();
             }
         );
@@ -452,7 +471,7 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
 
     void _onExpandCollapse() {
         super.setState(() => this._fullscreen = !this._fullscreen);
-        windowManager.setFullScreen(this._fullscreen);
+        FullScreenWindow.setFullScreen(this._fullscreen);
     }
 
     void _onPlayPause({bool peer = true}) {
@@ -477,6 +496,14 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
         this._controller?.seekTo(position);
 
         if(peer) PeerManager.seek(position.inMilliseconds);
+    }
+
+    void _onNextMedia() {
+        Backend.watchNext((super.widget.media as Episode).series.seasons.map((e) => e.length).toList());
+        
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => MediaPage(playable: this._nextMedia!),
+        ));
     }
 
     KeyEventResult _handleKeyControls(RawKeyEvent event) {
@@ -517,12 +544,39 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
             return KeyEventResult.handled;
         }
         
-        if (this._sink == StronzflixPlayerSinks.local && SPlatform.isDesktop)
+        if (this._sink == StronzflixPlayerSinks.local && SPlatform.isDesktopWeb)
             if(event.logicalKey == LogicalKeyboardKey.keyF) {
                 this._onExpandCollapse();
                 return KeyEventResult.handled;
             }
 
         return KeyEventResult.ignored;
+    }
+
+    void _findNextMedia() {
+        if(super.widget.media is! Episode)
+            return;
+
+        Series series = (super.widget.media as Episode).series;
+
+        late int seasonIdx, episodeIdx;
+        for (List<Episode> season in series.seasons) {
+            for (Episode episode in season) {
+                if (episode.playerUrl == (super.widget.media as Episode).playerUrl) {
+                    episodeIdx = season.indexOf(episode);
+                    seasonIdx = series.seasons.indexOf(season);
+                    break;
+                }
+            }
+        }
+        Episode? nextEpisode;
+        if (episodeIdx < series.seasons[seasonIdx].length - 1) {
+            nextEpisode = series.seasons[seasonIdx][episodeIdx + 1];
+        }
+        else if (seasonIdx < series.seasons.length - 1) {
+            nextEpisode = series.seasons[seasonIdx + 1][0];
+        }
+
+        this._nextMedia = nextEpisode;
     }
 }

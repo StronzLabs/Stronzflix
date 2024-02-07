@@ -12,11 +12,11 @@ dependencies:
     sdk: flutter
 
   video_player: ^2.8.2
-  package_info_plus: ^5.0.1
   fvp: ^0.13.1 # DO NOT UPGRADE TO 0.14.0
+  video_player_web_hls: ^1.1.0
+  package_info_plus: ^5.0.1
   http: ^1.1.0
   html_unescape: ^2.0.0
-  window_manager: ^0.3.7
   path_provider: ^2.1.2
   shared_preferences: ^2.2.2
   url_launcher: ^6.2.2
@@ -25,6 +25,7 @@ dependencies:
   peerdart: ^0.5.4
   uuid: ^3.0.7
   wakelock_plus: ^1.1.4
+  fullscreen_window: ^1.0.4
   cast: 
     git:
       url: https://github.com/guyluz11/flutter_cast.git
