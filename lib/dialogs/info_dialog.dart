@@ -18,24 +18,44 @@ class InfoDialog extends StatelessWidget {
                     return const Text("Stronzflix");
                 }
             ),
-            content: RichText(
-                text: TextSpan(
-                    children: [
-                        const TextSpan(
-                            text: "Stronzflix è un progetto open source rilasciato sotto licenza GNU GPLv3.\nIl codice sorgente è disponibile su "
-                        ),
-                        TextSpan(
-                            text: "GitHub",
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                                decoration: TextDecoration.underline
+            content: SizedBox(
+                width: 444,
+                child: RichText(
+                    text: TextSpan(
+                        children: [
+                            const TextSpan(
+                                text: "Stronzflix è un progetto open source rilasciato sotto licenza GNU GPLv3.\nIl codice sorgente è disponibile su "
                             ),
-                            recognizer: TapGestureRecognizer()..onTap = () => SPlatform.launchURL("https://github.com/Bonfra04/Stronzflix")
-                        ),
-                        const TextSpan(
-                            text: "."
-                        ),
-                    ]
+                            TextSpan(
+                                text: "GitHub",
+                                style: TextStyle(
+                                    color: Theme.of(context).colorScheme.secondary,
+                                    decoration: TextDecoration.underline
+                                ),
+                                recognizer: TapGestureRecognizer()..onTap = () => SPlatform.launchURL("https://github.com/Bonfra04/Stronzflix")
+                            ),
+                            const TextSpan(
+                                text: ".\nSegui gli aggiornamenti o scarica la versione più recente sul "
+                            ),
+                            TextSpan(
+                                text: "sito web",
+                                style: TextStyle(
+                                    color: Theme.of(context).colorScheme.secondary,
+                                    decoration: TextDecoration.underline
+                                ),
+                                recognizer: TapGestureRecognizer()..onTap = () => SPlatform.launchURL("https://bonfra04.github.io/Stronzflix/")
+                            ),const TextSpan(
+                                text: ".\n"
+                            ),
+                            const TextSpan(
+                                text: "\nGli sviluppatori di questa applicazione non ospitano né distribuiscono nessuno dei contenutivisualizzabili tramite la stessa né hanno alcuna affiliazione con i fornitori di contenuti.",
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey
+                                )
+                            )
+                        ]
+                    )
                 )
             )
         );
