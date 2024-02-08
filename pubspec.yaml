@@ -26,6 +26,7 @@ dependencies:
   uuid: ^3.0.7
   wakelock_plus: ^1.1.4
   fullscreen_window: ^1.0.4
+  flutter_hls_parser: ^2.0.1
   cast: 
     git:
       url: https://github.com/guyluz11/flutter_cast.git
