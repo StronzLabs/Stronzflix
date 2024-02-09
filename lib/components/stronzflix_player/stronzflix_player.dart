@@ -37,7 +37,7 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
     late bool _rebuildVideoPlayer;
     late StronzflixPlayerSinks _sink;
     Watchable? _nextMedia;
-    Map<int,Uri>? _qualities;
+    late Map<int,Uri> _qualities;
     late int _activeQuality;
 
     late CastDevice _castDevice;
@@ -54,8 +54,22 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
 
     late Duration _startAt;
 
+    Future<void> _fetchQualities() async {
+        Uri playlistUri = await super.widget.media.player.getSource(super.widget.media);
+        String playlistString = await http.get(playlistUri.toString());
+        HlsPlaylist playlist = await HlsPlaylistParser.create().parseString(playlistUri, playlistString);
+    
+        if(playlist is! HlsMasterPlaylist)
+            throw Exception("Not a master playlist");
+
+        this._qualities = Map.fromEntries(playlist.variants.map((e) => MapEntry(e.format.height!, e.url)));
+        this._activeQuality = this._qualities.keys.reduce((a, b) => a > b ? a : b);
+    }
+
     Future<void> _initPlayer(StronzflixPlayerController Function(Uri) builder) async {
-        Uri uri = this._qualities![this._activeQuality]!;
+        await this._fetchQualities();
+
+        Uri uri = this._qualities[this._activeQuality]!;
         uri = Uri.parse(uri.toString().split('?').join('.m3u8?'));
 
         this._controller?.dispose();
@@ -68,34 +82,23 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
         this._rebuildVideoPlayer = false;
     }
 
-    Future<void> _fetchQualities() async {
-        Uri playlistUri = await super.widget.media.player.getSource(super.widget.media);
-        String playlistString = await http.get(playlistUri.toString());
-        HlsPlaylist playlist = await HlsPlaylistParser.create().parseString(playlistUri, playlistString);
-    
-        if(playlist is! HlsMasterPlaylist)
-            throw Exception("Not a master playlist");
-
-        this._qualities = Map.fromEntries(playlist.variants.map((e) => MapEntry(e.format.height!, e.url)));
-        this._activeQuality = this._qualities!.keys.reduce((a, b) => a > b ? a : b);
-    }
-
     @override
     void initState() {
         super.initState();
-        this._sink = StronzflixPlayerSinks.local;
 
-        this._focusNode = FocusScopeNode();
         if(!SPlatform.isWeb)
             this._castDiscovery = CastDiscoveryService().search();
     
-        this._startAt = Duration(milliseconds: super.widget.media.startAt);
 
+        this._startAt = Duration(milliseconds: super.widget.media.startAt);
+        this._focusNode = FocusScopeNode();
+        this._sink = StronzflixPlayerSinks.local;
         this._chatOpened = false;
         this._fullscreen = false;
         this._hideControls = false;
         this._permanetlyShowControls = false;
         this._rebuildVideoPlayer = true;
+        this._qualities = {};
 
         this._startHideTimer();
         this._findNextMedia();
@@ -128,19 +131,12 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
         super.dispose();
     }
 
-    Widget _buildLocalPlayer(BuildContext context) {
-        Widget build(LocalPlayerController controller) {
-            return AspectRatio(
-                aspectRatio: controller.value.aspectRatio,
-                child: VideoPlayer(controller.controller),
-            ); 
-        }
-
+    Widget _buildPlayer(BuildContext context, Widget Function(StronzflixPlayerController) build, StronzflixPlayerController Function(Uri) init) {
         return Center(
-            child: this._controller is LocalPlayerController && !this._rebuildVideoPlayer ?
-                build(this._controller as LocalPlayerController) :
+            child: !this._rebuildVideoPlayer ?
+                build(this._controller!) :
                 FutureBuilder(
-                    future: this._initPlayer((uri) => LocalPlayerController(VideoPlayerController.networkUrl(uri))),
+                    future: this._initPlayer(init),
                     builder: (context, snapshot) {
                         if(snapshot.connectionState != ConnectionState.done)
                             return const CircularProgressIndicator();
@@ -150,26 +146,24 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
         );
     }
 
-    Widget _buildCastPlayer(BuildContext context) {
-        Widget build(CastPlayerController controller) {
-            return const Icon(
-                Icons.cast,
-                size: 100,
-            );
-        }
+    Widget _buildLocalPlayer(BuildContext context) {
+        Widget build(StronzflixPlayerController controller) => AspectRatio(
+            aspectRatio: controller.value.aspectRatio,
+            child: VideoPlayer((controller as LocalPlayerController).controller),
+        ); 
+        StronzflixPlayerController init(Uri uri) => LocalPlayerController(VideoPlayerController.networkUrl(uri));
 
-        return Center(
-            child: this._controller is CastPlayerController && !this._rebuildVideoPlayer ?
-                build(this._controller as CastPlayerController) :
-                FutureBuilder(
-                    future: this._initPlayer((uri) => CastPlayerController(uri, this._castDevice)),
-                    builder: (context, snapshot) {
-                        if(snapshot.connectionState != ConnectionState.done)
-                            return const CircularProgressIndicator();
-                        return build(this._controller as CastPlayerController);
-                    }
-                )
+        return this._buildPlayer(context, build, init);
+    }
+
+    Widget _buildCastPlayer(BuildContext context) {
+        Widget build(StronzflixPlayerController controller) => const Icon(
+            Icons.cast,
+            size: 100,
         );
+        StronzflixPlayerController init(Uri uri) => CastPlayerController(uri, this._castDevice);
+
+        return this._buildPlayer(context, build, init);
     }
 
     Widget _buildTitle(BuildContext context) {
@@ -222,11 +216,14 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
                                 value: e,
                                 child: Text(e.name),
                             )).toList(),
+                            onOpened: () => super.setState(() => this._permanetlyShowControls = true),
+                            onCanceled: () => super.setState(() => this._permanetlyShowControls = false),
                             onSelected: (value) => super.setState(() {
                                 this._castDevice = value;
                                 this._startAt = this._controller?.position ?? Duration.zero;
                                 this._sink = StronzflixPlayerSinks.cast;
                                 this._rebuildVideoPlayer = true;
+                                this._permanetlyShowControls = false;
 
                                 if(this._fullscreen)
                                     this._onExpandCollapse();         
@@ -367,7 +364,7 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
             child: PopupMenuButton(
                 icon: const Icon(Icons.high_quality_outlined),
                 position: PopupMenuPosition.over,
-                itemBuilder: (context) => this._qualities!.entries.map((e) => PopupMenuItem(
+                itemBuilder: (context) => this._qualities.entries.map((e) => PopupMenuItem(
                     value: e.key,
                     child: Row(
                         children: [
@@ -378,9 +375,13 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
                         ],
                     ),
                 )).toList(),
+                onOpened: () => super.setState(() => this._permanetlyShowControls = true),
+                onCanceled: () => super.setState(() => this._permanetlyShowControls = false),
                 onSelected: (value) => super.setState(() {
                     this._activeQuality = value;
                     this._rebuildVideoPlayer = true;
+                    this._permanetlyShowControls = false;
+                    this._startAt = this._controller?.position ?? Duration.zero;
                 })
             )
         );
@@ -401,7 +402,7 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
                             const SizedBox(width: 12),
                             this._buildPosition(context),
                             const Spacer(),
-                            if(this._qualities!.length > 1)
+                            if(this._qualities.length > 1)
                                 this._buildQualitiesButton(context),
                             if (this._nextMedia != null)
                                 this._buildNextButton(context),
@@ -480,30 +481,14 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
 
     @override
     Widget build(BuildContext context) {
-        Widget build() {
-            return Stack(
-                children: [
-                    switch(this._sink) {
-                        StronzflixPlayerSinks.local => this._buildLocalPlayer(context),
-                        StronzflixPlayerSinks.cast => this._buildCastPlayer(context),
-                    },
-                    this._buildControls(context)
-                ]
-            );
-        }
-
-        return Center(
-            child: this._qualities == null
-            ? FutureBuilder(
-                future: this._fetchQualities(),
-                builder: (context, snapshot) {
-                    if(snapshot.connectionState != ConnectionState.done)
-                        return const CircularProgressIndicator();
-
-                    return build();
-                }
-            )
-            : build()
+        return Stack(
+            children: [
+                switch(this._sink) {
+                    StronzflixPlayerSinks.local => this._buildLocalPlayer(context),
+                    StronzflixPlayerSinks.cast => this._buildCastPlayer(context),
+                },
+                this._buildControls(context)
+            ]
         );
     }
 
