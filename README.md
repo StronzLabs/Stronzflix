@@ -22,5 +22,6 @@ The developers of this application neither host nor distribute any of the conten
 ---
 TODOs:
 - [ ] Subtitles
-- [ ] Qualities
-- [] More sources
+- [ ] Download
+- [ ] OS media Bindings
+- [ ] More sources
