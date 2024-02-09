@@ -67,7 +67,8 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
     }
 
     Future<void> _initPlayer(StronzflixPlayerController Function(Uri) builder) async {
-        await this._fetchQualities();
+        if(this._qualities.isEmpty)
+            await this._fetchQualities();
 
         Uri uri = this._qualities[this._activeQuality]!;
         uri = Uri.parse(uri.toString().split('?').join('.m3u8?'));
@@ -120,6 +121,13 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
                     this._onPlayPause(peer: false);
             }
         );
+
+        if(SPlatform.isMobile) {
+            SystemChrome.setPreferredOrientations([
+                DeviceOrientation.landscapeRight,
+                DeviceOrientation.landscapeLeft
+            ]);
+        }
     }
 
     @override
@@ -128,6 +136,12 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
         this._controller?.removeListener(this._updateState);
         this._controller?.dispose();
         Backend.updateWatching(super.widget.media, this._controller?.position.inMilliseconds ?? 0);
+
+        if(SPlatform.isMobile) {
+            SystemChrome.setPreferredOrientations([
+                DeviceOrientation.portraitUp
+            ]);
+        }
         super.dispose();
     }
 
