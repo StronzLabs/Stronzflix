@@ -54,6 +54,14 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
 
     late Duration _startAt;
 
+    int _deduceResolution(Variant variant) {
+        if(variant.format.height != null)
+            return variant.format.height!;
+
+        String resString = variant.url.queryParameters["rendition"]!;
+        return int.parse(resString.substring(0, resString.length - 1));
+    }
+
     Future<void> _fetchQualities() async {
         Uri playlistUri = await super.widget.media.player.getSource(super.widget.media);
         String playlistString = await http.get(playlistUri.toString());
@@ -62,7 +70,7 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
         if(playlist is! HlsMasterPlaylist)
             throw Exception("Not a master playlist");
 
-        this._qualities = Map.fromEntries(playlist.variants.map((e) => MapEntry(e.format.height!, e.url)));
+        this._qualities = Map.fromEntries(playlist.variants.map((e) => MapEntry(this._deduceResolution(e), e.url)));
         this._activeQuality = this._qualities.keys.reduce((a, b) => a > b ? a : b);
     }
 
@@ -495,14 +503,17 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
 
     @override
     Widget build(BuildContext context) {
-        return Stack(
-            children: [
-                switch(this._sink) {
-                    StronzflixPlayerSinks.local => this._buildLocalPlayer(context),
-                    StronzflixPlayerSinks.cast => this._buildCastPlayer(context),
-                },
-                this._buildControls(context)
-            ]
+        return MouseRegion(
+            cursor: this._hideControls && !this._permanetlyShowControls ? SystemMouseCursors.none : MouseCursor.defer,
+            child: Stack(
+                children: [
+                    switch(this._sink) {
+                        StronzflixPlayerSinks.local => this._buildLocalPlayer(context),
+                        StronzflixPlayerSinks.cast => this._buildCastPlayer(context),
+                    },
+                    this._buildControls(context)
+                ]
+            ),
         );
     }
 
@@ -601,11 +612,17 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
             return KeyEventResult.handled;
         }
         
-        if (this._sink == StronzflixPlayerSinks.local && SPlatform.isDesktopWeb)
+        if (this._sink == StronzflixPlayerSinks.local && SPlatform.isDesktopWeb) {
             if(event.logicalKey == LogicalKeyboardKey.keyF) {
                 this._onExpandCollapse();
                 return KeyEventResult.handled;
             }
+            if(event.logicalKey == LogicalKeyboardKey.escape)
+                if(this._fullscreen) {
+                    this._onExpandCollapse();
+                    return KeyEventResult.handled;
+                }
+        }
 
         return KeyEventResult.ignored;
     }
