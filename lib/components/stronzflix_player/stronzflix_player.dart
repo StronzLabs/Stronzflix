@@ -477,7 +477,7 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
             node: this._focusNode,
             autofocus: true,
             canRequestFocus: true,
-            onKey: (data, event) => this._handleKeyControls(event),
+            onKeyEvent: (data, event) => this._handleKeyControls(event),
             child: Stack(
                 children: [
                     if (this._controller?.isBuffering ?? true)
@@ -574,11 +574,11 @@ class _StronzflixPlayerState extends State<StronzflixPlayer> {
         ));
     }
 
-    KeyEventResult _handleKeyControls(RawKeyEvent event) {
+    KeyEventResult _handleKeyControls(KeyEvent event) {
         if(FocusManager.instance.primaryFocus != this._focusNode)
             return KeyEventResult.ignored;
 
-        if(event is! RawKeyDownEvent)
+        if(event is! KeyDownEvent)
             return KeyEventResult.ignored;
 
         if(event.logicalKey == LogicalKeyboardKey.arrowUp) {
