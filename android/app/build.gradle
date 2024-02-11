@@ -61,4 +61,7 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    // even though for SDK 21+ is enabled by default, flutter(master) still requires it to be added
+    implementation 'com.android.support:multidex:1.0.3'
+}
