@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stronzflix/pages/home_page.dart';
+import 'package:stronzflix/pages/loading_page.dart';
 
 class Stronzflix extends StatelessWidget {
     
@@ -48,11 +48,11 @@ class Stronzflix extends StatelessWidget {
                             borderRadius: BorderRadius.all(Radius.circular(20))
                         )
                     ),
-                    drawerTheme: const DrawerThemeData(
-                        backgroundColor: Color.fromARGB(200, 18, 18, 18),
+                    progressIndicatorTheme: const ProgressIndicatorThemeData(
+                        linearTrackColor: Colors.grey,
                     ),
                 ),
-                home: const HomePage(),
+                home: const LoadingPage(),
                 debugShowCheckedModeBanner: false
             )
         );

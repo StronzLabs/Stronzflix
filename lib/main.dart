@@ -7,7 +7,6 @@ import 'package:stronzflix/utils/platform.dart';
 
 void main() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await Backend.init();
 
     registerWith(options: {'platforms': [ 'linux', 'windows' ], 'video.decoders': [ 'DXVA', 'FFmpeg' ]});
     if(SPlatform.isMobile)
