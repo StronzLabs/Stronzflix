@@ -46,6 +46,19 @@ class SerialInfo {
 
 class Backend {
 
+    static Stream<double> load() async* {
+        yield 0.0;
+
+        await StreamingCommunity.instance.ensureInitialized();
+        yield 0.33;
+
+        await VixxCloud.instance.ensureInitialized();
+        yield 0.75;
+
+        await Storage.init();
+        yield 1.0;
+    }
+
     static int startWatching(String site, String siteUrl, {int? startAt, String episode = ""}) {
         int startTime = Storage.startWatching(site, siteUrl, startAt: startAt, episode: episode);
 
@@ -78,12 +91,5 @@ class Backend {
 
     static void serialize() {
         Storage.serialize();
-    }
-
-    static Future<void> init() async {
-        await StreamingCommunity.instance.ensureInitialized();
-        await VixxCloud.instance.ensureInitialized();
-
-        await Storage.init();
     }
 }

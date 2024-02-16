@@ -7,7 +7,7 @@ import 'package:stronzflix/utils/simple_http.dart' as http;
 
 class StreamingCommunity extends Site {
     
-    static Site instance = StreamingCommunity._("https://streamingcommunity.li");
+    static Site instance = StreamingCommunity._("https://streamingcommunity.express");
 
     final String _cdn;
     final Map<String, String> _inhertia;
