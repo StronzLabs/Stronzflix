@@ -42,6 +42,8 @@ class PlayerInfo extends ChangeNotifier {
         this._devices!.then((devices) {
             if(super.hasListeners)
                 notifyListeners();
+        }).onError((error, stackTrace) {
+            this._devices = Future.value([]);
         });
     }
 
