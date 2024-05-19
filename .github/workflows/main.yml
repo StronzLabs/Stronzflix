@@ -52,7 +52,6 @@ jobs:
         run: |
           Invoke-WebRequest -Uri "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip" -OutFile "ffmpeg.zip"
           Expand-Archive -Path "ffmpeg.zip" -DestinationPath "ffmpeg"
-          mv ffmpeg\ffmpeg-master-latest-win64-gpl ffmpeg
 
       - name: Build Windows App
         run: |
@@ -61,8 +60,8 @@ jobs:
 
       - name: Copy dependencies
         run: |
-          cp ffmpeg\bin\ffmpeg.exe build\windows\x64\runner\Release
-          cp ffmpeg\LICENSE.txt build\windows\x64\runner\ffmpeg_LICENSE.txt
+          cp ffmpeg\ffmpeg-master-latest-win64-gpl\bin\ffmpeg.exe build\windows\x64\runner\Release
+          cp ffmpeg\ffmpeg-master-latest-win64-gpl\LICENSE.txt build\windows\x64\runner\ffmpeg_LICENSE.txt
 
       - name: Zip File
         run: Compress-Archive -Path build\windows\x64\runner\Release* -Destination build.zip
