@@ -42,7 +42,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.22.0-0.3.pre'
-          channel: 'master'
+          channel: 'beta'
           cache: false # Disabled cuz windows is bad
           cache-key: 'flutter-windows'
           cache-path: '${{ runner.tool_cache }}/flutter/windows'
@@ -52,7 +52,7 @@ jobs:
         run: |
           Invoke-WebRequest -Uri "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip" -OutFile "ffmpeg.zip"
           Expand-Archive -Path "ffmpeg.zip" -DestinationPath "ffmpeg"
-
+          mv ffmpeg\ffmpeg-master-latest-win64-gpl ffmpeg
 
       - name: Build Windows App
         run: |
@@ -94,8 +94,8 @@ jobs:
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.20.0'
-          channel: 'master'
+          flutter-version: '3.22.0-0.3.pre'
+          channel: 'beta'
           cache: true
           cache-key: 'flutter-linux'
           cache-path: '${{ runner.tool_cache }}/flutter/linux'
@@ -149,8 +149,8 @@ jobs:
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.20.0'
-          channel: 'master'
+          flutter-version: '3.22.0-0.3.pre'
+          channel: 'beta'
           cache: true
           cache-key: 'flutter-android'
           cache-path: '${{ runner.tool_cache }}/flutter/android'
