@@ -37,7 +37,7 @@ class _SinkDialogState extends State<SinkDialog> {
                         )
                     ),
                     TextField(
-                        autocorrect: true,
+                        autofocus: true,
                         focusNode: this._focusNode,
                         decoration: const InputDecoration(
                             labelText: "ID a cui connettersi"
