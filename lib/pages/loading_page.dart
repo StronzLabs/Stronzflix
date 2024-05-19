@@ -37,10 +37,10 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     Stream<double> _doLoading() async* {
         bool shouldUpdate = await VersionChecker.shouldUpdate();
         if(shouldUpdate && super.mounted) {
-            bool updating = await showDialog(
+            bool updating = await showDialog<bool?>(
                 context: context,
                 builder: (context) => const UpdateDialog()
-            );
+            ) ?? false;
             super.setState(() => this._updating = updating);
             if(this._updating)
                 return;
