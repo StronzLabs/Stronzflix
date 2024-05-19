@@ -124,15 +124,16 @@ class _SettingsMenuState extends State<_SettingsMenu> {
     }
 
     Widget _buildQualityPage() {
+        List<VideoTrack> tracks = super.widget.controller.player.state.tracks.video
+            .where((track) => track.id != "auto" && track.id != "no").toList()
+            ..sort((a, b) => b.h!.compareTo(a.h!));
+
         return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
                 this._buildNavigationButton("Qualità", 0, true),
                 const Divider(),
-                for (VideoTrack track in super.widget.controller.player.state.tracks.video
-                    .where((track) => track.id != "auto" && track.id != "no").toList()
-                    ..sort((a, b) => b.h!.compareTo(a.h!))
-                )
+                for (VideoTrack track in tracks)
                     this._buildOptionButton("${track.h}p", track == super.widget.controller.player.state.track.video,
                         () => super.widget.controller.player.setVideoTrack(track),
                     ),
@@ -144,15 +145,16 @@ class _SettingsMenuState extends State<_SettingsMenu> {
     }
 
     Widget _buildLanguagePage() {
+        List<AudioTrack> tracks = super.widget.controller.player.state.tracks.audio
+            .where((track) => track.id != "auto" && track.id != "no").toList();
+
         return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
                 this._buildNavigationButton("Lingua", 0, true),
                 const Divider(),
-                for (AudioTrack track in super.widget.controller.player.state.tracks.audio
-                    .where((track) => track.id != "auto" && track.id != "no").toList()
-                )
-                    this._buildOptionButton(track.language!.capitalize(), track == super.widget.controller.player.state.track.audio,
+                for (AudioTrack track in tracks)
+                    this._buildOptionButton((track.language?? track.id).capitalize(), track == super.widget.controller.player.state.track.audio,
                         () => super.widget.controller.player.setAudioTrack(track),
                     ),
             ],
@@ -160,15 +162,16 @@ class _SettingsMenuState extends State<_SettingsMenu> {
     }
 
     Widget _buildSubtitlePage() {
+        List<SubtitleTrack> tracks = super.widget.controller.player.state.tracks.subtitle
+            .where((track) => track.id != "auto" && track.id != "no").toList();
+
         return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
                 this._buildNavigationButton("Sottotitoli", 0, true),
                 const Divider(),
-                for (SubtitleTrack track in super.widget.controller.player.state.tracks.subtitle
-                    .where((track) => track.id != "auto" && track.id != "no").toList()
-                )
-                    this._buildOptionButton(track.language!.capitalize(), track == super.widget.controller.player.state.track.subtitle,
+                for (SubtitleTrack track in tracks)
+                    this._buildOptionButton((track.language?? track.id).capitalize(), track == super.widget.controller.player.state.track.subtitle,
                         () => super.widget.controller.player.setSubtitleTrack(track),
                     ),
                 this._buildOptionButton("Nessuno", super.widget.controller.player.state.track.subtitle.id == "no",
