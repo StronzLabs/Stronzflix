@@ -21,7 +21,6 @@ The developers of this application neither host nor distribute any of the conten
 
 ---
 TODOs:
-- [ ] Subtitles
-- [ ] Download
 - [ ] OS media Bindings
-- [ ] More sources
+- [ ] Specialized platform controls
+- [ ] Better sink implementation

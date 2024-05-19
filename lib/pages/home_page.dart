@@ -1,19 +1,22 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:stronzflix/backend/api/site.dart';
-import 'package:stronzflix/backend/backend.dart';
 import 'package:stronzflix/backend/api/media.dart';
-import 'package:stronzflix/backend/peer_manager.dart';
-import 'package:stronzflix/backend/version.dart';
-import 'package:stronzflix/components/card_row.dart';
-import 'package:stronzflix/pages/title_page.dart';
-import 'package:stronzflix/stronzflix.dart';
-import 'package:stronzflix/utils/platform.dart';
-import 'package:stronzflix/backend/storage.dart';
-import 'package:stronzflix/dialogs/info_dialog.dart';
-import 'package:stronzflix/pages/media_page.dart';
-import 'package:stronzflix/pages/search_page.dart';
+import 'package:stronzflix/backend/api/site.dart';
+import 'package:stronzflix/backend/downloads/download_manager.dart';
+import 'package:stronzflix/backend/keep_watching.dart';
+import 'package:stronzflix/backend/peer/peer_manager.dart';
+import 'package:stronzflix/backend/peer/peer_messenger.dart';
+import 'package:stronzflix/backend/settings.dart';
+import 'package:stronzflix/components/downloads_drawer.dart';
+import 'package:stronzflix/components/result_card_row.dart';
+import 'package:stronzflix/dialogs/confirmation_dialog.dart';
+import 'package:stronzflix/dialogs/loading_dialog.dart';
+import 'package:stronzflix/dialogs/settings_dialog.dart';
 import 'package:stronzflix/dialogs/sink_dialog.dart';
-import 'package:stronzflix/dialogs/update_dialog.dart';
+import 'package:stronzflix/pages/search_page.dart';
+import 'package:stronzflix/utils/platform.dart';
 
 class HomePage extends StatefulWidget {
     const HomePage({super.key});
@@ -22,155 +25,139 @@ class HomePage extends StatefulWidget {
     State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with RouteAware {
+class _HomePageState extends State<HomePage> {
 
-    late bool _connected;
+    StreamSubscription<Message>? _peerMessagesSubscription;
 
-    void _playSerialMedia(BuildContext context, SerialInfo serialInfo) {
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => MediaPage(
-                playable: LatePlayable(serialInfo: serialInfo)
-            )
-        ));
-    }
-
-    void _showInfo(BuildContext context) {
-        showDialog(
-            context: context,
-            builder: (context) => const InfoDialog()
-        );
-    }
-
-    void _checkVersion() async {
-        if(SPlatform.isMobile)
-            await VersionChecker.cleanCache();
-        if(!await VersionChecker.shouldUpdate())
-            return;
-
-        // ignore: use_build_context_synchronously
-        showDialog(
-            context: super.context,
-            builder: (context) => const UpdateDialog()
-        );
-    }
-
-    void _showSink(BuildContext context) {
-        showDialog(
-            context: context,
-            builder: (context) => SinkDialog()
-        );
-    }
-
-    AppBar _buildSearchBar(BuildContext context) {
+    AppBar _buildAppBar(BuildContext context) {
         return AppBar(
+            centerTitle: true,
             title: const Text("Stronzflix"),
-            leading: IconButton(
-                icon: const Icon(Icons.info_outlined),
-                onPressed: () => this._showInfo(context)
+            leading: Builder(
+                builder: (context) => IconButton(
+                    icon: const Icon(Icons.download),
+                    onPressed: () => Scaffold.of(context).openDrawer()
+                )
             ),
             actions: [
-                Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: IconButton(
-                        icon: const Icon(Icons.search),
-                        onPressed: () => showSearch(
-                            context: context,
-                            delegate: SearchPage()
-                        )
-                    )
-                )
+                IconButton(
+                    icon: const Icon(Icons.settings),
+                    onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) => const SettingsDialog()
+                    ).then((_) {
+                        if(super.mounted)
+                            super.setState(() {});
+                    })
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () => showSearch(
+                        context: context,
+                        delegate: SearchPage()
+                    ).then((_) {
+                        if(super.mounted)
+                            super.setState(() {});
+                    })
+                ),
+                const SizedBox(width: 8)
             ]
         );        
     }
 
-    Widget _buildContent(BuildContext context) {
-        return ListView(
-            padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
-            children: [
-                CardRow(
-                    title: "Continua a guardare",
-                    values: Future.value(Storage.keepWatching.values),
-                    onTap: (serialInfo) {
-                        Backend.startWatching(serialInfo.site, serialInfo.siteUrl, episode: serialInfo.episode);
-                        this._playSerialMedia(context, serialInfo);
-                    },
-                    onLongPress: (serialInfo) {
-                        super.setState(() {
-                            Backend.removeWatching(serialInfo.site, serialInfo.siteUrl);
-                            Backend.serialize();
-                        });
-                    },
+    Widget _buildSinkButton(BuildContext context) {
+        return ValueListenableBuilder(
+            valueListenable: PeerManager.notifier,
+            builder: (context, peerState, _) => FloatingActionButton(
+                onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => const SinkDialog()
                 ),
-                CardRow(
-                    title: "Ultime aggiunte",
-                    values: Site.get("StreamingCommunity")!.latests(),
-                    onTap: (result) => Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => TitlePage(
-                            result: result
-                        )
-                    ))
+                backgroundColor: peerState == PeerConnectionState.connected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).disabledColor,
+                child: Icon(peerState == PeerConnectionState.connecting
+                    ? Icons.sync
+                    : Icons.people
                 )
-            ]
-        );
-    }
-
-    void _initPeer() {
-        this._connected = false;
-
-        PeerManager.init(
-            onConnect: () => super.setState(() => this._connected = true),
-            onDisconnect: () => super.setState(() => this._connected = false)
-        );
-
-        PeerManager.registerHandler(
-            PeerMessageIntent.startWatching,
-            (data) {
-                SerialInfo serialInfo = SerialInfo.fromJson(data);
-                this._playSerialMedia(super.context, serialInfo);
-            }
+            )
         );
     }
 
     @override
     void initState() {
         super.initState();
-        WidgetsBinding.instance.addPostFrameCallback((_) => this._checkVersion());
-        this._initPeer();
-    }
-
-    @override
-    void didChangeDependencies() {
-        super.didChangeDependencies();
-        Stronzflix.routeObserver.subscribe(this, ModalRoute.of(context)!);
+        this._peerMessagesSubscription = PeerMessenger.messages.listen((message) {
+            if(message.type == MessageType.startWatching)
+                LoadingDialog.load(super.context, () async {
+                    SerialMetadata metadata = SerialMetadata.unserialize(jsonDecode(message.data!));
+                    return await Watchable.unserialize(metadata.metadata, metadata.info);
+                }).then((watchable) {
+                    if(super.mounted)
+                        Navigator.of(super.context).pushNamed('/player-sink', arguments: watchable);
+                });
+        });
     }
 
     @override
     void dispose() {
-        Stronzflix.routeObserver.unsubscribe(this);
+        this._peerMessagesSubscription?.cancel();
         super.dispose();
-    }
-
-    @override
-    void didPopNext() {
-        Future.delayed(const Duration(seconds: 1), () => super.setState(() {}));
-    }
-
-    Widget _buildSinkButton(BuildContext context) {
-        return FloatingActionButton(
-            backgroundColor: this._connected ?
-                Theme.of(context).colorScheme.primary :
-                Theme.of(context).disabledColor,
-            child: const Icon(Icons.people),
-            onPressed: () => this._showSink(context)
-        );
     }
 
     @override
     Widget build(BuildContext context) {
         return Scaffold(
-            appBar: this._buildSearchBar(context),
-            body: this._buildContent(context),
-            floatingActionButton: SPlatform.isDesktop ? this._buildSinkButton(context) : null
+            appBar: this._buildAppBar(context),
+            drawer: const DownloadsDrawer(),
+            floatingActionButton: SPlatform.isDesktop ? this._buildSinkButton(context) : null,
+            body: ListView(
+                padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
+                children: [
+                    ResultCardRow(
+                        title: "Continua a guardare",
+                        values: Future.value(KeepWatching.metadata),
+                        onTap: this._openMedia,
+                        action: (metadata) => super.setState(() => KeepWatching.remove(metadata)),
+                        actionIcon: Icons.delete,
+                    ),
+                    ResultCardRow(
+                        title: "Ultime aggiunte",
+                        values: Site.get(Settings.site)!.latests(),
+                        onTap: (metadata) => this._openTitle(context, metadata),
+                        action: Site.get(Settings.site)!.isLocal
+                            ? (metadata) => this._delete(context, metadata)
+                            : null,
+                        actionIcon: Icons.delete,
+                    )
+                ]
+            ),
         );
+    }
+
+    void _openMedia(TitleMetadata metadata) async {
+        LoadingDialog.load(context, () async => await KeepWatching.getWatchable(metadata))
+        .then((watchable) => Navigator.pushNamed(context, '/player', arguments: watchable).then((_) {
+                if(super.mounted)
+                    super.setState(() {});
+            })
+        );
+    }
+
+    void _delete(BuildContext context, TitleMetadata metadata) async {
+        bool delete = await ConfirmationDialog.ask(context,
+            "Elimina ${metadata.name}",
+            "Sei sicuro di voler eliminare ${metadata.name}?",
+            action: "Elimina"
+        );
+        if (delete) {
+            await DownloadManager.delete(await Site.get(Settings.site)!.getTitle(metadata));
+            super.setState(() {});
+        }
+    }
+
+    void _openTitle(BuildContext context, TitleMetadata metadata) {
+        Navigator.pushNamed(context, '/title', arguments: metadata).then((value) => super.setState(() {}));
     }
 }

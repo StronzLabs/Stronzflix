@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 250 500">
+    <defs>
+        <linearGradient id="b" data-name="Sfumatura senza nome 45" x1="0" y1="462.5" x2="250" y2="462.5" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ff8500"/>
+            <stop offset=".25" stop-color="#ff8600"/>
+            <stop offset="1" stop-color="#ff9800"/>
+        </linearGradient>
+        <linearGradient id="a" data-name="Sfumatura senza nome 8" x1="50" y1="350" x2="50" y2="425" gradientTransform="rotate(-180 50 387.5)" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ff9800"/>
+            <stop offset=".4" stop-color="#ff8500"/>
+        </linearGradient>
+        <linearGradient id="d" data-name="Sfumatura senza nome 8" x1="200" y1="150" x2="200" y2="75" xlink:href="#a"/>
+        <linearGradient id="e" data-name="Sfumatura senza nome 45" y1="37.5" y2="37.5" xlink:href="#b"/>
+        <linearGradient id="f" data-name="Sfumatura senza nome 341" x1="50" y1="350" x2="50" y2="425" gradientTransform="rotate(-180 50 387.5)" gradientUnits="userSpaceOnUse">
+            <stop offset=".6" stop-color="#380000" stop-opacity="0"/>
+            <stop offset="1" stop-color="#380000" stop-opacity=".75"/>
+        </linearGradient>
+        <linearGradient id="g" data-name="Sfumatura senza nome 325" x1="125" y1="425" x2="125" y2="75" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#380000" stop-opacity=".75"/>
+            <stop offset=".1" stop-color="#380000" stop-opacity="0"/>
+            <stop offset=".9" stop-color="#380000" stop-opacity="0"/>
+            <stop offset="1" stop-color="#380000" stop-opacity=".75"/>
+        </linearGradient>
+        <linearGradient id="h" data-name="Sfumatura senza nome 340" x1="200" y1="150" x2="200" y2="75" gradientUnits="userSpaceOnUse">
+            <stop offset=".6" stop-color="#380000" stop-opacity="0"/>
+            <stop offset="1" stop-color="#380000" stop-opacity=".75"/>
+        </linearGradient>
+        <radialGradient id="c" data-name="Sfumatura senza nome 336" cx="125" cy="250" fx="125" fy="250" r="153.05" gradientTransform="translate(0 2.41)" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ff9800"/>
+            <stop offset=".2" stop-color="#ff8600"/>
+            <stop offset="1" stop-color="#ff8500"/>
+        </radialGradient>
+    </defs>
+    <path style="fill:url(#b);stroke-width:0" d="m125 500 125-75H0l125 75z"/>
+    <path transform="rotate(180 50 387.5)" style="fill:url(#a);stroke-width:0" d="M0 350h100v75H0z"/>
+    <path style="fill:url(#c);stroke-width:0" d="M250 322.59V425H150V322.59L0 174.04V75h100v99.04l150 148.55z"/>
+    <path style="stroke-width:0;fill:url(#d)" d="M150 75h100v75H150z"/>
+    <path style="fill:url(#e);stroke-width:0" d="M125 0 0 75h250L125 0z"/>
+    <path transform="rotate(180 50 387.5)" style="fill:url(#f);stroke-width:0" d="M0 350h100v75H0z"/>
+    <path style="fill:url(#g);stroke-width:0" d="M250 322.59V425H150V322.59L0 174.04V75h100v99.04l150 148.55z"/>
+    <path style="fill:url(#h);stroke-width:0" d="M150 75h100v75H150z"/>
+</svg>

@@ -26,7 +26,7 @@ class UpdateDialog extends StatelessWidget {
             actions: [
                 TextButton(
                     child: const Text('Ignora'),
-                    onPressed: () => Navigator.of(context).pop()
+                    onPressed: () => Navigator.of(context).pop(false)
                 ),
                 TextButton(
                     child: Text(action),
@@ -36,7 +36,7 @@ class UpdateDialog extends StatelessWidget {
                                 return;
                             if(SPlatform.isMobile)
                                 ScaffoldMessenger.of(context).showSnackBar(this._buildUpdateSnackBar());
-                            Navigator.of(context).pop();
+                            Navigator.of(context).pop(true);
                         });
                     }
                 )
