@@ -7,7 +7,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart' show ValueNotifier;
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:stronzflix/backend/api/ffmpeg_wrapper.dart';
+import 'package:stronzflix/backend/ffmpeg_wrapper.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/utils/simple_http.dart' as http;
 import 'package:stronzflix/utils/utils.dart';
