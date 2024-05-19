@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
+import 'package:stronzflix/backend/downloads/download_manager.dart';
+import 'package:stronzflix/backend/settings.dart';
 import 'package:stronzflix/components/result_card.dart';
-import 'package:stronzflix/pages/title_page.dart';
+import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 
 class SearchPage extends SearchDelegate {
 
@@ -36,26 +38,34 @@ class SearchPage extends SearchDelegate {
         );
     }
 
-    void _openResult(BuildContext context, SearchResult result) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TitlePage(result: result)
+    Widget _buildNoResults(BuildContext context) {
+        return const Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                    Icon(Icons.search_off, size: 100),
+                    SizedBox(height: 10),
+                    Text("Nessun risultato")
+                ]
             )
         );
     }
 
-    Widget _buildGrid(BuildContext context, List<SearchResult> results) {
+    Widget _buildGrid(BuildContext context, List<TitleMetadata> results) {
         return GridView.extent(
             childAspectRatio: 2 / 3,
             maxCrossAxisExtent: 250,
-            children: results.map((SearchResult result) =>
+            children: results.map((TitleMetadata result) =>
                 Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ResultCard(
-                        onTap: () => this._openResult(context, result),
+                        onTap: () => Navigator.pushNamed(context, '/title', arguments: result),
                         imageUrl: result.poster,
-                        text: result.name
+                        text: result.name,
+                        action: Site.get(Settings.site)!.isLocal
+                            ? () => this._delete(context, result)
+                            : null,
+                        actionIcon: Icons.delete,
                     )
                 )
             ).toList()
@@ -65,10 +75,13 @@ class SearchPage extends SearchDelegate {
     @override
     Widget buildResults(BuildContext context) {
         return FutureBuilder(
-            future: Site.get("StreamingCommunity")?.search(super.query),
+            future: Site.get(Settings.site)?.search(super.query),
             builder: (context, snapshot) {
                 if (snapshot.hasData)
-                    return this._buildGrid(context, snapshot.data!);
+                    if(snapshot.data!.isEmpty)
+                        return this._buildNoResults(context);
+                    else
+                        return this._buildGrid(context, snapshot.data!);
                 else
                     return const Center(
                         child: CircularProgressIndicator()
@@ -79,4 +92,17 @@ class SearchPage extends SearchDelegate {
 
     @override
     Widget buildSuggestions(BuildContext context) => this.buildResults(context);
+
+    void _delete(BuildContext context, TitleMetadata metadata) async {
+        bool delete = await ConfirmationDialog.ask(context,
+            "Elimina ${metadata.name}",
+            "Sei sicuro di voler eliminare ${metadata.name}?",
+            action: "Elimina"
+        );
+        if (delete) {
+            await DownloadManager.delete(await Site.get(Settings.site)!.getTitle(metadata));
+            // ignore: use_build_context_synchronously
+            super.showResults(context);
+        }
+    }
 }
