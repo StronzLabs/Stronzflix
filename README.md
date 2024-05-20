@@ -22,6 +22,6 @@ The developers of this application neither host nor distribute any of the conten
 ---
 TODOs:
 - [ ] OS media Bindings
-- [ ] Specialized platform controls
+- [ ] Mobile notification during download
 - [ ] Better sink implementation
 - [ ] Automagically find updated domains
