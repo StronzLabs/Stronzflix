@@ -72,6 +72,7 @@ class Stronzflix extends StatelessWidget {
         SystemChrome.setPreferredOrientations([
             DeviceOrientation.portraitUp
         ]);
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
         SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             systemNavigationBarColor: Colors.transparent,
@@ -82,6 +83,7 @@ class Stronzflix extends StatelessWidget {
                 LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
             },
             child: MaterialApp(
+                themeMode: ThemeMode.dark,
                 title: 'Stronzflix',
                 theme: Stronzflix.theme,
                 initialRoute: '/loading',
