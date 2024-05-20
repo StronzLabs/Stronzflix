@@ -93,7 +93,7 @@ jobs:
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0-0.3.pre'
+          flutter-version: '3.22.0-36.0.pre.56'
           channel: 'main' # app crushes with animated icons on stable
           cache: true
           cache-key: 'flutter-linux'
@@ -148,7 +148,7 @@ jobs:
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0-0.3.pre'
+          flutter-version: '3.22.0'
           channel: 'stable'
           cache: true
           cache-key: 'flutter-android'
