@@ -76,7 +76,8 @@ class _DownloadsDrawerState extends State<DownloadsDrawer> {
 
     @override
     Widget build(BuildContext context) {
-        return Drawer(
+        return SafeArea(
+            child: Drawer(
             backgroundColor: Theme.of(context).colorScheme.background,
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.zero
@@ -119,6 +120,7 @@ class _DownloadsDrawerState extends State<DownloadsDrawer> {
                     );
                 }
             ),
+        )
         );
     }
 }
