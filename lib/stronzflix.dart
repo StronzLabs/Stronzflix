@@ -72,6 +72,10 @@ class Stronzflix extends StatelessWidget {
         SystemChrome.setPreferredOrientations([
             DeviceOrientation.portraitUp
         ]);
+        SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            systemNavigationBarColor: Colors.transparent,
+        ));
 
         return Shortcuts(
             shortcuts: <LogicalKeySet, Intent>{
