@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:stronzflix/components/player/stronzflix_player_controller.dart';
 
 class PlayPauseButton extends StatefulWidget {
+    final double iconSize;
+
     const PlayPauseButton({
         super.key,
+        this.iconSize = 28,
     });
 
     @override
@@ -48,11 +51,11 @@ class _PlayPauseButtonState extends State<PlayPauseButton> with SingleTickerProv
     Widget build(BuildContext context) {
         return IconButton(
             onPressed: playerController(context).playOrPause,
-            iconSize: 28, 
+            iconSize: super.widget.iconSize, 
             icon: AnimatedIcon(
                 progress: this._animation,
                 icon: AnimatedIcons.play_pause,
-                size: 28,
+                size: super.widget.iconSize,
             )
         );
     }
