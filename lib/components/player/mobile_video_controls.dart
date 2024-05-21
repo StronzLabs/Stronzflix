@@ -40,40 +40,37 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
 
     Widget _buildBuffering(BuildContext context) {
         return IgnorePointer(
-            child: Padding(
-                padding: MediaQuery.of(context).padding,
-                child: Column(
-                    children: [
-                        Container(
-                            height: 56,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                        ),
-                        Expanded(
-                            child: Center(
-                                child: TweenAnimationBuilder<double>(
-                                    tween: Tween<double>(
-                                        begin: 0.0,
-                                        end: this._buffering ? 1.0 : 0.0,
-                                    ),
-                                    duration: const Duration(milliseconds: 150),
-                                    builder: (context, value, child) {
-                                        if (value > 0.0)
-                                            return Opacity(
-                                                opacity: value,
-                                                child: child!,
-                                            );
-                                        return const SizedBox.shrink();
-                                    },
-                                    child: const CircularProgressIndicator(),
+            child: Column(
+                children: [
+                    Container(
+                        height: 56,
+                        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                    ),
+                    Expanded(
+                        child: Center(
+                            child: TweenAnimationBuilder<double>(
+                                tween: Tween<double>(
+                                    begin: 0.0,
+                                    end: this._buffering ? 1.0 : 0.0,
                                 ),
+                                duration: const Duration(milliseconds: 150),
+                                builder: (context, value, child) {
+                                    if (value > 0.0)
+                                        return Opacity(
+                                            opacity: value,
+                                            child: child!,
+                                        );
+                                    return const SizedBox.shrink();
+                                },
+                                child: const CircularProgressIndicator(),
                             ),
                         ),
-                        Container(
-                            height: 56,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                        )
-                    ]
-                )
+                    ),
+                    Container(
+                        height: 56,
+                        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                    )
+                ]
             )
         );
     }
@@ -210,27 +207,24 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                         children: [
                             this._buildTopGradient(context),
                             this._buildBottomGradient(context),
-                            Padding(
-                                padding: MediaQuery.of(context).padding,
-                                child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                        if(this._mount)
-                                            this._buildTopBar(context),
-                                        Expanded(
-                                            child: this._buffering
-                                                ? const SizedBox.shrink()
-                                                : this._buildPrimaryBar(context)
-                                        ),
-                                        if(this._mount)
-                                            ...[
-                                                this._buildSeekBar(context),
-                                                this._buildBottomBar(context)
-                                            ]
-                                    ]
-                                )
+                            Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                    if(this._mount)
+                                        this._buildTopBar(context),
+                                    Expanded(
+                                        child: this._buffering
+                                            ? const SizedBox.shrink()
+                                            : this._buildPrimaryBar(context)
+                                    ),
+                                    if(this._mount)
+                                        ...[
+                                            this._buildSeekBar(context),
+                                            this._buildBottomBar(context)
+                                        ]
+                                ]
                             )
                         ],
                     ),
@@ -272,7 +266,7 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
         super.initState();
         this._peerMessagesSubscription = PeerMessenger.messages.listen(this._handlePeerMessage);
         this._restartTimer();
-        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky, overlays: []);
         SystemChrome.setPreferredOrientations([
             DeviceOrientation.landscapeLeft,
             DeviceOrientation.landscapeRight,
