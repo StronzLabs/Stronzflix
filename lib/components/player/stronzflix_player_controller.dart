@@ -64,7 +64,11 @@ StronzflixPlayerController playerController(BuildContext context, {bool listen =
 
 class LocalPlayerController extends StronzflixPlayerController {
 
-    final Player _player = Player();
+    final Player _player = Player(
+        configuration: const PlayerConfiguration(
+            title: "Stronzflix"
+        )
+    );
     late final VideoController _controller = VideoController(this._player);
     VideoController get controller => this._controller;
 
