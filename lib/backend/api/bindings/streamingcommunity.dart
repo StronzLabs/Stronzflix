@@ -20,14 +20,21 @@ class StreamingCommunity extends Site {
 
     @override
     Future<void> construct() async {
-        await this.getInhertia();
+        await this._getInhertia();
     }
 
-    Future<void> getInhertia() async {
+    Future<void> _getInhertia() async {
         String body = await http.get(super.url);
         RegExpMatch match = RegExp(r'version&quot;:&quot;(?<inertia>[a-z0-9]+)&quot;').firstMatch(body)!;
         this._inhertia["X-Inertia"] = "true";
         this._inhertia["X-Inertia-Version"] = match.namedGroup("inertia")!;
+    }
+
+    String _findImage(Map<String, dynamic> json, String type) {
+        return json["images"].firstWhere(
+            (dynamic image) => image["type"] == type,
+            orElse: () => { "filename": "" }
+        )["filename"];
     }
 
     Future<List<TitleMetadata>> _fetch(String url) async {
@@ -37,7 +44,7 @@ class StreamingCommunity extends Site {
 
         List<TitleMetadata> results = [];
         for (dynamic title in titles) {
-            String poster = title["images"].firstWhere((dynamic image) => image["type"] == "poster")["filename"];
+            String poster = this._findImage(title, "poster");
 
             results.add(TitleMetadata(
                 site: this,
@@ -61,7 +68,7 @@ class StreamingCommunity extends Site {
     }
 
     Future<Film> getFilm(TitleMetadata metadata, dynamic title) async {
-        String banner = title["images"].firstWhere((dynamic image) => image["type"] == "cover_mobile")["filename"];
+        String banner = this._findImage(title, "cover_mobile");
         
         return Film(
             player: VixxCloud.instance,
@@ -85,14 +92,14 @@ class StreamingCommunity extends Site {
                     player: VixxCloud.instance,
                     url: "/watch/${titleId}?e=${episode["id"]}",
                     name: episode["name"],
-                    cover: "${this._cdn}/images/${episode["images"].firstWhere((dynamic image) => image["type"] == "cover")["filename"]}",
+                    cover: "${this._cdn}/images/${this._findImage(episode, "cover")}",
                     season: season
                 )
         ];
     }
 
     Future<Series> getSeries(TitleMetadata metadata, dynamic title) async {
-        String banner = title["images"].firstWhere((dynamic image) => image["type"] == "cover_mobile")["filename"];
+        String banner = this._findImage(title, "cover_mobile");
         
         Series series = Series(
             metadata: metadata,
