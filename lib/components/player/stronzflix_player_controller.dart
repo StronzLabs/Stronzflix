@@ -43,7 +43,7 @@ abstract class StronzflixPlayerController {
     bool get isCompleted;
     StronzflixPlayerStream get stream;
 
-    // Future<void> initialize(Uri uri);
+    Future<void> initialize(Uri uri, Duration startAt);
     Future<void> dispose();
 
     @mustCallSuper
@@ -69,8 +69,13 @@ class LocalPlayerController extends StronzflixPlayerController {
             title: "Stronzflix"
         )
     );
-    late final VideoController _controller = VideoController(this._player);
+    late VideoController _controller;
     VideoController get controller => this._controller;
+
+    LocalPlayerController() {
+        // FIXME: https://github.com/media-kit/media-kit/issues/837#issuecomment-2125734802
+        this._controller = VideoController(this._player);
+    }
 
     @override
     Duration get position => this._controller.player.state.position;
@@ -97,7 +102,7 @@ class LocalPlayerController extends StronzflixPlayerController {
         completed: this._controller.player.stream.completed,
     );
 
-    // @override
+    @override
     Future<void> initialize(Uri uri, Duration startAt) async {
         await this._player.open(Media(
             uri.toString(),
@@ -135,9 +140,12 @@ class LocalPlayerController extends StronzflixPlayerController {
 
 class CastPlayerController extends StronzflixPlayerController {
     late final CastManager _castManager;
+    final CastDevice _device;
     int? _mediaSessionId;
 
     Timer? _pollTimer;
+
+    CastPlayerController(this._device);
 
     bool _playing = false;
     final StreamController<bool> _playingStream = StreamController<bool>.broadcast();
@@ -184,9 +192,9 @@ class CastPlayerController extends StronzflixPlayerController {
         return response.headers["content-type"] ?? "application/vnd.apple.mpegurl";
     }
 
-    // @override
-    Future<void> initialize(Uri uri, Duration startAt, CastDevice device) async {
-        this._castManager = await CastManager.connect(device);
+    @override
+    Future<void> initialize(Uri uri, Duration startAt) async {
+        this._castManager = await CastManager.connect(this._device);
         this._castManager.registerListener(this._updateValue);
 
         String contentType = await this._findContenType(uri);

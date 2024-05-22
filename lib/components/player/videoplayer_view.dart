@@ -24,8 +24,15 @@ class VideoPlayerView extends StatefulWidget {
 
 class _VideoPlayerViewState extends State<VideoPlayerView> {
 
-    final LocalPlayerController _controller = LocalPlayerController();
+    late final LocalPlayerController _controller;
     final AsyncMemoizer _controllerMemorizer = AsyncMemoizer();
+
+    @override
+    void initState() {
+        super.initState();
+        // FIXME: https://github.com/media-kit/media-kit/issues/837#issuecomment-2125734802
+        this._controller = LocalPlayerController();
+    }
 
     @override
     Widget build(BuildContext context) {

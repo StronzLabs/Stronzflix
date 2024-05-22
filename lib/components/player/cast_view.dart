@@ -23,7 +23,7 @@ class CastView extends StatefulWidget {
 
 class _CastViewState extends State<CastView> {
 
-    final CastPlayerController _controller = CastPlayerController();
+    late final CastPlayerController _controller;
     final AsyncMemoizer _controllerMemorizer = AsyncMemoizer();
     
     Widget _buildBackground(BuildContext context, Watchable watchable) {
@@ -46,9 +46,10 @@ class _CastViewState extends State<CastView> {
             child: Provider<StronzflixPlayerController>(
                 create: (_) => this._controller,
                 child: FutureBuilder(
-                    future: this._controllerMemorizer.runOnce(
-                        () => this._controller.initialize(super.widget.uri, playerInfo.startAt, playerInfo.device!)
-                    ),
+                    future: this._controllerMemorizer.runOnce(() {
+                        this._controller = CastPlayerController(playerInfo.device!);
+                        this._controller.initialize(super.widget.uri, playerInfo.startAt);
+                    }),
                     builder: (context, snapshot) {
                         if(snapshot.connectionState != ConnectionState.done)
                             return const CircularProgressIndicator();
