@@ -7,20 +7,25 @@ import 'package:stronzflix/utils/simple_http.dart' as http;
 
 class StreamingCommunity extends Site {
 
-    static Site instance = StreamingCommunity._("https://streamingcommunity.foo");
+    static Site instance = StreamingCommunity._();
 
-    StreamingCommunity._(String url)
-        : _cdn = url.replaceFirst("//", "//cdn."), _inhertia = {}, super("StreamingCommunity", url);
+    String get _cdn => super.url.replaceFirst("//", "//cdn.");
+    final Map<String, String> _inhertia = {};
 
-    final String _cdn;
-    final Map<String, String> _inhertia;
+    StreamingCommunity._() : super("StreamingCommunity", "streamingcommunity");
 
     @override
     bool get allowsDownload => true;
 
     @override
     Future<void> construct() async {
+        await super.construct();
         await this._getInhertia();
+    }
+
+    @override
+    bool tunerValidator(String homePage) {
+        return homePage.contains("<meta name=\"author\" content=\"StreamingCommunity\">");
     }
 
     Future<void> _getInhertia() async {

@@ -4,6 +4,7 @@ import 'package:stronzflix/backend/api/site.dart';
 import 'package:stronzflix/backend/settings.dart';
 import 'package:stronzflix/backend/version.dart';
 import 'package:stronzflix/components/select_dropdown.dart';
+import 'package:stronzflix/dialogs/loading_dialog.dart';
 import 'package:stronzflix/utils/platform.dart';
 
 class SettingsDialog extends StatelessWidget {
@@ -82,7 +83,27 @@ class SettingsDialog extends StatelessWidget {
                             onSelected: (selection) {
                                 Settings.site = selection.name;
                                 Settings.save();
-                            }
+                            },
+                            actionIcon: Icons.find_replace_rounded,
+                            action: (site) {
+                                LoadingDialog.progress(
+                                    context,
+                                    () async* {
+                                        await for(dynamic res in site.tune()) {
+                                            if(res is double)
+                                                yield res;
+                                            else if (res == null)
+                                                await showDialog(
+                                                    context: context,
+                                                    builder: (context) => const AlertDialog(
+                                                        title: Text("Errore"),
+                                                        content: Text("La sintonizzazione non è andata a buon fine.")
+                                                    )
+                                                );
+                                        }
+                                    }
+                                );
+                            },
                         ),
                         const SizedBox(height: 32),
                         const Divider(),
