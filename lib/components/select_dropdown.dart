@@ -6,6 +6,8 @@ class SelectDropDown<T> extends StatefulWidget {
     final T? selectedValue;
     final Function(T) onSelected;
     final String Function(T)? stringify;
+    final IconData? actionIcon;
+    final void Function(T)? action;
     
     const SelectDropDown({
         super.key,
@@ -14,6 +16,8 @@ class SelectDropDown<T> extends StatefulWidget {
         required this.selectedValue,
         required this.onSelected,
         this.stringify,
+        this.actionIcon,
+        this.action
     });
     
     @override
@@ -27,6 +31,20 @@ class _SelectDropDownState<T> extends State<SelectDropDown<T>> {
 
     String _elementToString(T e) => super.widget.stringify != null ? super.widget.stringify!(e) : e.toString();
 
+    Widget _buildElement(T? element) {
+        return Row(
+            children: [
+                if(element != null && super.widget.action != null) ...[
+                    IconButton(
+                        icon: Icon(super.widget.actionIcon ?? Icons.edit),
+                        onPressed: () => super.widget.action!(element as T),
+                    ),
+                    const SizedBox(width: 10),
+                ],
+                Text(element == null ? "Seleziona" : this._elementToString(element))
+            ],
+        );
+    }
 
     @override
     Widget build(BuildContext context) {
@@ -46,14 +64,12 @@ class _SelectDropDownState<T> extends State<SelectDropDown<T>> {
                     ),
                     child: ExpansionTile(
                         controller: this._controller,
-                        title: Text(this._selectedValue == null
-                            ? "Seleziona"
-                            : this._elementToString(this._selectedValue as T)),
+                        title: this._buildElement(this._selectedValue),
                         children: <Widget>[
                             Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: super.widget.options.where((element) => element != this._selectedValue) .map((e) => ListTile(
-                                    title: Text(this._elementToString(e)),
+                                    title: this._buildElement(e),
                                     onTap: () {
                                         super.setState(() => this._selectedValue = e);
                                         super.widget.onSelected(e);
