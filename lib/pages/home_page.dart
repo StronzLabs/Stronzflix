@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
         return Scaffold(
             appBar: this._buildAppBar(context),
             drawer: const DownloadsDrawer(),
-            floatingActionButton: SPlatform.isDesktop ? this._buildSinkButton(context) : null,
+            floatingActionButton: SPlatform.isDesktop && Settings.online ? this._buildSinkButton(context) : null,
             body: ListView(
                 padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
                 children: [

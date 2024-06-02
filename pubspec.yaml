@@ -13,6 +13,7 @@ dependencies:
     git:
       url: https://github.com/guyluz11/flutter_cast.git
       ref: updating_bonsoir_pacakge
+  connectivity_plus: ^6.0.3
   crypto: ^3.0.3
   ffmpeg_kit_flutter: ^6.0.3
   flutter:
@@ -72,3 +73,4 @@ flutter:
 
   assets:
     - assets/logo.svg
+    - assets/tld_list.txt
