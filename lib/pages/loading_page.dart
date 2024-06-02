@@ -34,36 +34,56 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     String? _error;
     bool _updating = false;
 
-    Stream<double> _doLoading() async* {
+    Future<bool> _checkUpdate() async {
         bool shouldUpdate = await VersionChecker.shouldUpdate();
-        if(shouldUpdate && super.mounted) {
-            bool updating = await showDialog<bool?>(
-                context: context,
-                builder: (context) => const UpdateDialog()
-            ) ?? false;
-            super.setState(() => this._updating = updating);
-            if(this._updating)
-                return;
+        if(!shouldUpdate)
+            return false;
+
+        if(!super.mounted)
+            return false;
+
+        bool updating = await showDialog<bool?>(
+            context: context,
+            builder: (context) => const UpdateDialog()
+        ) ?? false;
+        super.setState(() => this._updating = updating);
+        return updating;
+    }
+
+    Stream<double> _load(List<Future> loadingPhase) async* {
+        for (int i = 0; i < loadingPhase.length; i++) {
+            yield (i + 1) / loadingPhase.length / 3;
+            await loadingPhase[i];
         }
+    }
 
-        await Settings.load();
+    Stream<double> _doLoading() async* {
+        if(await this._checkUpdate())
+            return;
 
-        List<Future> operations = [
+        double phases = 3.0;
+        double step = 1.0 / 3.0;
+        
+        await for (double percentage in this._load([
+            Settings.load()
+        ]))
+            yield step * 0 + percentage / phases;
+
+        await for (double percentage in this._load([
             StreamingCommunity.instance.ensureInitialized(),
             VixxCloud.instance.ensureInitialized(),
             LocalSite.instance.ensureInitialized(),
             LocalPlayer.instance.ensureInitialized(),
             AnimeSaturn.instance.ensureInitialized(),
             Streampeaker.instance.ensureInitialized(),
-        ];
+        ]))
+            yield step * 1 + percentage / phases;
 
-        for (int i = 0; i < operations.length; i++) {
-            yield (i + 1) / operations.length;
-            await operations[i];
-        }
-
-        await KeepWatching.init();
-        PeerManager.init();
+        await for (double percentage in this._load([
+            KeepWatching.init(),
+            PeerManager.init(),
+        ]))
+            yield step * 2 + percentage / phases;
     }
 
     @override
