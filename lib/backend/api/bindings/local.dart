@@ -7,8 +7,11 @@ import 'package:stronzflix/backend/api/player.dart';
 import 'package:stronzflix/backend/api/site.dart';
 
 class LocalSite extends Site {
-    static Site instance = LocalSite._("file://");
-    LocalSite._(String url) : super("Scaricati", url);
+    static Site instance = LocalSite._();
+    LocalSite._() : super("Scaricati", "");
+
+    @override
+    bool tunerValidator(String homePage) => true;
 
     TitleMetadata _extractMetadata(Directory directory, [Map<String, dynamic>? metadata]) {
         metadata ??= jsonDecode(

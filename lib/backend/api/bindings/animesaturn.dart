@@ -7,10 +7,13 @@ import 'package:html/dom.dart';
 
 class AnimeSaturn extends Site {
 
-    static Site instance = AnimeSaturn._("https://www.animesaturn.bz/");
+    static Site instance = AnimeSaturn._();
+    AnimeSaturn._():  super("AnimeSaturn", "www.animesaturn");
 
-    AnimeSaturn._(String url)
-        :  super("AnimeSaturn", url);
+    @override
+    bool tunerValidator(String homePage) {
+        return homePage.contains("<meta content=\"AnimeSaturn - Streaming di Anime in Sub ITA e ITA\">");
+    }
 
     List<Episode> getEpisodes(Season season, Element episodesGrid, String cover) {
         List<Episode> episodes = [];

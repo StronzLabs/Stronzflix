@@ -11,10 +11,9 @@ class VixxCloud extends Player {
     static Player instance = VixxCloud._();
 
     final HtmlUnescape _html = HtmlUnescape();
-    final String _streamingCommunityUrl;
+    String get _streamingCommunityUrl => StreamingCommunity.instance.url;
 
-    VixxCloud._()
-        : _streamingCommunityUrl = StreamingCommunity.instance.url, super("VixxCloud");
+    VixxCloud._() : super("VixxCloud");
 
     @override
     Future<Uri> getSource(Watchable media) async {
