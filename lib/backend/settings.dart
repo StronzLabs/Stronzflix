@@ -6,6 +6,7 @@ class Settings {
     static late final SharedPreferences _prefs;
 
     static late String site;
+    static bool online = false;
 
     static Future<void> load() async {
         Settings._prefs = await SharedPreferences.getInstance();

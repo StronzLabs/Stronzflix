@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:stronzflix/backend/api/bindings/animesaturn.dart';
@@ -9,6 +12,7 @@ import 'package:stronzflix/backend/keep_watching.dart';
 import 'package:stronzflix/backend/peer/peer_manager.dart';
 import 'package:stronzflix/backend/settings.dart';
 import 'package:stronzflix/backend/version.dart';
+import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/update_dialog.dart';
 
 class LoadingPage extends StatefulWidget {
@@ -57,10 +61,20 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         }
     }
 
-    Stream<double> _doLoading() async* {
-        if(await this._checkUpdate())
-            return;
+    Future<bool> _checkConnection() async {
+        if((await Connectivity().checkConnectivity()).contains(ConnectivityResult.none)) {
+            if(super.mounted && !await ConfirmationDialog.ask(
+                super.context,
+                "Connessione Assente",
+                "Non è presente una connessione ad internet. Vuoi continuare in modalità offline?"
+            ))
+                exit(0);
+            return false;
+        }
+        return true;
+    }
 
+    Stream<double> _doLoading() async* {
         double phases = 3.0;
         double step = 1.0 / 3.0;
         
@@ -68,6 +82,16 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
             Settings.load()
         ]))
             yield step * 0 + percentage / phases;
+
+        Settings.online = await this._checkConnection();
+        if(!Settings.online) {
+            Settings.site = LocalSite.instance.name;
+            Settings.save();
+            return;
+        }
+
+        if(await this._checkUpdate())
+            return;
 
         await for (double percentage in this._load([
             StreamingCommunity.instance.ensureInitialized(),
