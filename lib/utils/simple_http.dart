@@ -1,25 +1,30 @@
 import 'dart:typed_data';
 
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 
-Future<http.Response> _get(dynamic url, {Map<String, String>? headers}) async {
+Future<Response> _get(dynamic url, {Map<String, String>? headers, bool followRedirects = true}) async {
     assert(url is String || url is Uri);
     headers ??= {};
     if(!headers.containsKey("User-Agent"))
         headers["User-Agent"] = "Stronzflix";
 
-    return (await http.get(url is Uri ? url : Uri.parse(url), headers: headers));
+    Request req = Request("Get", url is Uri ? url : Uri.parse(url));
+    req.headers.addAll(headers);
+    req.followRedirects = followRedirects;
+    Client baseClient = Client();
+    StreamedResponse response = await baseClient.send(req);
+    return Response.fromStream(response);
 }
 
-Future<String> get(dynamic url, {Map<String, String>? headers}) async {
-    return (await _get(url, headers: headers)).body;
+Future<String> get(dynamic url, {Map<String, String>? headers, bool followRedirects = true}) async {
+    return (await _get(url, headers: headers, followRedirects: followRedirects)).body;
 }
 
-Future<Uint8List> getRaw(dynamic url, {Map<String, String>? headers}) async {
+Future<Uint8List> getRaw(dynamic url, {Map<String, String>? headers, bool followRedirects = true}) async {
     assert(url is String || url is Uri);
     headers ??= {};
     if(!headers.containsKey("User-Agent"))
         headers["User-Agent"] = "Stronzflix";
 
-    return (await _get(url, headers: headers)).bodyBytes;
+    return (await _get(url, headers: headers, followRedirects: followRedirects)).bodyBytes;
 }
