@@ -24,4 +24,4 @@ TODOs:
 - [ ] OS media Bindings
 - [ ] Mobile notification during download
 - [ ] Better sink implementation
-- [ ] Automagically find updated domains
+- [ ] Optimize for AndroidTV / FireStick
