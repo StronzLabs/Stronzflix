@@ -217,17 +217,17 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
                         }
                     )
                 ),
-                if  (this._showAdditionalInfo) ...[
-                    const SizedBox(height: 20),
-                    const Text("La sintonizzazione è in corso, potrebbero volerci alcuni minuti",
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange,
-                        ),
-                        textAlign: TextAlign.center,
-                    )
-                ]
+                const SizedBox(height: 20),
+                Text(this._showAdditionalInfo
+                    ? "La sintonizzazione è in corso, potrebbero volerci alcuni minuti"
+                    : "",
+                    style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange,
+                    ),
+                    textAlign: TextAlign.center,
+                )
             ]
         );
     }
