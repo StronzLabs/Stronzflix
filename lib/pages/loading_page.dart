@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -37,6 +38,8 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     double _currentPercentage = 0.0;
     String? _error;
     bool _updating = false;
+    Timer? _additionalInfoTimer;
+    bool _showAdditionalInfo = false;
 
     Future<bool> _checkUpdate() async {
         bool shouldUpdate = await VersionChecker.shouldUpdate();
@@ -93,6 +96,12 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         if(await this._checkUpdate())
             return;
 
+        this._additionalInfoTimer = Timer(const Duration(seconds: 5), () {
+            if(!super.mounted)
+                return;
+            super.setState(() => this._showAdditionalInfo = true);
+        });
+
         await for (double percentage in this._load([
             StreamingCommunity.instance.ensureInitialized(),
             VixxCloud.instance.ensureInitialized(),
@@ -137,6 +146,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     @override
     void dispose() {
         this._controller.dispose();
+        this._additionalInfoTimer?.cancel();
         super.dispose();
     }
 
@@ -206,7 +216,18 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
                             );
                         }
                     )
-                )
+                ),
+                if  (this._showAdditionalInfo) ...[
+                    const SizedBox(height: 20),
+                    const Text("La sintonizzazione è in corso, potrebbero volerci alcuni minuti",
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                        ),
+                        textAlign: TextAlign.center,
+                    )
+                ]
             ]
         );
     }
