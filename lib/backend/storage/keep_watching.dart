@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
+import 'package:stronzflix/backend/storage/local_storage.dart';
 
 class SerialMetadata {
     final TitleMetadata metadata;
@@ -55,78 +55,18 @@ class SerialMetadata {
     };
 }
 
-sealed class KeepWatching {
-    KeepWatching._();
+class KeepWatching extends LocalStorage {
+    static final KeepWatching instance = KeepWatching._();
+    KeepWatching._() : super({ "KeepWatching": <String>[] });
 
-    static late SharedPreferences _prefs;
+    final Map<String, SerialMetadata> _keepWatching = {};
+    static List<TitleMetadata> get metadata => KeepWatching.instance._keepWatching.values.map((data) => data.metadata).toList();
 
-    static final Map<String, SerialMetadata> _keepWatching = {};
-    static List<TitleMetadata> get metadata => KeepWatching._keepWatching.values.map((data) => data.metadata).toList();
-    
-    static Future<Watchable?> getWatchable(TitleMetadata metadata) async{
-        String id = metadata.site.name + metadata.url;
-        if(KeepWatching._keepWatching.containsKey(id))
-            return Watchable.unserialize(
-                KeepWatching._keepWatching[id]!.metadata,
-                KeepWatching._keepWatching[id]!.info
-            );
-        
-        return null;
-    }
+    @override
+    Future<void> construct() async {
+        await super.construct();
 
-    static int? getTimestamp(Watchable watchable) {
-        TitleMetadata data = watchable.metadata;
-        String info = Watchable.genInfo(watchable);
-        String id = data.site.name + data.url;
-        if (KeepWatching._keepWatching.containsKey(id) && KeepWatching._keepWatching[id]?.info == info)
-            return KeepWatching._keepWatching[id]?.timestamp;
-        return null;
-    }
-
-    static int? getDuration(Watchable watchable) {
-        TitleMetadata data = watchable.metadata;
-        String info = Watchable.genInfo(watchable);
-        String id = data.site.name + data.url;
-        if (KeepWatching._keepWatching.containsKey(id) && KeepWatching._keepWatching[id]?.info == info)
-            return KeepWatching._keepWatching[id]?.duration;
-        return null;
-    }
-
-    static Future<void> init() async {
-        KeepWatching._prefs = await SharedPreferences.getInstance();
-
-        if (!KeepWatching._prefs.containsKey("KeepWatching"))
-            KeepWatching._prefs.setStringList("KeepWatching", []);
-
-        KeepWatching.unserialize();
-    }
-
-    static void add(Watchable watchable, int timestamp, int duration) {
-        SerialMetadata data = SerialMetadata.fromWatchable(watchable, timestamp, duration);
-        String id = data.metadata.site.name + data.metadata.url;
-        KeepWatching._keepWatching[id] = data;
-
-        KeepWatching.serialize();
-    }
-
-    static void remove(TitleMetadata metadata) {
-        String id = metadata.site.name + metadata.url;
-        KeepWatching._keepWatching.remove(id);
-
-        KeepWatching.serialize();
-    }
-
-    static Future<void> serialize() async {
-        List<String> list = [];
-        for (SerialMetadata data in KeepWatching._keepWatching.values) {
-            list.add(jsonEncode(data.serialize()));
-        }
-        await KeepWatching._prefs.setStringList("KeepWatching", list);
-    }
-
-    static void unserialize() {
-        List<String> list = KeepWatching._prefs.getStringList("KeepWatching")!;
-        for (String json in list) {
+        for (String json in super["KeepWatching"]) {
             Map<String, dynamic> data = jsonDecode(json);
             TitleMetadata metadata = TitleMetadata(
                 name: data["metadata"]["name"],
@@ -139,7 +79,62 @@ sealed class KeepWatching {
             int duration = data["duration"];
 
             String id = metadata.site.name + metadata.url;
-            KeepWatching._keepWatching[id] = SerialMetadata(metadata: metadata, info: info, timestamp: timestamp, duration: duration);
+            this._keepWatching[id] = SerialMetadata(metadata: metadata, info: info, timestamp: timestamp, duration: duration);
         }
+    }
+
+    @override
+    Future<void> save() async {
+        List<String> list = [];
+
+        for (SerialMetadata data in this._keepWatching.values)
+            list.add(jsonEncode(data.serialize()));
+        super["KeepWatching"] = list;
+
+        super.save();
+    }
+
+    static Future<Watchable?> getWatchable(TitleMetadata metadata) async{
+        String id = metadata.site.name + metadata.url;
+        if(KeepWatching.instance._keepWatching.containsKey(id))
+            return Watchable.unserialize(
+                KeepWatching.instance._keepWatching[id]!.metadata,
+                KeepWatching.instance._keepWatching[id]!.info
+            );
+        
+        return null;
+    }
+
+    static int? getTimestamp(Watchable watchable) {
+        TitleMetadata data = watchable.metadata;
+        String info = Watchable.genInfo(watchable);
+        String id = data.site.name + data.url;
+        if (KeepWatching.instance._keepWatching.containsKey(id) && KeepWatching.instance._keepWatching[id]?.info == info)
+            return KeepWatching.instance._keepWatching[id]?.timestamp;
+        return null;
+    }
+
+    static int? getDuration(Watchable watchable) {
+        TitleMetadata data = watchable.metadata;
+        String info = Watchable.genInfo(watchable);
+        String id = data.site.name + data.url;
+        if (KeepWatching.instance._keepWatching.containsKey(id) && KeepWatching.instance._keepWatching[id]?.info == info)
+            return KeepWatching.instance._keepWatching[id]?.duration;
+        return null;
+    }
+
+    static void add(Watchable watchable, int timestamp, int duration) {
+        SerialMetadata data = SerialMetadata.fromWatchable(watchable, timestamp, duration);
+        String id = data.metadata.site.name + data.metadata.url;
+        KeepWatching.instance._keepWatching[id] = data;
+
+        KeepWatching.instance.save();
+    }
+
+    static void remove(TitleMetadata metadata) {
+        String id = metadata.site.name + metadata.url;
+        KeepWatching.instance._keepWatching.remove(id);
+
+        KeepWatching.instance.save();
     }
 }

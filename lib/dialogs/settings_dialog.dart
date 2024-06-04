@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/site.dart';
-import 'package:stronzflix/backend/settings.dart';
+import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/backend/version.dart';
 import 'package:stronzflix/components/select_dropdown.dart';
 import 'package:stronzflix/dialogs/loading_dialog.dart';
@@ -79,10 +79,10 @@ class SettingsDialog extends StatelessWidget {
                         SelectDropDown<Site>(
                             label: "Sorgente",
                             options: Site.sites,
-                            selectedValue: Site.get(Settings.site),
+                            selectedValue: Settings.site,
                             onSelected: (selection) {
-                                Settings.site = selection.name;
-                                Settings.save();
+                                Settings.site = selection;
+                                Settings.update();
                             },
                             actionIcon: Icons.find_replace_rounded,
                             action: (site) {

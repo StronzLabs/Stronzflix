@@ -1,4 +1,4 @@
-import 'package:stronzflix/backend/api/initializable.dart';
+import 'package:stronzflix/utils/initializable.dart';
 import 'package:stronzflix/backend/api/media.dart';
 
 abstract class Player extends Initializable {

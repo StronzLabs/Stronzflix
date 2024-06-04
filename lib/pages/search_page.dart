@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/media.dart';
-import 'package:stronzflix/backend/api/site.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
-import 'package:stronzflix/backend/settings.dart';
+import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/components/result_card.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 
@@ -62,7 +61,7 @@ class SearchPage extends SearchDelegate {
                         onTap: () => Navigator.pushNamed(context, '/title', arguments: result),
                         imageUrl: result.poster,
                         text: result.name,
-                        action: Site.get(Settings.site)!.isLocal
+                        action: Settings.site.isLocal
                             ? () => this._delete(context, result)
                             : null,
                         actionIcon: Icons.delete,
@@ -75,7 +74,7 @@ class SearchPage extends SearchDelegate {
     @override
     Widget buildResults(BuildContext context) {
         return FutureBuilder(
-            future: Site.get(Settings.site)?.search(super.query),
+            future: Settings.site.search(super.query),
             builder: (context, snapshot) {
                 if (snapshot.hasData)
                     if(snapshot.data!.isEmpty)
@@ -100,7 +99,7 @@ class SearchPage extends SearchDelegate {
             action: "Elimina"
         );
         if (delete) {
-            await DownloadManager.delete(await Site.get(Settings.site)!.getTitle(metadata));
+            await DownloadManager.delete(await Settings.site.getTitle(metadata));
             // ignore: use_build_context_synchronously
             super.showResults(context);
         }
