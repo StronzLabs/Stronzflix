@@ -7,6 +7,7 @@ import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/media.dart' as sf show Title;
 import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/keep_watching.dart';
+import 'package:stronzflix/backend/saved_titles.dart';
 import 'package:stronzflix/components/expandable_text.dart';
 import 'package:stronzflix/components/result_card.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
@@ -263,6 +264,12 @@ class _TitlePageState extends State<TitlePage> {
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () => Navigator.of(context).pop(),
                 ),
+                actions: [
+                    IconButton(
+                        icon: Icon(SavedTitles.isSaved(this._metadata) ? Icons.favorite : Icons.favorite_border),
+                        onPressed: () => this._save(),
+                    )
+                ],
             ),
             body: FutureBuilder(
                 future: this._memoizer.runOnce(() => this._metadata.site.getTitle(this._metadata)),
@@ -280,6 +287,15 @@ class _TitlePageState extends State<TitlePage> {
     void _play(Watchable watchable) {
         Navigator.pushNamed(context, '/player', arguments: watchable)
         .then((value) => super.setState(() {}));
+    }
+
+    void _save() {
+        if(SavedTitles.isSaved(this._metadata))
+            SavedTitles.remove(this._metadata);
+        else
+            SavedTitles.add(this._metadata);
+
+        super.setState(() {});
     }
 
     void _download(Watchable watchable) async {
