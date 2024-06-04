@@ -267,7 +267,7 @@ class _TitlePageState extends State<TitlePage> {
                 actions: [
                     IconButton(
                         icon: Icon(SavedTitles.isSaved(this._metadata) ? Icons.favorite : Icons.favorite_border),
-                        onPressed: () => this._save(),
+                        onPressed: this._save,
                     ),
                     const SizedBox(width: 8)
                 ],
@@ -291,12 +291,12 @@ class _TitlePageState extends State<TitlePage> {
     }
 
     void _save() {
-        if(SavedTitles.isSaved(this._metadata))
-            SavedTitles.remove(this._metadata);
-        else
-            SavedTitles.add(this._metadata);
-
-        super.setState(() {});
+        super.setState(() {
+            if(SavedTitles.isSaved(this._metadata))
+                SavedTitles.remove(this._metadata);
+            else
+                SavedTitles.add(this._metadata);
+        });
     }
 
     void _download(Watchable watchable) async {

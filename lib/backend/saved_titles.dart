@@ -12,7 +12,7 @@ sealed class SavedTitles {
     static final Map<String, TitleMetadata> _savedTitles = {};
 
     static List<TitleMetadata> getAll() {
-        return _savedTitles.values.toList();
+        return SavedTitles._savedTitles.values.toList();
     }
 
     static Future<void> init() async {
