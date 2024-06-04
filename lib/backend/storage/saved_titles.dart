@@ -17,7 +17,7 @@ class SavedTitles extends LocalStorage {
         for (String json in super["SavedTitles"]) {
             Map<String, dynamic> data = jsonDecode(json);
 
-            Site? site = Site.get(data["metadata"]["site"]);
+            Site? site = Site.get(data["site"]);
             if(site == null)
                 continue;
 
