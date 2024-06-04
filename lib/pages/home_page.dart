@@ -131,13 +131,14 @@ class _HomePageState extends State<HomePage> {
                             : null,
                         actionIcon: Icons.delete,
                     ),
-                    ResultCardRow(
-                        title: "La mia lista",
-                        values: Future.value(SavedTitles.getAll()),
-                        onTap: (metadata) => this._openTitle(context, metadata),
-                        action: (metadata) => super.setState(() => SavedTitles.remove(metadata)),
-                        actionIcon: Icons.delete,
-                    ),
+                    if(Settings.online)
+                        ResultCardRow(
+                            title: "La mia lista",
+                            values: Future.value(SavedTitles.getAll()),
+                            onTap: (metadata) => this._openTitle(context, metadata),
+                            action: (metadata) => super.setState(() => SavedTitles.remove(metadata)),
+                            actionIcon: Icons.delete,
+                        ),
                 ]
             ),
         );
