@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
+import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/media.dart' as sf show Title;
 import 'package:stronzflix/backend/downloads/download_manager.dart';
@@ -264,7 +265,7 @@ class _TitlePageState extends State<TitlePage> {
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () => Navigator.of(context).pop(),
                 ),
-                actions: [
+                actions: this._metadata.site is LocalSite ? null : [
                     IconButton(
                         icon: Icon(SavedTitles.isSaved(this._metadata) ? Icons.bookmark_remove : Icons.bookmark_add_outlined),
                         onPressed: this._save,
