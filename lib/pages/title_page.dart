@@ -266,7 +266,7 @@ class _TitlePageState extends State<TitlePage> {
                 ),
                 actions: [
                     IconButton(
-                        icon: Icon(SavedTitles.isSaved(this._metadata) ? Icons.favorite : Icons.favorite_border),
+                        icon: Icon(SavedTitles.isSaved(this._metadata) ? Icons.bookmark_remove : Icons.bookmark_add_outlined),
                         onPressed: this._save,
                     ),
                     const SizedBox(width: 8)
