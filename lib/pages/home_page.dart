@@ -6,6 +6,7 @@ import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/keep_watching.dart';
+import 'package:stronzflix/backend/saved_titles.dart';
 import 'package:stronzflix/backend/peer/peer_manager.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
 import 'package:stronzflix/backend/settings.dart';
@@ -130,7 +131,14 @@ class _HomePageState extends State<HomePage> {
                             ? (metadata) => this._delete(context, metadata)
                             : null,
                         actionIcon: Icons.delete,
-                    )
+                    ),
+                    ResultCardRow(
+                        title: "La mia lista",
+                        values: Future.value(SavedTitles.getAll()),
+                        onTap: (metadata) => this._openTitle(context, metadata),
+                        action: (metadata) => super.setState(() => SavedTitles.remove(metadata)),
+                        actionIcon: Icons.delete,
+                    ),
                 ]
             ),
         );
