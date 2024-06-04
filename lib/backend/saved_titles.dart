@@ -38,9 +38,14 @@ sealed class SavedTitles {
         SavedTitles.saveState();
     }
 
+    static bool isSaved(TitleMetadata metadata){
+        String id = metadata.site.name + metadata.url;
+        return SavedTitles._savedTitles.containsKey(id);
+    }
+
     static Future<void> saveState() async {
         List<String> list = [];
-        
+
         for (TitleMetadata metadata in SavedTitles._savedTitles.values) {
             String serializedMetadata = jsonEncode({
                 "name": metadata.name,
