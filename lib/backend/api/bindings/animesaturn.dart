@@ -86,7 +86,7 @@ class AnimeSaturn extends Site {
 
     @override
     Future<List<TitleMetadata>> latests() async {
-        String body = await http.get("${super.url}newest");
+        String body = await http.get("${super.url}/newest");
         Document document = html.parse(body);
 
         List<TitleMetadata> results = [];
@@ -109,7 +109,7 @@ class AnimeSaturn extends Site {
 
     @override
     Future<List<TitleMetadata>> search(String query) async {
-        String body = await http.get("${super.url}animelist?search=${Uri.encodeQueryComponent(query)}");
+        String body = await http.get("${super.url}/animelist?search=${Uri.encodeQueryComponent(query)}");
         Document document = html.parse(body);
 
         List<TitleMetadata> results = [];
