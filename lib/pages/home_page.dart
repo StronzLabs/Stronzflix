@@ -3,13 +3,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/media.dart';
-import 'package:stronzflix/backend/api/site.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
-import 'package:stronzflix/backend/keep_watching.dart';
-import 'package:stronzflix/backend/saved_titles.dart';
+import 'package:stronzflix/backend/storage/keep_watching.dart';
+import 'package:stronzflix/backend/storage/saved_titles.dart';
 import 'package:stronzflix/backend/peer/peer_manager.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
-import 'package:stronzflix/backend/settings.dart';
+import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/components/downloads_drawer.dart';
 import 'package:stronzflix/components/result_card_row.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
@@ -125,9 +124,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                     ResultCardRow(
                         title: "Ultime aggiunte",
-                        values: Site.get(Settings.site)!.latests(),
+                        values: Settings.site.latests(),
                         onTap: (metadata) => this._openTitle(context, metadata),
-                        action: Site.get(Settings.site)!.isLocal
+                        action: Settings.site.isLocal
                             ? (metadata) => this._delete(context, metadata)
                             : null,
                         actionIcon: Icons.delete,
@@ -160,7 +159,7 @@ class _HomePageState extends State<HomePage> {
             action: "Elimina"
         );
         if (delete) {
-            await DownloadManager.delete(await Site.get(Settings.site)!.getTitle(metadata));
+            await DownloadManager.delete(await Settings.site.getTitle(metadata));
             super.setState(() {});
         }
     }

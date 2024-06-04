@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stronzflix/backend/api/media.dart';
-import 'package:stronzflix/backend/keep_watching.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
+import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/components/linear_track_shape.dart';
 import 'package:stronzflix/pages/home_page.dart';
 import 'package:stronzflix/pages/loading_page.dart';

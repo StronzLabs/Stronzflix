@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart' show mustCallSuper;
 import 'package:stronzflix/backend/api/bindings/local.dart';
-import 'package:stronzflix/backend/api/initializable.dart';
+import 'package:stronzflix/utils/initializable.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/tune.dart';
-import 'package:stronzflix/backend/settings.dart';
+import 'package:stronzflix/backend/storage/settings.dart';
 
 abstract class Site extends Initializable {
 
@@ -41,7 +41,7 @@ abstract class Site extends Initializable {
         await for(dynamic res in this.tuner.findDomain(this.domain)) {
             if(res is String) {
                 Settings.domains[this.name] = "https://${this.domain}.${res}";
-                Settings.save();
+                Settings.update();
                 return;
             }
             else

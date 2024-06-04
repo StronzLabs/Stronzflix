@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:stronzflix/backend/keep_watching.dart';
 import 'package:stronzflix/backend/peer/peer_manager.dart';
+import 'package:stronzflix/backend/storage/keep_watching.dart';
 
 enum MessageType {
     chat("chat"),

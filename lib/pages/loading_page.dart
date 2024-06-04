@@ -9,10 +9,10 @@ import 'package:stronzflix/backend/api/bindings/streampeaker.dart';
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/bindings/streamingcommunity.dart';
 import 'package:stronzflix/backend/api/bindings/vixxcloud.dart';
-import 'package:stronzflix/backend/keep_watching.dart';
-import 'package:stronzflix/backend/saved_titles.dart';
+import 'package:stronzflix/backend/storage/keep_watching.dart';
+import 'package:stronzflix/backend/storage/saved_titles.dart';
 import 'package:stronzflix/backend/peer/peer_manager.dart';
-import 'package:stronzflix/backend/settings.dart';
+import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/backend/version.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/update_dialog.dart';
@@ -83,14 +83,14 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         double step = 1.0 / 3.0;
         
         await for (double percentage in this._load([
-            Settings.load()
+            Settings.instance.ensureInitialized()
         ]))
             yield step * 0 + percentage / phases;
 
         Settings.online = await this._checkConnection();
         if(!Settings.online) {
-            Settings.site = LocalSite.instance.name;
-            Settings.save();
+            Settings.site = LocalSite.instance;
+            Settings.update();
             return;
         }
 
@@ -114,9 +114,9 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
             yield step * 1 + percentage / phases;
 
         await for (double percentage in this._load([
-            KeepWatching.init(),
+            KeepWatching.instance.ensureInitialized(),
+            SavedTitles.instance.ensureInitialized(),
             PeerManager.init(),
-            SavedTitles.init(),
         ]))
             yield step * 2 + percentage / phases;
     }

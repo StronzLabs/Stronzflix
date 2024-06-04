@@ -1,7 +1,7 @@
 import 'package:cast/device.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:stronzflix/backend/keep_watching.dart';
+import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/components/player_info_prodiver.dart';
 import 'package:stronzflix/utils/utils.dart';
 
