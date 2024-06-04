@@ -17,10 +17,14 @@ class SavedTitles extends LocalStorage {
         for (String json in super["SavedTitles"]) {
             Map<String, dynamic> data = jsonDecode(json);
 
+            Site? site = Site.get(data["metadata"]["site"]);
+            if(site == null)
+                continue;
+
             TitleMetadata metadata = TitleMetadata(
                 name: data["name"],
                 url: data["url"],
-                site: Site.get(data["site"])!,
+                site: site,
                 poster: data["poster"]);
 
             String id = metadata.site.name + metadata.url;

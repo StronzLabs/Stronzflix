@@ -68,10 +68,15 @@ class KeepWatching extends LocalStorage {
 
         for (String json in super["KeepWatching"]) {
             Map<String, dynamic> data = jsonDecode(json);
+
+            Site? site = Site.get(data["metadata"]["site"]);
+            if(site == null)
+                continue;
+
             TitleMetadata metadata = TitleMetadata(
                 name: data["metadata"]["name"],
                 url: data["metadata"]["url"],
-                site: Site.get(data["metadata"]["site"])!,
+                site: site,
                 poster: data["metadata"]["poster"]
             );
             String info = data["info"];
