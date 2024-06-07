@@ -21,7 +21,6 @@ The developers of this application neither host nor distribute any of the conten
 
 ---
 TODOs:
-- [ ] OS media Bindings
 - [ ] Mobile notification during download
 - [ ] Better sink implementation
 - [ ] Optimize for AndroidTV / FireStick
