@@ -6,8 +6,12 @@ class Tuner {
     
     Future<bool> validateDomain(String domain) async {
         domain = domain.startsWith('https://') ? domain : 'https://${domain}';
-        String body = await http.get(domain, followRedirects: false).onError((error, stackTrace) => "");
-        return this.validator(body);
+        try {
+            String body = await http.get(domain, followRedirects: false).onError((error, stackTrace) => "");
+            return this.validator(body);
+        } catch (_) {
+            return false;
+        }
     }
 
     Future<List<String>> _getDomains() async {
