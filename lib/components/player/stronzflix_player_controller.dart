@@ -5,7 +5,9 @@ import 'package:cast/session.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/cast.dart';
+import 'package:stronzflix/backend/media_session/media_session.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
 import 'package:stronzflix/utils/utils.dart';
 import 'package:http/http.dart' as http;
@@ -31,8 +33,10 @@ class StronzflixPlayerStream {
 }
 
 abstract class StronzflixPlayerController {
-    
-    StronzflixPlayerController();
+
+    final Watchable _watchable;
+
+    StronzflixPlayerController(this._watchable);
 
     Duration get position;
     Duration get duration;
@@ -43,15 +47,68 @@ abstract class StronzflixPlayerController {
     bool get isCompleted;
     StronzflixPlayerStream get stream;
 
-    Future<void> initialize(Uri uri, Duration startAt);
-    Future<void> dispose();
+    String get title {
+        if (this._watchable is Film)
+            return this._watchable.name;
+        else if (this._watchable is Episode)
+            return '${this._watchable.season.series.name} - ${this._watchable.name}';
+        else
+            throw Exception('Unknown watchable type');
+    }
+
+    String get thumbnail {
+        if (this._watchable is Film)
+            return this._watchable.banner;
+        else if (this._watchable is Episode)
+            return this._watchable.cover;
+        else
+            throw Exception('Unknown watchable type');
+    }
 
     @mustCallSuper
-    Future<void> play({bool sink = false}) async { if(!sink) await PeerMessenger.play(); }
+    Future<void> initialize(Uri uri, Duration startAt) async {
+        await MediaSession.start(this.title, this.thumbnail, (event) => switch (event) {
+            MediaSessionEvent.play => this.play(),
+            MediaSessionEvent.pause => this.pause(),
+        });
+    }
+
     @mustCallSuper
-    Future<void> pause({bool sink = false}) async { if(!sink) await PeerMessenger.pause(); }
+    Future<void> dispose() async {
+        await MediaSession.stop();
+    }
+
+    @mustCallSuper
+    Future<void> play({bool sink = false}) async {
+        if(!sink)
+            await PeerMessenger.play();
+        MediaSession.informPlaying();
+    }
+    @mustCallSuper
+    Future<void> pause({bool sink = false}) async {
+        if(!sink)
+            await PeerMessenger.pause();
+        MediaSession.informPaused();
+    }
     
     Future<void> playOrPause() => this.isPlaying ? this.pause() : this.play();
+
+    Watchable? get next {
+        Watchable current = this._watchable;
+        Watchable? next;
+        if (current is Episode) {
+            Season season = current.season;
+            Series series = season.series;
+            int episodeNo = season.episodes.indexOf(current);
+            int seasonNo = series.seasons.indexOf(season);
+
+            if (episodeNo < season.episodes.length - 1)
+                next = season.episodes[episodeNo + 1];
+            else if (seasonNo < series.seasons.length - 1)
+                next = series.seasons[seasonNo + 1].episodes[0];      
+        } 
+        return next;
+    }
     
     @mustCallSuper
     Future<void> seekTo(Duration position, {bool sink = false}) async { if(!sink) PeerMessenger.seek(position.inSeconds); } 
@@ -72,7 +129,7 @@ class LocalPlayerController extends StronzflixPlayerController {
     late VideoController _controller;
     VideoController get controller => this._controller;
 
-    LocalPlayerController() {
+    LocalPlayerController(super._watchable) {
         // FIXME: https://github.com/media-kit/media-kit/issues/837#issuecomment-2125734802
         this._controller = VideoController(this._player);
     }
@@ -104,6 +161,7 @@ class LocalPlayerController extends StronzflixPlayerController {
 
     @override
     Future<void> initialize(Uri uri, Duration startAt) async {
+        await super.initialize(uri, startAt);
         await this._player.open(Media(
             uri.toString(),
             start: startAt
@@ -114,7 +172,10 @@ class LocalPlayerController extends StronzflixPlayerController {
     }
 
     @override
-    Future<void> dispose() async => this._controller.player.dispose();
+    Future<void> dispose() async {
+        await super.dispose();
+        await this._controller.player.dispose();
+    }
 
     @override
     Future<void> play({bool sink = false}) async {
@@ -145,7 +206,7 @@ class CastPlayerController extends StronzflixPlayerController {
 
     Timer? _pollTimer;
 
-    CastPlayerController(this._device);
+    CastPlayerController(super._watchable, this._device);
 
     bool _playing = false;
     final StreamController<bool> _playingStream = StreamController<bool>.broadcast();
@@ -194,6 +255,8 @@ class CastPlayerController extends StronzflixPlayerController {
 
     @override
     Future<void> initialize(Uri uri, Duration startAt) async {
+        await super.initialize(uri, startAt);
+
         this._castManager = await CastManager.connect(this._device);
         this._castManager.registerListener(this._updateValue);
 
@@ -230,6 +293,8 @@ class CastPlayerController extends StronzflixPlayerController {
 
     @override
     Future<void> dispose() async {
+        await super.dispose();
+
         this._pollTimer?.cancel();
         this._castManager.disconnect();
         this._playingStream.close();

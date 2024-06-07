@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/components/player/desktop_video_controls.dart';
@@ -47,7 +46,7 @@ class _CastViewState extends State<CastView> {
                 create: (_) => this._controller,
                 child: FutureBuilder(
                     future: this._controllerMemorizer.runOnce(() {
-                        this._controller = CastPlayerController(playerInfo.device!);
+                        this._controller = CastPlayerController(playerInfo.watchable, playerInfo.device!);
                         this._controller.initialize(super.widget.uri, playerInfo.startAt);
                     }),
                     builder: (context, snapshot) {

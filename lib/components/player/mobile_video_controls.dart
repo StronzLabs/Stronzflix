@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
 import 'package:stronzflix/components/player/cast_button.dart';
 import 'package:stronzflix/components/player/chat_button.dart';
@@ -25,8 +24,6 @@ class MobileVideoControls extends StatefulWidget {
 }
 
 class _MobileVideoControlsState extends State<MobileVideoControls> {
-
-    late final String _title = this._constructTitle();
 
     final List<StreamSubscription> _subscriptions = [];
     late bool _buffering = playerController(super.context).isBuffering;
@@ -127,7 +124,7 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                         onPressed: () => Navigator.of(context).pop()
                     ),
                     const SizedBox(width: 8.0),
-                    Text(this._title,
+                    Text(playerController(super.context).title,
                         style: const TextStyle(
                             fontSize: 21.0,
                         ),
@@ -322,15 +319,6 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
         this._timer = Timer(const Duration(seconds: 2), () =>
             this.setState(() => this._visible = false)
         );
-    }
-
-    String _constructTitle() {
-        if (this._playerInfo.watchable is Film)
-            return this._playerInfo.watchable.name;
-        else if (this._playerInfo.watchable is Episode)
-            return '${(this._playerInfo.watchable as Episode).season.series.name} - ${(this._playerInfo.watchable as Episode).name}';
-        else
-            throw Exception('Unknown watchable type');
     }
 
     void _handlePeerMessage(Message message) {
