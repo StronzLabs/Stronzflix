@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/media.dart';
+import 'package:stronzflix/components/player/stronzflix_player_controller.dart';
 import 'package:stronzflix/components/player_info_prodiver.dart';
 import 'package:stronzflix/utils/utils.dart';
 
@@ -19,26 +20,15 @@ class _NextButtonState extends State<NextButton> {
 
     @override
     void didChangeDependencies() {
-        Watchable current = FullScreenProvider.of<PlayerInfo>(context).watchable;
-        if (current is Episode) {
-            Season season = current.season;
-            Series series = season.series;
-            int episodeNo = season.episodes.indexOf(current);
-            int seasonNo = series.seasons.indexOf(season);
-
-            if (episodeNo < season.episodes.length - 1)
-                this._next = season.episodes[episodeNo + 1];
-            else if (seasonNo < series.seasons.length - 1)
-                this._next = series.seasons[seasonNo + 1].episodes[0];
-            else
-                this._next = null;        
-        } else
-            this._next = null;
         super.didChangeDependencies();
+        this._next = playerController(context).next;
     }
 
     @override
     Widget build(BuildContext context) {
+        if (this._next == null)
+            return const SizedBox.shrink();
+
         return IconButton(
             onPressed: () => FullScreenProvider.of<PlayerInfo>(context, listen: false).switchTo(this._next!),
             iconSize: 28.0,

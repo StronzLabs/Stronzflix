@@ -31,7 +31,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     void initState() {
         super.initState();
         // FIXME: https://github.com/media-kit/media-kit/issues/837#issuecomment-2125734802
-        this._controller = LocalPlayerController();
+        this._controller = LocalPlayerController(FullScreenProvider.of<PlayerInfo>(context, listen: false).watchable);
     }
 
     @override
