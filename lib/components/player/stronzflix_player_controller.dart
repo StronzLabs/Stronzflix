@@ -7,7 +7,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/cast.dart';
-import 'package:stronzflix/backend/media_session/media_session.dart';
+import 'package:stronzflix/backend/media_session.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
 import 'package:stronzflix/utils/utils.dart';
 import 'package:http/http.dart' as http;
