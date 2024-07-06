@@ -124,6 +124,7 @@ class AudioPlayerHandler extends BaseAudioHandler {
 
     void informPaused() {
         super.playbackState.add(super.playbackState.value.copyWith(
+            playing: false,
             controls: [
                 MediaControl.play
             ]
@@ -132,6 +133,7 @@ class AudioPlayerHandler extends BaseAudioHandler {
 
     void informPlaying() {
         super.playbackState.add(super.playbackState.value.copyWith(
+            playing: true,
             controls: [
                 MediaControl.pause
             ]
@@ -176,5 +178,6 @@ class AudioPlayerHandler extends BaseAudioHandler {
             playing: false
         ));
         await playbackState.firstWhere((state) => state.processingState == AudioProcessingState.idle);
+        this._handler = null;
     }
 }
