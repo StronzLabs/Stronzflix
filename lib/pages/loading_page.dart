@@ -161,12 +161,12 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
                     children: [
                         Icon(Icons.error,
                             color: Colors.red,
-                            size: 50,
+                            size: 30,
                         ),
                         SizedBox(width: 10),
-                        Text("Errore di caricamento",
+                        Text("Errore",
                             style: TextStyle(
-                                fontSize: 30,
+                                fontSize: 25,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.red
                             ),
@@ -175,7 +175,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
                         SizedBox(width: 10),
                         Icon(Icons.error,
                             color: Colors.red,
-                            size: 50
+                            size: 30
                         )
                     ]
                 ),
@@ -201,7 +201,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
             children: [
                 const Text("Caricamento dei contenuti",
                     style: TextStyle(
-                        fontSize: 30,
+                        fontSize: 25,
                         fontWeight: FontWeight.bold,
                         color: Colors.orange,
                     ),
@@ -240,7 +240,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
             children: [
                 Text("Aggiornamento in corso",
                     style: TextStyle(
-                        fontSize: 30,
+                        fontSize: 25,
                         fontWeight: FontWeight.bold,
                         color: Colors.orange,
                     ),
@@ -261,6 +261,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
             body: Padding(
                 padding: const EdgeInsets.all(30),
                 child: Stack(
+                    alignment: Alignment.center,
                     children: [
                         Center(
                             child: SvgPicture.asset("assets/logo.svg",
@@ -268,16 +269,15 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
                                 height: 200,
                             ),
                         ),
-                        Transform.translate(
-                            offset: const Offset(0, 150),
-                            child: Center(
-                                child: this._updating
+                        Positioned(
+                            top: MediaQuery.of(context).size.height / 2 + 75,
+                            width: MediaQuery.of(context).size.width - 30,
+                            child: this._updating
                                 ? this._buildUpdating(context)
                                 : this._error != null
                                     ? this._buildError(context)
                                     : this._buildLoading(context),
-                            )
-                        )
+                        ),
                     ]
                 )
             )
