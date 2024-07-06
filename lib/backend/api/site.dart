@@ -40,7 +40,10 @@ abstract class Site extends Initializable {
     Stream<double?> tune() async* {
         await for(dynamic res in this.tuner.findDomain(this.domain)) {
             if(res is String) {
-                Settings.domains[this.name] = "https://${this.domain}.${res}";
+                // TODO: find a better solution for this
+                Map<String, String> domains = Settings.domains;
+                domains[this.name] = "https://${this.domain}.${res}";
+                Settings.domains = domains;
                 Settings.update();
                 return;
             }
