@@ -137,10 +137,11 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                     children: [
                         IconButton(
                             icon: const Icon(Icons.arrow_back),
-                            onPressed: () {
+                            onPressed: () async {
                                 if(isFullscreen(context))
-                                    exitFullscreen(context);
-                                Navigator.of(context).pop();
+                                    await exitFullscreen(context);
+                                if(context.mounted)
+                                    Navigator.of(context).pop();
                             }
                         ),
                         const SizedBox(width: 8.0),
