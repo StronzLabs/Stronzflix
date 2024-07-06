@@ -52,10 +52,10 @@ dependencies:
   provider: ^6.1.2
   shared_preferences: ^2.2.3
   shimmer: ^3.0.0
-  smtc_windows: ^0.1.2
+  smtc_windows: ^0.1.3
   typed_data: ^1.3.2
   url_launcher: ^6.2.6
-  uuid: ^3.0.7
+  uuid: ^4.4.0
 
 dependency_overrides:
   media_kit:
@@ -63,6 +63,7 @@ dependency_overrides:
       url: https://github.com/media-kit/media-kit.git
       path: ./media_kit
       ref: main
+  uuid: ^4.4.0
 
 dev_dependencies:
   flutter_test:
