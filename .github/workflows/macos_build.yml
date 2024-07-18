@@ -7,7 +7,7 @@ on:
 jobs:
   Run-build:
     name: Run build MacOS
-    runs-on: macos-latest
+    runs-on: macos-13-xlarge
     steps:
       - name: checkout
         uses: actions/checkout@v4
