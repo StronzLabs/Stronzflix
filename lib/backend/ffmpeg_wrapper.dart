@@ -13,7 +13,7 @@ class FFmpegWrapper {
     static Shell? shell = SPlatform.isDesktop ? Shell() : null;
 
     static Future<void> run(String command) async {
-        if(SPlatform.isMobile)
+        if(SPlatform.isMobile || Platform.isMacOS)
             await FFmpegKit.execute(command);
         else {
             String pefix = Platform.isWindows ? ".\\ffmpeg.exe" : "./ffmpeg";
