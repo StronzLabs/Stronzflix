@@ -18,4 +18,4 @@ jobs:
           flutter-version: 3.22.3
       - run: flutter --version
       - run: flutter pub get
-      - run: flutter build macos --release --no-codesign
+      - run: flutter build macos
