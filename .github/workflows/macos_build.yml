@@ -18,7 +18,6 @@ jobs:
           flutter-version: 3.22.3
       - run: |
           flutter config --enable-macos-desktop
-          pwd 
+          pwd
           ls -al
-          cp ./AppIcon.icns /Users/runner/work/Stronzflix/AppIcon.icns
           flutter build macos --release
