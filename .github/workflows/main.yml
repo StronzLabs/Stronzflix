@@ -41,11 +41,11 @@ jobs:
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0-0.3.pre'
-          channel: 'beta' # mouse doesn't hide on stable
+          flutter-version: "3.22.0-0.3.pre"
+          channel: "beta" # mouse doesn't hide on stable
           cache: false # Disabled cuz windows is bad
-          cache-key: 'flutter-windows'
-          cache-path: '${{ runner.tool_cache }}/flutter/windows'
+          cache-key: "flutter-windows"
+          cache-path: "${{ runner.tool_cache }}/flutter/windows"
           architecture: x64
 
       - name: Download ffmpeg
@@ -67,7 +67,7 @@ jobs:
         run: Compress-Archive -Path build\windows\x64\runner\Release* -Destination build.zip
 
       - name: Upload Release Asset
-        id: upload-release-asset 
+        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -93,11 +93,11 @@ jobs:
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'main' # app crushes with animated icons on stable
-          flutter-version: '333c076' # commit_id. Use a flutter version if channel != master/main
+          channel: "main" # app crushes with animated icons on stable
+          flutter-version: "333c076" # commit_id. Use a flutter version if channel != master/main
           cache: true
-          cache-key: 'flutter-linux'
-          cache-path: '${{ runner.tool_cache }}/flutter/linux'
+          cache-key: "flutter-linux"
+          cache-path: "${{ runner.tool_cache }}/flutter/linux"
           architecture: x64
 
       - name: Download ffmpeg
@@ -121,7 +121,7 @@ jobs:
           cd build/linux/x64/release; zip -r ../../../../build.zip bundle; cd -
 
       - name: Upload Release Asset
-        id: upload-release-asset 
+        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -129,6 +129,42 @@ jobs:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
           asset_path: ./build.zip
           asset_name: Stronzflix Linux - amd64.zip
+          asset_content_type: application/zip
+  build_macos:
+    name: Build MacOS
+    needs: create_release
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.22.3"
+          channel: "stable"
+          cache: true
+          cache-key: "flutter-macos"
+          cache-path: "${{ runner.tool_cache }}/flutter/macos"
+
+      - name: Build MacOS App
+        run: |
+          flutter config --enable-macos-desktop
+          flutter build macos --release
+
+      - name: Zip File
+        run: |
+          cd build/macos/Build/Products/Release; zip -r ../../../../../build.zip stronzflix.app; cd -
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ./build.zip
+          asset_name: Stronzflix MacOS - arm.zip
           asset_content_type: application/zip
 
   build_android:
@@ -142,17 +178,17 @@ jobs:
       - name: Download dependencies
         uses: actions/setup-java@v2
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: "zulu"
+          java-version: "17"
 
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0'
-          channel: 'stable'
+          flutter-version: "3.22.0"
+          channel: "stable"
           cache: true
-          cache-key: 'flutter-android'
-          cache-path: '${{ runner.tool_cache }}/flutter/android'
+          cache-key: "flutter-android"
+          cache-path: "${{ runner.tool_cache }}/flutter/android"
           architecture: x64
 
       - name: Build Android App
@@ -161,7 +197,7 @@ jobs:
           flutter build apk --release
 
       - name: Upload Release Asset
-        id: upload-release-asset 
+        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
