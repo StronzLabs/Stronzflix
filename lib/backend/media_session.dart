@@ -1,9 +1,13 @@
 
 
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:smtc_windows/smtc_windows.dart';
+
+import 'package:stronzflix/utils/simple_http.dart' as http;
+import 'package:image/image.dart' as img;
 
 enum MediaSessionEvent {
     play,
@@ -31,13 +35,21 @@ class _WindowsMediaSession extends _MediaSession {
 
     SMTCWindows? _smtc;
 
+    Future<Uint8List> fetchThumbnail(String thumbnail) async {
+        Uint8List thumbnailBytes = await http.fetchResource(thumbnail);
+        img.Image? image = img.decodeImage(thumbnailBytes);
+        if (image != null)
+            thumbnailBytes = img.encodeJpg(image);
+        return thumbnailBytes;
+    }
+
     @override
-    Future<void> start(String title, String thumbnail, void Function(MediaSessionEvent) handler) async {
+    Future<void> start(String title, String thumbnail, void Function(MediaSessionEvent) handler) async {        
         this._smtc = SMTCWindows(
             metadata: MusicMetadata(
                 title: title,
                 albumArtist: 'Stronzflix',
-                thumbnail: thumbnail,
+                thumbnailStream: await fetchThumbnail(thumbnail)
             ),
             config: const SMTCConfig(
                 fastForwardEnabled: false,
