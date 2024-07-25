@@ -16,6 +16,14 @@ Future<Response> _get(dynamic url, {Map<String, String>? headers, bool followRed
     return Response.fromStream(response);
 }
 
+Future<Uint8List> fetchResource(String url) async {
+    Response response = await _get(Uri.parse(url));
+    if (response.statusCode != 200)
+        return Uint8List(0);
+
+    return response.bodyBytes;
+}
+
 Future<String> get(dynamic url, {Map<String, String>? headers, bool followRedirects = true}) async {
     return (await _get(url, headers: headers, followRedirects: followRedirects)).body;
 }
