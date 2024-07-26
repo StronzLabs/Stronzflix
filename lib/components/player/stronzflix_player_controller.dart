@@ -164,7 +164,7 @@ class LocalPlayerController extends StronzflixPlayerController {
         await super.initialize(uri, startAt);
         await this._player.open(Media(
             uri.toString(),
-            start: startAt
+            // start: startAt
         ));
         await this._player.setSubtitleTrack(
             this._player.state.tracks.subtitle.firstWhere((track) => track.id == "no")
