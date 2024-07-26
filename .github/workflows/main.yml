@@ -41,8 +41,8 @@ jobs:
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.22.0-0.3.pre"
-          channel: "beta" # mouse doesn't hide on stable
+          flutter-version: "3.22.0"
+          channel: "stable"
           cache: false # Disabled cuz windows is bad
           cache-key: "flutter-windows"
           cache-path: "${{ runner.tool_cache }}/flutter/windows"
