@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:stronzflix/backend/api/bindings/animesaturn.dart';
 import 'package:stronzflix/backend/api/bindings/streampeaker.dart';
 import 'package:stronzflix/backend/api/bindings/local.dart';
@@ -81,6 +82,8 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     Stream<double> _doLoading() async* {
         double phases = 3.0;
         double step = 1.0 / 3.0;
+
+        MediaKit.ensureInitialized();
         
         await for (double percentage in this._load([
             Settings.instance.ensureInitialized()
