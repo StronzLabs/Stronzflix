@@ -37,6 +37,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: 90fef69f96fc4dfdf02d937a3f2d2a803685489c
 
       - name: Download Flutter
         uses: subosito/flutter-action@v2
