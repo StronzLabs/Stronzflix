@@ -26,8 +26,8 @@ dependencies:
   html: ^0.15.4
   html_unescape: ^2.0.0
   http: ^1.2.1
-  # media_kit: ^1.1.10+1
   image: ^4.2.0
+  # media_kit: ^1.1.10+1
   media_kit:
     git:
       url: https://github.com/media-kit/media-kit.git
