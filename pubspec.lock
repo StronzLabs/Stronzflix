@@ -453,8 +453,8 @@ packages:
     dependency: "direct main"
     description:
       path: media_kit
-      ref: "359ca76124f32e22563cb2532c758873fcf3eb9f"
-      resolved-ref: "359ca76124f32e22563cb2532c758873fcf3eb9f"
+      ref: main
+      resolved-ref: "50c510d018cc5286eb6730f3ea165290f19dc5f6"
       url: "https://github.com/media-kit/media-kit.git"
     source: git
     version: "1.1.10+1"
@@ -494,8 +494,8 @@ packages:
     dependency: "direct main"
     description:
       path: "libs/universal/media_kit_libs_video"
-      ref: "359ca76124f32e22563cb2532c758873fcf3eb9f"
-      resolved-ref: "359ca76124f32e22563cb2532c758873fcf3eb9f"
+      ref: main
+      resolved-ref: "50c510d018cc5286eb6730f3ea165290f19dc5f6"
       url: "https://github.com/media-kit/media-kit.git"
     source: git
     version: "1.0.4"
@@ -519,8 +519,8 @@ packages:
     dependency: "direct main"
     description:
       path: media_kit_video
-      ref: "359ca76124f32e22563cb2532c758873fcf3eb9f"
-      resolved-ref: "359ca76124f32e22563cb2532c758873fcf3eb9f"
+      ref: main
+      resolved-ref: "50c510d018cc5286eb6730f3ea165290f19dc5f6"
       url: "https://github.com/media-kit/media-kit.git"
     source: git
     version: "1.2.4"
