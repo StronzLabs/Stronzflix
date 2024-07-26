@@ -27,24 +27,24 @@ dependencies:
   html_unescape: ^2.0.0
   http: ^1.2.1
   image: ^4.2.0
-  media_kit: ^1.1.10+1
-  # media_kit:
-  #   git:
-  #     url: https://github.com/media-kit/media-kit.git
-  #     path: ./media_kit
-  #     ref: 359ca76124f32e22563cb2532c758873fcf3eb9f
+  # media_kit: ^1.1.10+1
+  media_kit:
+    git:
+      url: https://github.com/media-kit/media-kit.git
+      path: ./media_kit
+      ref: main
   # media_kit_libs_video: ^1.0.4
   media_kit_libs_video:
     git:
       url: https://github.com/media-kit/media-kit.git
       path: ./libs/universal/media_kit_libs_video
-      ref: 359ca76124f32e22563cb2532c758873fcf3eb9f
+      ref: main
   # media_kit_video: ^1.2.4
   media_kit_video:
     git:
       url: https://github.com/media-kit/media-kit.git
       path: ./media_kit_video
-      ref: 359ca76124f32e22563cb2532c758873fcf3eb9f
+      ref: main
   package_info_plus: ^8.0.0
   path: ^1.9.0
   path_provider: ^2.1.3
@@ -69,7 +69,7 @@ dependency_overrides:
     git:
       url: https://github.com/media-kit/media-kit.git
       path: ./media_kit
-      ref: 359ca76124f32e22563cb2532c758873fcf3eb9f
+      ref: main
   uuid: ^4.4.0
 
 dev_dependencies:
