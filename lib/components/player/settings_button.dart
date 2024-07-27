@@ -163,21 +163,31 @@ class _SettingsMenuState extends State<_SettingsMenu> {
 
     Widget _buildSubtitlePage() {
         List<SubtitleTrack> tracks = super.widget.controller.player.state.tracks.subtitle
-            .where((track) => track.id != "auto" && track.id != "no").toList();
+            .where((track) => track.id != "auto" && track.id != "no").toList()
+            ..sort((a, b) {
+                if ((a.language ?? '').toLowerCase().contains('ita')) return -1;
+                if ((b.language ?? '').toLowerCase().contains('ita')) return 1;
+                if ((a.language ?? '').toLowerCase().contains('auto')) return -1;
+                if ((b.language ?? '').toLowerCase().contains('auto')) return 1;
+            
+                return 0;
+            });
 
-        return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-                this._buildNavigationButton("Sottotitoli", 0, true),
-                const Divider(),
-                for (SubtitleTrack track in tracks)
-                    this._buildOptionButton((track.language?? track.id).capitalize(), track == super.widget.controller.player.state.track.subtitle,
-                        () => super.widget.controller.player.setSubtitleTrack(track),
+        return SingleChildScrollView(
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                    this._buildNavigationButton("Sottotitoli", 0, true),
+                    const Divider(),
+                    for (SubtitleTrack track in tracks)
+                        this._buildOptionButton((track.language?? track.id).capitalize(), track == super.widget.controller.player.state.track.subtitle,
+                            () => super.widget.controller.player.setSubtitleTrack(track),
+                        ),
+                    this._buildOptionButton("Nessuno", super.widget.controller.player.state.track.subtitle.id == "no",
+                        () => super.widget.controller.player.setSubtitleTrack(SubtitleTrack.no()),
                     ),
-                this._buildOptionButton("Nessuno", super.widget.controller.player.state.track.subtitle.id == "no",
-                    () => super.widget.controller.player.setSubtitleTrack(SubtitleTrack.no()),
-                ),
-            ],
+                ],
+            ),
         );
     }
 
