@@ -2,7 +2,7 @@ import 'package:stronzflix/utils/simple_http.dart' as http;
 
 class Tuner {
 
-    static const Duration timeout = Duration(milliseconds: 500);
+    static const Duration timeout = Duration(milliseconds: 2500);
 
     final bool Function(String) validator;
     const Tuner(this.validator);
@@ -19,7 +19,9 @@ class Tuner {
 
     Future<List<String>> _getDomains() async {
         String response = await http.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt");
-        return response.split("\n").where((String line) => !line.startsWith("#")).toList();
+        List<String> domains = response.split("\n").where((String line) => !line.startsWith("#")).toList();
+        domains.shuffle();
+        return domains;
     }
 
     Stream<dynamic> findDomain(String subdomain) async* {
