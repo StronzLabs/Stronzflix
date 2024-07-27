@@ -124,10 +124,15 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                         onPressed: () => Navigator.of(context).pop()
                     ),
                     const SizedBox(width: 8.0),
-                    Text(playerController(super.context).title,
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(playerController(super.context).title,
                         style: const TextStyle(
                             fontSize: 21.0,
                         ),
+                      ),
+                     ),     
                     ),
                     const Spacer(),
                     CastButton(
