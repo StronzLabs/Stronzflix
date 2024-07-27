@@ -61,9 +61,40 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
 
     Stream<double> _load(List<Future> loadingPhase) async* {
         for (int i = 0; i < loadingPhase.length; i++) {
-            yield (i + 1) / loadingPhase.length / 3;
+            yield (i + 1) / loadingPhase.length;
             await loadingPhase[i];
         }
+    }
+
+    Stream<double> _dynamicLoad(List<Stream<dynamic>> loadingPhase) async* {
+        StreamController<dynamic> loading = StreamController.broadcast();
+        int done = 0;
+        List<StreamSubscription> subscriptions = loadingPhase.map((stream) {
+            return stream.listen(
+                (percentage) => loading.add([ stream, percentage / loadingPhase.length ]),
+                onError: (error) => loading.addError(error),
+                onDone: () {
+                    if(++done == loadingPhase.length)
+                        loading.close();
+                }
+            );
+        }).toList();
+        
+        List<double> advance = List.filled(loadingPhase.length, 0.0);
+        await for (dynamic percentage in loading.stream) {
+            if (percentage is List) {
+                advance[loadingPhase.indexOf(percentage[0])] = percentage[1];
+                yield advance.reduce((a, b) => a + b);
+            }
+            else {
+                for (StreamSubscription<dynamic> subscription in subscriptions)
+                    subscription.cancel();
+                throw percentage;
+            }
+        }
+
+        for (StreamSubscription<dynamic> subscription in subscriptions)
+          subscription.cancel();
     }
 
     Future<bool> _checkConnection() async {
@@ -80,15 +111,16 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     }
 
     Stream<double> _doLoading() async* {
-        double phases = 3.0;
-        double step = 1.0 / 3.0;
+        List<double> phasesWeights = [ 0.01, 0.97, 0.01, 0.01 ];
+        double advance = 0.0;
 
         MediaKit.ensureInitialized();
         
         await for (double percentage in this._load([
             Settings.instance.ensureInitialized()
         ]))
-            yield step * 0 + percentage / phases;
+            yield advance + percentage * phasesWeights[0];
+        advance += phasesWeights[0];
 
         Settings.online = await this._checkConnection();
         if(!Settings.online) {
@@ -106,22 +138,31 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
             super.setState(() => this._showAdditionalInfo = true);
         });
 
-        await for (double percentage in this._load([
-            StreamingCommunity.instance.ensureInitialized(),
-            VixxCloud.instance.ensureInitialized(),
-            LocalSite.instance.ensureInitialized(),
-            LocalPlayer.instance.ensureInitialized(),
-            AnimeSaturn.instance.ensureInitialized(),
-            Streampeaker.instance.ensureInitialized(),
+        await for (double percentage in this._dynamicLoad([
+            StreamingCommunity.instance.progress,
+            LocalSite.instance.progress,
+            AnimeSaturn.instance.progress,
         ]))
-            yield step * 1 + percentage / phases;
+            yield advance + percentage * phasesWeights[1]; 
+        advance += phasesWeights[1];
+
+        await for (double percentage in this._load([
+            LocalPlayer.instance.ensureInitialized(),
+            Streampeaker.instance.ensureInitialized(),
+            VixxCloud.instance.ensureInitialized(),
+        ]))
+            yield advance + percentage * phasesWeights[2];
+        advance += phasesWeights[2];
 
         await for (double percentage in this._load([
             KeepWatching.instance.ensureInitialized(),
             SavedTitles.instance.ensureInitialized(),
             PeerManager.init(),
         ]))
-            yield step * 2 + percentage / phases;
+            yield advance + percentage * phasesWeights[3];
+        advance += phasesWeights[3];
+
+        yield advance;
     }
 
     @override
