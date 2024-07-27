@@ -31,7 +31,9 @@ abstract class Site extends Initializable {
 
         if (!Settings.domains.containsKey(this.name)) {
             await for (dynamic value in this.tune()) {
-                if (value == null)
+                if (value is double)
+                    super.reportProgress(value);
+                else if (value == null)
                     throw Exception("Failed to find domain for ${this.name}");
             }
         }
