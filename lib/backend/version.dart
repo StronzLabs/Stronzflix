@@ -1,4 +1,5 @@
 
+import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
@@ -72,8 +73,9 @@ class VersionChecker
         throw Exception("No asset found for platform $platform");
     }
 
-    static Future<void> _updateDesktop(String downloadUrl) async {
+    static Future<Stream<double>?> _updateDesktop(String downloadUrl) async {
         await SPlatform.launchURL(downloadUrl);
+        return null;
     }
 
     static Future<void> cleanCache() async {
@@ -93,40 +95,48 @@ class VersionChecker
 
     static final ReceivePort _port = ReceivePort();
 
-    static void _updateMobile(String downloadUrl) async {
+    static Future<Stream<double>?> _updateMobile(String downloadUrl) async {
         String directory = (await getExternalStorageDirectory())!.absolute.path;
         String? taskId;
 
         IsolateNameServer.registerPortWithName(VersionChecker._port.sendPort, 'downloader_send_port');
+        
+        StreamController<double> progressController = StreamController<double>.broadcast();
+
         VersionChecker._port.listen((dynamic data) {
             DownloadTaskStatus status = DownloadTaskStatus.fromInt(data[1]);
             
-            if(status == DownloadTaskStatus.complete) {
+            if(status == DownloadTaskStatus.running) {
+                double progress = data[2] / 100.0;
+                progressController.add(progress);
+            } else if(status == DownloadTaskStatus.complete) {
                 IsolateNameServer.removePortNameMapping('downloader_send_port');
                 FlutterDownloader.open(taskId: taskId!);
+                progressController.close();
             }
         });
 
         FlutterDownloader.registerCallback(downloadCallback);
+        await VersionChecker.cleanCache();
         taskId = await FlutterDownloader.enqueue(
             url: downloadUrl,
             savedDir: directory,
-            showNotification: true,
-            openFileFromNotification: true,
+            showNotification: false,
         );
+
+        return progressController.stream;
     }
 
-    static Future<bool> update() async {
+    static Future<Stream<double>?> update() async {
         try {
             String downloadUrl = await VersionChecker._getPlatformUrl();
             if(SPlatform.isDesktop)
-                VersionChecker._updateDesktop(downloadUrl);
+                return VersionChecker._updateDesktop(downloadUrl);
             else if(SPlatform.isMobile)
-                VersionChecker._updateMobile(downloadUrl);
+                return VersionChecker._updateMobile(downloadUrl);
             else
                 throw Exception("Unsupported platform");
-            return true;
         } catch (_) {}
-        return false;
+        return null;
     }
 }

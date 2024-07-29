@@ -26,35 +26,17 @@ class UpdateDialog extends StatelessWidget {
             actions: [
                 TextButton(
                     child: const Text('Ignora'),
-                    onPressed: () => Navigator.of(context).pop(false)
+                    onPressed: () => Navigator.of(context).pop()
                 ),
                 TextButton(
                     child: Text(action),
                     onPressed: () async {
-                        VersionChecker.update().then((updated) {
-                            if(!updated)
-                                return;
-                            if(SPlatform.isMobile)
-                                ScaffoldMessenger.of(context).showSnackBar(this._buildUpdateSnackBar());
-                            Navigator.of(context).pop(true);
-                        });
+                        VersionChecker.update().then((progressStream) =>
+                            Navigator.of(context).pop(progressStream)
+                        );
                     }
                 )
             ]
         );
     }
-
-    SnackBar _buildUpdateSnackBar() {
-        return const SnackBar(
-            content: Column(
-                children: [
-                    Text("Aggiornamento in corso..."),
-                    Padding(padding: EdgeInsets.only(top: 8)),
-                    LinearProgressIndicator()
-                ],
-            ),
-            duration: Duration(hours: 1)
-        );
-    }
-
 }

@@ -40,24 +40,25 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
 
     double _currentPercentage = 0.0;
     String? _error;
-    bool _updating = false;
     Timer? _additionalInfoTimer;
     bool _showAdditionalInfo = false;
 
-    Future<bool> _checkUpdate() async {
+    String _splash = "Caricamento dei contenuti";
+    bool _update = false;
+
+    Future<Stream<double>?> _checkUpdate() async {
         bool shouldUpdate = await VersionChecker.shouldUpdate();
         if(!shouldUpdate)
-            return false;
+            return null;
 
         if(!super.mounted)
-            return false;
+            return null;
 
-        bool updating = await showDialog<bool?>(
+        Stream<double>? progressStream = await showDialog<Stream<double>?>(
             context: context,
             builder: (context) => const UpdateDialog()
-        ) ?? false;
-        super.setState(() => this._updating = updating);
-        return updating;
+        );
+        return progressStream;
     }
 
     Stream<double> _load(List<Future> loadingPhase) async* {
@@ -132,8 +133,14 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
             return;
         }
 
-        if(await this._checkUpdate())
+        Stream<double>? updatePercentage = await this._checkUpdate();
+        if(updatePercentage != null) {
+            super.setState(() => this._splash = "Aggiornamento in corso");
+            this._update = true;
+            await for (double percentage in updatePercentage)
+                yield percentage;
             return;
+        }
 
         this._additionalInfoTimer = Timer(const Duration(seconds: 5), () {
             if(!super.mounted)
@@ -186,7 +193,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
             cancelOnError: true,
             onError: (error) => super.setState(() => this._error = error.toString()),
             onDone: () {
-                if(!this._updating)
+                if(!this._update)
                     Navigator.of(context).pushReplacementNamed("/home");
             }
         );
@@ -246,8 +253,8 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-                const Text("Caricamento dei contenuti",
-                    style: TextStyle(
+                Text(this._splash,
+                    style: const TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
                         color: Colors.orange,
@@ -281,27 +288,6 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         );
     }
 
-    Widget _buildUpdating(BuildContext context) {
-        return const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-                Text("Aggiornamento in corso",
-                    style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.orange,
-                    ),
-                    textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 20),
-                SizedBox(
-                    width: 700,
-                    child: LinearProgressIndicator(),
-                )
-            ]
-        );
-    }
-
     @override
     Widget build(BuildContext context) {
         return Scaffold(
@@ -319,9 +305,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
                         Positioned(
                             top: MediaQuery.of(context).size.height / 2 + 75,
                             width: MediaQuery.of(context).size.width - 30,
-                            child: this._updating
-                                ? this._buildUpdating(context)
-                                : this._error != null
+                            child: this._error != null
                                     ? this._buildError(context)
                                     : this._buildLoading(context),
                         ),
