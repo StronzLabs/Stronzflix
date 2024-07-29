@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:stronzflix/backend/api/bindings/animesaturn.dart';
@@ -117,6 +118,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         MediaKit.ensureInitialized();
         
         await for (double percentage in this._load([
+            FlutterDownloader.initialize(),
             Settings.instance.ensureInitialized()
         ]))
             yield advance + percentage * phasesWeights[0];
