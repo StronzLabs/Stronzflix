@@ -130,6 +130,7 @@ jobs:
           asset_path: ./build.zip
           asset_name: Stronzflix Linux - amd64.zip
           asset_content_type: application/zip
+
   build_macos:
     name: Build MacOS
     needs: create_release
@@ -192,7 +193,12 @@ jobs:
           architecture: x64
 
       - name: Build Android App
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+          ALIAS_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
+          base64 -d <<< $KEY_JKS > ./android/app/release-key.jks
           flutter config --enable-android
           flutter build apk --release
 
