@@ -118,7 +118,8 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         MediaKit.ensureInitialized();
         
         await for (double percentage in this._load([
-            FlutterDownloader.initialize(),
+            if(Platform.isAndroid)
+                FlutterDownloader.initialize(),
             Settings.instance.ensureInitialized()
         ]))
             yield advance + percentage * phasesWeights[0];
