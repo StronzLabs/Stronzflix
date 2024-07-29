@@ -50,6 +50,8 @@ android {
 
     signingConfigs {
         release {
+            v2SigningEnabled true
+            enableV3Signing = true
             storeFile file('release-key.jks')
             storePassword "$System.env.KEY_PASSWORD"
             keyAlias 'StronzflixAndroidKey'
