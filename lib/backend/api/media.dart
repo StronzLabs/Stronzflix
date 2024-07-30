@@ -63,6 +63,7 @@ abstract class Title {
     final String banner;
     final String description;
     final TitleMetadata metadata;
+    final DateTime? comingSoon;
 
     String get name => metadata.name;
     Site get site => metadata.site;
@@ -70,7 +71,8 @@ abstract class Title {
     const Title({
         required this.banner,
         required this.description,
-        required this.metadata
+        required this.metadata,
+        this.comingSoon
     });
 }
 
@@ -84,6 +86,7 @@ class Film extends Title implements Watchable {
         required super.banner,
         required super.description,
         required super.metadata,
+        super.comingSoon,
         required this.url,
         required this.player
     });
@@ -130,6 +133,7 @@ class Series extends Title {
     const Series({
         required super.banner,
         required super.description,
+        super.comingSoon,
         required this.seasons,
         required super.metadata
     });

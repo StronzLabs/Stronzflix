@@ -45,12 +45,37 @@ class AnimeSaturn extends Site {
         Element coverDialog = document.querySelector("#modal-cover-anime")!;
         String cover = coverDialog.querySelector(".img-fluid")!.attributes["src"]!;
 
+        Element? alert = document.querySelector(".alert-primary");
+        String? releaseDate = alert?.querySelector("b")?.text;
+        Map<String, String> months = {
+            "Gennaio": "01",
+            "Febbraio": "02",
+            "Marzo": "03",
+            "Aprile": "04",
+            "Maggio": "05",
+            "Giugno": "06",
+            "Luglio": "07",
+            "Agosto": "08",
+            "Settembre": "09",
+            "Ottobre": "10",
+            "Novembre": "11",
+            "Dicembre": "12"
+        };
+        for(String month in months.keys)
+            releaseDate = releaseDate?.replaceAll(month, months[month]!);
+        releaseDate = releaseDate?.split(" ").reversed.join("-");
+        DateTime? coomingSoon = releaseDate != null ? DateTime.parse(releaseDate) : null;
+
         Series series = Series(
             banner: banner,
             description: description,
             seasons: [],
             metadata: metadata,
+            comingSoon: coomingSoon
         );
+
+        if (alert != null)
+            return series;
 
         List<Element> segments = document.querySelectorAll(".episode-range");
         if(segments.isEmpty) {

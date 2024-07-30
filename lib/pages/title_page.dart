@@ -103,6 +103,9 @@ class _TitlePageState extends State<TitlePage> {
     }
 
     Widget _buildActions(BuildContext context) {
+        if (this._title.comingSoon != null)
+            return const SizedBox.shrink();
+
         if (this._title is Film)
             return LayoutBuilder(
                 builder: (context, constraints) {
@@ -169,21 +172,21 @@ class _TitlePageState extends State<TitlePage> {
                         : Row(children: children);
                 }
             );
-        else
-            return Align(
-                alignment: Alignment.centerLeft,
-                child: DropdownButton(
-                    value: this._selectedSeason,
-                    items: [
-                        for (int i = 0; i < (this._title as Series).seasons.length; i++)
-                            DropdownMenuItem(
-                                value: i,
-                                child: Text((this._title as Series).seasons[i].name)
-                            )
-                    ],
-                    onChanged: (index) => super.setState(() => this._selectedSeason = index!),
-                ),
-            );
+
+        return Align(
+            alignment: Alignment.centerLeft,
+            child: DropdownButton(
+                value: this._selectedSeason,
+                items: [
+                    for (int i = 0; i < (this._title as Series).seasons.length; i++)
+                        DropdownMenuItem(
+                            value: i,
+                            child: Text((this._title as Series).seasons[i].name)
+                        )
+                ],
+                onChanged: (index) => super.setState(() => this._selectedSeason = index!),
+            ),
+        );
     }
 
     Widget _buildEpisodes(BuildContext context) {
@@ -247,12 +250,38 @@ class _TitlePageState extends State<TitlePage> {
                     }
                 )
             ),
-            if (this._title is Series)
+            if (this._title.comingSoon != null)
+                this._buildComingSoon(context)
+            else if(this._title is Series)
                 this._buildEpisodes(context)
         ];
         return this._title is Film
             ? ListView(children: children + [ const SizedBox(height: 25) ])
             : Column(children: children);
+    }
+
+    Widget _buildComingSoon(BuildContext context) {
+        String date = this._title.comingSoon!.toIso8601String().substring(0, 10).split("-").reversed.join("/");
+        return Padding(
+            padding: const EdgeInsets.all(25),
+            child: Column(
+                children: [
+                    const Text("Prossimamente",
+                        style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold
+                        )
+                    ),
+                    const SizedBox(height: 20),
+                    Text("Data prevista di rilascio: ${date}",
+                        style: const TextStyle(
+                            fontSize: 16
+                        ),
+                        textAlign: TextAlign.justify,
+                    )
+                ]
+            )
+        );
     }
 
     @override

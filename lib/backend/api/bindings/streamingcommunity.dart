@@ -75,12 +75,16 @@ class StreamingCommunity extends Site {
     Future<Film> getFilm(TitleMetadata metadata, dynamic title) async {
         String banner = this._findImage(title, "cover_mobile");
         
+        String releaseDate = title["release_date"];
+        DateTime? coomingDate = releaseDate.isNotEmpty ? DateTime.parse(releaseDate) : null;
+
         return Film(
             player: VixxCloud.instance,
             url: "/watch/${title["id"]}",
             banner: "${this._cdn}/images/${banner}",
             description: title["plot"],
-            metadata: metadata
+            metadata: metadata,
+            comingSoon: coomingDate?.isAfter(DateTime.now()) ?? false ? coomingDate : null
         );
     }
 
@@ -106,11 +110,15 @@ class StreamingCommunity extends Site {
     Future<Series> getSeries(TitleMetadata metadata, dynamic title) async {
         String banner = this._findImage(title, "cover_mobile");
         
+        String releaseDate = title["release_date"];
+        DateTime? coomingDate = releaseDate.isNotEmpty ? DateTime.parse(releaseDate) : null;
+
         Series series = Series(
             metadata: metadata,
             banner: "${this._cdn}/images/${banner}",
             description: title["plot"],
             seasons: [],
+            comingSoon: coomingDate?.isAfter(DateTime.now()) ?? false ? coomingDate : null
         );
 
         List<Season> seasons = [];
