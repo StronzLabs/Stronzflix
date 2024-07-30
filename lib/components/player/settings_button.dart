@@ -48,6 +48,24 @@ class _SettingsButtonState extends State<SettingsButton> {
   }
 }
 
+class ScrollableWrapper extends StatelessWidget {
+  final Widget child;
+
+  const ScrollableWrapper({Key? key, required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          child,
+        ],
+      ),
+    );
+  }
+}
+
 class _SettingsMenu extends StatefulWidget {
   final VideoController controller;
 
@@ -106,7 +124,7 @@ class _SettingsMenuState extends State<_SettingsMenu> {
   }
 
   Widget _buildMainPage() {
-    return SingleChildScrollView(
+    return ScrollableWrapper(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -128,7 +146,7 @@ class _SettingsMenuState extends State<_SettingsMenu> {
       .where((track) => track.id != "auto" && track.id != "no").toList()
       ..sort((a, b) => b.h!.compareTo(a.h!));
 
-    return SingleChildScrollView(
+    return ScrollableWrapper(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -150,7 +168,7 @@ class _SettingsMenuState extends State<_SettingsMenu> {
     List<AudioTrack> tracks = super.widget.controller.player.state.tracks.audio
       .where((track) => track.id != "auto" && track.id != "no").toList();
 
-    return SingleChildScrollView(
+    return ScrollableWrapper(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -177,7 +195,7 @@ class _SettingsMenuState extends State<_SettingsMenu> {
         return 0;
       });
 
-    return SingleChildScrollView(
+    return ScrollableWrapper(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
