@@ -83,7 +83,7 @@ class LocalSite extends Site {
             banner: "${metadata.url}/banner.jpg",
             description: jsonMetadata["description"],
             seasons: [],
-           metadata: metadata,
+            metadata: metadata
         );
 
         for(Map<String, dynamic> seasonMetadata in jsonMetadata["seasons"]) {
