@@ -43,7 +43,7 @@ jobs:
         with:
           flutter-version: "3.22.3"
           channel: "stable"
-          cache: true
+          cache: false # windows cache is broken
           cache-key: "flutter-windows"
           cache-path: "${{ runner.tool_cache }}/flutter/windows"
           architecture: x64
