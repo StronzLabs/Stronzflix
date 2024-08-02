@@ -13,8 +13,8 @@ dependencies:
   audio_service_mpris: ^0.1.5
   cast: 
     git:
-      url: https://github.com/guyluz11/flutter_cast.git
-      ref: updating_bonsoir_pacakge
+      url: https://github.com/johnvuko/flutter_cast.git
+      ref: master
   connectivity_plus: ^6.0.3
   crypto: ^3.0.3
   ffmpeg_kit_flutter: ^6.0.3
@@ -76,6 +76,7 @@ dependency_overrides:
       path: ./media_kit_native_event_loop
       ref: main
   uuid: ^4.4.0
+  bonsoir: ^5.1.10
 
 dev_dependencies:
   flutter_test:
