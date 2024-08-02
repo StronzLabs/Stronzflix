@@ -78,6 +78,12 @@ dependency_overrides:
   uuid: ^4.4.0
   bonsoir: ^5.1.10
 
+  bonsoir_windows:
+    git:
+      url: https://github.com/Bonfra04/Bonsoir.git
+      path: ./packages/bonsoir_windows
+      ref: master
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
