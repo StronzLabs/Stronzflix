@@ -155,7 +155,7 @@ jobs:
 
       - name: Zip File
         run: |
-          cd build/macos/Build/Products/Release; zip -r ../../../../../build.zip stronzflix.app; cd -
+          cd build/macos/Build/Products/Release; 7z a ../../../../../build.7z stronzflix.app; cd -
 
       - name: Upload Release Asset
         id: upload-release-asset
@@ -164,9 +164,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ./build.zip
+          asset_path: ./build.7z
           asset_name: Stronzflix MacOS - arm.zip
-          asset_content_type: application/zip
+          asset_content_type: application/x-7z-compressed
 
   build_android:
     name: Build Android
