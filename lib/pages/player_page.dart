@@ -72,6 +72,11 @@ class _PlayerPageState extends State<PlayerPage> {
                                     () => playerInfo.watchable.player.getSource(playerInfo.watchable)
                                 ),
                                 builder: (context, snapshot) {
+                                    if (snapshot.hasError) {
+                                        Future.microtask(() => this._errorPlaying());
+                                        return const Center(child: CircularProgressIndicator());
+                                    }
+
                                     if (snapshot.connectionState != ConnectionState.done)
                                         return const Center(child: CircularProgressIndicator());
 
@@ -86,6 +91,24 @@ class _PlayerPageState extends State<PlayerPage> {
                 )
             )
         );
+    }
+
+    Future<void> _errorPlaying() async {
+        await showDialog(
+            context: super.context,
+            builder: (context) => AlertDialog(
+                title: const Text('Errore imprevisto'),
+                content: const Text('Si è verificato un errore durante la riproduzione, riprova più tardi.'),
+                actions: [
+                    TextButton(
+                        onPressed: () => Navigator.of(super.context).pop(),
+                        child: const Text('Torna indietro')
+                    )
+                ],
+            )
+        );
+        if(super.mounted)
+            Navigator.of(super.context).pop();
     }
 
     void _exitPlayer() {
