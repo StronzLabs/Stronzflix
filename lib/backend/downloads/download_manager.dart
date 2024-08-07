@@ -79,11 +79,11 @@ class DownloadManager {
 
         String baseUri = playlist.baseUri!.substring(0, playlist.baseUri!.lastIndexOf("/"));
 
-        IOSink  outputSink = outputFile.openWrite(mode: FileMode.writeOnly);
+        IOSink outputSink = outputFile.openWrite(mode: FileMode.writeOnly);
         advance += delta;
         progressCallback(advance);
 
-        await for (Uint8List segment in _downloadSegmnets(playlist.segments, baseUri)) {
+        await for (Uint8List segment in DownloadManager._downloadSegmnets(playlist.segments, baseUri)) {
             outputSink.add(segment);
             advance += delta;
             progressCallback(advance);
@@ -232,14 +232,14 @@ class DownloadManager {
 
         if (results.any((e) => !e)) {
             downloadState.setError();
-            _cleanTmpDownload(downloadState);
+            DownloadManager._cleanTmpDownload(downloadState);
             return;
         }
 
         await DownloadManager._downloadMetadata(outputDir, options.watchable);
 
         await FFmpegWrapper.run('-i "${audioTs.path}" -i "${videoTs.path}" -c copy "${outputDir.path}/${watchableID}.mp4"');
-        _cleanTmpDownload(downloadState);
+        DownloadManager._cleanTmpDownload(downloadState);
         DownloadManager.removeDownload(downloadState);
     }
 
