@@ -35,8 +35,6 @@ class VixxCloud extends Player {
         String param = json.keys.map((key) => "$key=${json[key]}").join("&");
         String playlist = "${playlistUrl}?${param}";
 
-        playlist = playlist.substring(0, playlist.indexOf("&expires="));
-
         return Uri.parse(playlist);
     }
 }
