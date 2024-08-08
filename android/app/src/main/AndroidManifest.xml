@@ -1,7 +1,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.stronzflix.app">
+    package="stronzflix.app">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -19,7 +19,7 @@
         android:enableOnBackInvokedCallback="true"
         android:usesCleartextTraffic="true">
         <activity
-            android:name="com.ryanheise.audioservice.AudioServiceActivity"
+            android:name="stronzflix.app.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
@@ -62,7 +62,7 @@
 
         <provider
             android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
-            android:authorities="com.stronzflix.app.flutter_downloader.provider"
+            android:authorities="stronzflix.app.flutter_downloader.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

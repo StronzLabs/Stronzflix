@@ -8,6 +8,7 @@ import 'package:stronzflix/pages/home_page.dart';
 import 'package:stronzflix/pages/loading_page.dart';
 import 'package:stronzflix/pages/player_page.dart';
 import 'package:stronzflix/pages/title_page.dart';
+import 'package:stronzflix/utils/platform.dart';
 
 class Stronzflix extends StatelessWidget {
 
@@ -70,14 +71,17 @@ class Stronzflix extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         SystemChrome.setPreferredOrientations([
-            DeviceOrientation.portraitUp
+            if(SPlatform.isTV) ...[
+                DeviceOrientation.landscapeLeft,
+                DeviceOrientation.landscapeRight
+            ] else
+                DeviceOrientation.portraitUp
         ]);
         SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
         SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             systemNavigationBarColor: Colors.transparent,
         ));
-
         return Shortcuts(
             shortcuts: <LogicalKeySet, Intent>{
                 LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
