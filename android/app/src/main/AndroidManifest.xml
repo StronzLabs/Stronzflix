@@ -15,6 +15,7 @@
     <application
         android:label="Stronzflix"
         android:name="${applicationName}"
+        android:banner="@drawable/banner"
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true"
         android:usesCleartextTraffic="true">
