@@ -49,6 +49,24 @@ class _SettingsButtonState extends State<SettingsButton> {
     }
 }
 
+class ScrollableWrapper extends StatelessWidget {
+    final Widget child;
+
+    const ScrollableWrapper({Key? key, required this.child}) : super(key: key);
+
+    @override
+    Widget build(BuildContext context) {
+        return SingleChildScrollView(
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                    child,
+                ],
+            ),
+        );
+    }
+}
+
 class _SettingsMenu extends StatefulWidget {
     final VideoController controller;
 
@@ -62,9 +80,9 @@ class _SettingsMenu extends StatefulWidget {
 
 class _SettingsMenuState extends State<_SettingsMenu> {
 
-    late final bool _hasVideoTacks = super.widget.controller.player.state.tracks.video.length > 1;
-    late final bool _hasAudioTacks = super.widget.controller.player.state.tracks.audio.length > 1;
-    late final bool _hasSubtitleTacks = super.widget.controller.player.state.tracks.subtitle.length > 1;
+    late final bool _hasVideoTracks = super.widget.controller.player.state.tracks.video.length > 1;
+    late final bool _hasAudioTracks = super.widget.controller.player.state.tracks.audio.length > 1;
+    late final bool _hasSubtitleTracks = super.widget.controller.player.state.tracks.subtitle.length > 1;
 
     int _activeSettingPage = 0;
     late final List<Widget> _pages = [
@@ -92,14 +110,14 @@ class _SettingsMenuState extends State<_SettingsMenu> {
     }
 
     Widget _buildOptionButton(String text, bool selected, void Function() onTap) {
-        return  ListTile(
+        return ListTile(
             title: Row(
-                    children: [
-                        Icon(Icons.check, size: 17, color: selected ? Colors.white : Colors.transparent),
-                        const SizedBox(width: 10),
-                        Text(text),
-                    ],
-                ),
+                children: [
+                    Icon(Icons.check, size: 17, color: selected ? Colors.white : Colors.transparent),
+                    const SizedBox(width: 10),
+                    Text(text),
+                ],
+            ),
             onTap: () {
                 onTap();
                 Navigator.of(super.context).pop();
@@ -108,18 +126,20 @@ class _SettingsMenuState extends State<_SettingsMenu> {
     }
 
     Widget _buildMainPage() {
-        return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-                const ListTile(title: Text("Impostazioni")),
-                const Divider(),
-                if(this._hasVideoTacks)
-                    this._buildNavigationButton("Qualità", 1),
-                if(this._hasAudioTacks)
-                    this._buildNavigationButton("Lingua", 2),
-                if(this._hasSubtitleTacks)
-                    this._buildNavigationButton("Sottotitoli", 3),
-            ],
+        return ScrollableWrapper(
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                    const ListTile(title: Text("Impostazioni")),
+                    const Divider(),
+                    if (this._hasVideoTracks)
+                        this._buildNavigationButton("Qualità", 1),
+                    if (this._hasAudioTracks)
+                        this._buildNavigationButton("Lingua", 2),
+                    if (this._hasSubtitleTracks)
+                        this._buildNavigationButton("Sottotitoli", 3),
+                ],
+            ),
         );
     }
 
@@ -128,19 +148,21 @@ class _SettingsMenuState extends State<_SettingsMenu> {
             .where((track) => track.id != "auto" && track.id != "no").toList()
             ..sort((a, b) => b.h!.compareTo(a.h!));
 
-        return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-                this._buildNavigationButton("Qualità", 0, true),
-                const Divider(),
-                for (VideoTrack track in tracks)
-                    this._buildOptionButton("${track.h}p", track == super.widget.controller.player.state.track.video,
-                        () => super.widget.controller.player.setVideoTrack(track),
+        return ScrollableWrapper(
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                    this._buildNavigationButton("Qualità", 0, true),
+                    const Divider(),
+                    for (VideoTrack track in tracks)
+                        this._buildOptionButton("${track.h}p", track == super.widget.controller.player.state.track.video,
+                            () => super.widget.controller.player.setVideoTrack(track),
+                        ),
+                    this._buildOptionButton("Auto", super.widget.controller.player.state.track.video.id == "auto",
+                        () => super.widget.controller.player.setVideoTrack(VideoTrack.auto()),
                     ),
-                this._buildOptionButton("Auto", super.widget.controller.player.state.track.video.id == "auto",
-                    () => super.widget.controller.player.setVideoTrack(VideoTrack.auto()),
-                ),
-            ],
+                ],
+            ),
         );
     }
 
@@ -148,36 +170,48 @@ class _SettingsMenuState extends State<_SettingsMenu> {
         List<AudioTrack> tracks = super.widget.controller.player.state.tracks.audio
             .where((track) => track.id != "auto" && track.id != "no").toList();
 
-        return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-                this._buildNavigationButton("Lingua", 0, true),
-                const Divider(),
-                for (AudioTrack track in tracks)
-                    this._buildOptionButton((track.language?? track.id).capitalize(), track == super.widget.controller.player.state.track.audio,
-                        () => super.widget.controller.player.setAudioTrack(track),
-                    ),
-            ],
+        return ScrollableWrapper(
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                    this._buildNavigationButton("Lingua", 0, true),
+                    const Divider(),
+                    for (AudioTrack track in tracks)
+                        this._buildOptionButton((track.language ?? track.id).capitalize(), track == super.widget.controller.player.state.track.audio,
+                            () => super.widget.controller.player.setAudioTrack(track),
+                        ),
+                ],
+            ),
         );
     }
 
     Widget _buildSubtitlePage() {
         List<SubtitleTrack> tracks = super.widget.controller.player.state.tracks.subtitle
-            .where((track) => track.id != "auto" && track.id != "no").toList();
+            .where((track) => track.id != "auto" && track.id != "no").toList()
+            ..sort((a, b) {
+                if ((a.language ?? '').toLowerCase().contains('ita')) return -1;
+                if ((b.language ?? '').toLowerCase().contains('ita')) return 1;
+                if ((a.language ?? '').toLowerCase().contains('auto')) return -1;
+                if ((b.language ?? '').toLowerCase().contains('auto')) return 1;
 
-        return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-                this._buildNavigationButton("Sottotitoli", 0, true),
-                const Divider(),
-                for (SubtitleTrack track in tracks)
-                    this._buildOptionButton((track.language?? track.id).capitalize(), track == super.widget.controller.player.state.track.subtitle,
-                        () => super.widget.controller.player.setSubtitleTrack(track),
+                return 0;
+            });
+
+        return ScrollableWrapper(
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                    this._buildNavigationButton("Sottotitoli", 0, true),
+                    const Divider(),
+                    for (SubtitleTrack track in tracks)
+                        this._buildOptionButton((track.language ?? track.id).capitalize(), track == super.widget.controller.player.state.track.subtitle,
+                            () => super.widget.controller.player.setSubtitleTrack(track),
+                        ),
+                    this._buildOptionButton("Nessuno", super.widget.controller.player.state.track.subtitle.id == "no",
+                        () => super.widget.controller.player.setSubtitleTrack(SubtitleTrack.no()),
                     ),
-                this._buildOptionButton("Nessuno", super.widget.controller.player.state.track.subtitle.id == "no",
-                    () => super.widget.controller.player.setSubtitleTrack(SubtitleTrack.no()),
-                ),
-            ],
+                ],
+            ),
         );
     }
 
