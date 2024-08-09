@@ -116,29 +116,39 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
             margin: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                     IconButton(
                         icon: const Icon(Icons.arrow_back),
                         onPressed: () => Navigator.of(context).pop()
                     ),
-                    const SizedBox(width: 8.0),
-                    Text(playerController(super.context).title,
-                        style: const TextStyle(
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          playerController(super.context).title,
+                          style: const TextStyle(
                             fontSize: 21.0,
+                          ),
                         ),
+                      ),
                     ),
-                    const Spacer(),
-                    CastButton(
-                        onOpened: this._timer?.cancel,
-                        onClosed: this._restartTimer,
+                    Row(
+                      children: [
+                        CastButton(
+                          onOpened: this._timer?.cancel,
+                          onClosed: this._restartTimer,
+                        ),
+                        const SizedBox(width: 8.0),
+                        const ChatButton(),
+                      ],
                     ),
-                    const ChatButton()
                 ],
             ),
         );
     }
+    
 
     Widget _buildPrimaryBar(BuildContext context) {
         return Row(

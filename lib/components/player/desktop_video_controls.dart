@@ -122,51 +122,63 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
         );
     }
 
-    Widget _buildTopBar(BuildContext context) {
-        return MouseRegion(
-            onHover: (_) => this._onEnterControls(),
-            onExit: (_) => this._onExitControls(),
-            onEnter: (_) => this._onEnterControls(),
-            child: Container(
-                height: 56,
-                margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                        IconButton(
-                            icon: const Icon(Icons.arrow_back),
-                            onPressed: () async {
-                                if(isFullscreen(context))
-                                    await exitFullscreen(context);
-                                if(context.mounted)
-                                    Navigator.of(context).pop();
-                            }
-                        ),
-                        const SizedBox(width: 8.0),
-                        Text(playerController(super.context).title,
-                            style: const TextStyle(
-                                fontSize: 21.0,
-                            ),
-                        ),
-                        const Spacer(),
-                        CastButton(
-                            onOpened: () => this.setState(() {
-                                this._timer?.cancel();
-                                this._menuOpened = true;
-                            }),
-                            onClosed: () => this.setState(() {
-                                this._menuOpened = false;
-                                this._restartTimer();
-                            }),
-                        ),
-                        const ChatButton()
-                    ],
+  Widget _buildTopBar(BuildContext context) {
+    return MouseRegion(
+      onHover: (_) => this._onEnterControls(),
+      onExit: (_) => this._onExitControls(),
+      onEnter: (_) => this._onEnterControls(),
+      child: Container(
+        height: 56,
+        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () async {
+                if (isFullscreen(context))
+                  await exitFullscreen(context);
+                if (context.mounted)
+                  Navigator.of(context).pop();
+              },
+            ),
+            const SizedBox(width: 8.0),
+            Expanded(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  playerController(super.context).title,
+                  style: const TextStyle(
+                    fontSize: 21.0,
+                  ),
                 ),
-            )
-        );
-    }
+              ),
+            ),
+            const SizedBox(width: 8.0),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CastButton(
+                  onOpened: () => this.setState(() {
+                    this._timer?.cancel();
+                    this._menuOpened = true;
+                  }),
+                  onClosed: () => this.setState(() {
+                    this._menuOpened = false;
+                    this._restartTimer();
+                  }),
+                ),
+                const SizedBox(width: 8.0),
+                const ChatButton(),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
     Widget _buildPrimaryBar(BuildContext context) {
         return Expanded(
