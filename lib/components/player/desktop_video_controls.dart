@@ -148,7 +148,7 @@ class _DesktopVideoControlsState extends StronzflixVideoControlsState<DesktopVid
                     playerController(context).seekTo(rate);
                 },
                 const SingleActivator(LogicalKeyboardKey.arrowLeft): () {
-                    final rate = playerController(context).position - const Duration(seconds: 4);
+                    final rate = playerController(context).position - const Duration(seconds: 5);
                     playerController(context).seekTo(rate);
                 },
                 const SingleActivator(LogicalKeyboardKey.arrowRight): () {
