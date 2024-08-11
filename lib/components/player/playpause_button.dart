@@ -5,10 +5,14 @@ import 'package:stronzflix/components/player/stronzflix_player_controller.dart';
 
 class PlayPauseButton extends StatefulWidget {
     final double iconSize;
+    final void Function()? onFocus;
+    final void Function()? onFocusLost;
 
     const PlayPauseButton({
         super.key,
         this.iconSize = 28,
+        this.onFocus,
+        this.onFocusLost,
     });
 
     @override
@@ -16,6 +20,8 @@ class PlayPauseButton extends StatefulWidget {
 }
 
 class _PlayPauseButtonState extends State<PlayPauseButton> with SingleTickerProviderStateMixin {
+    
+    final FocusNode _focusNode = FocusNode();
     late final AnimationController _animation = AnimationController(
         vsync: this,
         value: playerController(super.context).isPlaying ? 1 : 0,
@@ -48,9 +54,21 @@ class _PlayPauseButtonState extends State<PlayPauseButton> with SingleTickerProv
     }
 
     @override
+    void initState() {
+        super.initState();
+        this._focusNode.addListener(() {
+            if (this._focusNode.hasFocus)
+                super.widget.onFocus?.call();
+            else
+                super.widget.onFocusLost?.call();
+        });
+    }
+
+    @override
     Widget build(BuildContext context) {
         return IconButton(
             onPressed: playerController(context).playOrPause,
+            focusNode: this._focusNode,
             iconSize: super.widget.iconSize, 
             icon: AnimatedIcon(
                 progress: this._animation,

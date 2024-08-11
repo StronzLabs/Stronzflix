@@ -7,11 +7,15 @@ import 'package:stronzflix/utils/utils.dart';
 class SettingsButton extends StatefulWidget {
     final void Function()? onOpened;
     final void Function()? onClosed;
+    final void Function()? onFocus;
+    final void Function()? onFocusLost;
 
     const SettingsButton({
         super.key,
         this.onOpened,
         this.onClosed,
+        this.onFocus,
+        this.onFocusLost,
     });
 
     @override
@@ -21,10 +25,23 @@ class SettingsButton extends StatefulWidget {
 class _SettingsButtonState extends State<SettingsButton> {
 
     late final VideoController _controller = controller(super.context);
+    final FocusNode _focusNode = FocusNode();
+
+    @override
+    void initState() {
+        super.initState();
+        this._focusNode.addListener(() {
+            if (this._focusNode.hasFocus)
+                super.widget.onFocus?.call();
+            else
+                super.widget.onFocusLost?.call();
+        });
+    }
 
     @override
     Widget build(BuildContext context) {
         return IconButton(
+            focusNode: this._focusNode,
             onPressed: () {
                 super.widget.onOpened?.call();
                 showDialog(

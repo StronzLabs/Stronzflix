@@ -5,9 +5,15 @@ import 'package:stronzflix/components/player_info_prodiver.dart';
 import 'package:stronzflix/utils/utils.dart';
 
 class NextButton extends StatefulWidget {
+    final double iconSize;
+    final void Function()? onFocus;
+    final void Function()? onFocusLost;
 
     const NextButton({
         super.key,
+        this.iconSize = 28,
+        this.onFocus,
+        this.onFocusLost,
     });
 
     @override
@@ -16,6 +22,7 @@ class NextButton extends StatefulWidget {
 
 class _NextButtonState extends State<NextButton> {
 
+    final FocusNode _focusNode = FocusNode();
     late Watchable? _next;
 
     @override
@@ -25,13 +32,25 @@ class _NextButtonState extends State<NextButton> {
     }
 
     @override
+    void initState() {
+        super.initState();
+        this._focusNode.addListener(() {
+            if (this._focusNode.hasFocus)
+                widget.onFocus?.call();
+            else
+                widget.onFocusLost?.call();
+        });
+    }
+
+    @override
     Widget build(BuildContext context) {
         if (this._next == null)
             return const SizedBox.shrink();
 
         return IconButton(
+            focusNode: this._focusNode,
             onPressed: () => FullScreenProvider.of<PlayerInfo>(context, listen: false).switchTo(this._next!),
-            iconSize: 28.0,
+            iconSize: widget.iconSize,
             icon: const Icon(Icons.skip_next),
         );
     }
