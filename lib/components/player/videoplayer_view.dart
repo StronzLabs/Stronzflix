@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:stronzflix/components/player/desktop_video_controls.dart';
 import 'package:stronzflix/components/player/mobile_video_controls.dart';
 import 'package:stronzflix/components/player/stronzflix_player_controller.dart';
+import 'package:stronzflix/components/player/tv_video_controls.dart';
 import 'package:stronzflix/components/player_info_prodiver.dart';
 import 'package:stronzflix/utils/platform.dart';
 import 'package:stronzflix/utils/utils.dart';
@@ -53,7 +54,9 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                         return Video(
                             controller: this._controller.controller,
                             controls: (_) => VideoControlsThemeDataInjector(
-                                child: SPlatform.isMobile
+                                child: SPlatform.isTV
+                                ? const TVVideoControls()
+                                : SPlatform.isMobile
                                 ? const MobileVideoControls()
                                 : const DesktopVideoControls(),
                             )
