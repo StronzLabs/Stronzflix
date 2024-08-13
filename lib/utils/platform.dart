@@ -19,9 +19,9 @@ final class SPlatform {
     static Future<void> launchURL(String url) async {
         Uri uri = Uri.parse(url);
         if (await canLaunchUrl(uri)) {
-            await launchUrl(Uri.parse(url));
+            await launchUrl(uri);
         } else {
-            throw 'Could not launch $url';
+            throw 'Could not launch ${url}';
         }
     }
 
