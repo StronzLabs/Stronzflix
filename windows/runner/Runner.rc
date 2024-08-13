@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "stronzflix" "\0"
-            VALUE "FileDescription", "stronzflix" "\0"
+            VALUE "CompanyName", "Stronzflix" "\0"
+            VALUE "FileDescription", "Stronzflix" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "stronzflix" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 Stronzflix. All rights reserved." "\0"
-            VALUE "OriginalFilename", "stronzflix.exe" "\0"
-            VALUE "ProductName", "stronzflix" "\0"
+            VALUE "OriginalFilename", "Stronzflix.exe" "\0"
+            VALUE "ProductName", "Stronzflix" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
