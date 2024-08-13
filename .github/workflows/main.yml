@@ -38,6 +38,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Download dependencies
+        run: |
+          dotnet tool install --global wix --version 4.0.4
+          wix extension add --global WixToolset.UI.wixext/4.0.4
+
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -135,7 +140,6 @@ jobs:
           cd build/linux/x64/release; zip -r ../../../../build.zip bundle; cd -
 
       - name: Upload Release Asset
-        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -172,7 +176,6 @@ jobs:
           cd build/macos/Build/Products/Release; 7z a ../../../../../build.7z stronzflix.app; cd -
 
       - name: Upload Release Asset
-        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -217,7 +220,6 @@ jobs:
           flutter build apk --release
 
       - name: Upload Release Asset
-        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
