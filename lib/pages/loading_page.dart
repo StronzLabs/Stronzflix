@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:stronzflix/backend/api/bindings/animesaturn.dart';
@@ -15,7 +14,7 @@ import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
 import 'package:stronzflix/backend/peer/peer_manager.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
-import 'package:stronzflix/backend/version.dart';
+import 'package:stronzflix/backend/update/version.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/update_dialog.dart';
 
@@ -119,8 +118,6 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         MediaKit.ensureInitialized();
         
         await for (double percentage in this._load([
-            if(Platform.isAndroid)
-                FlutterDownloader.initialize(),
             Settings.instance.ensureInitialized()
         ]))
             yield advance + percentage * phasesWeights[0];

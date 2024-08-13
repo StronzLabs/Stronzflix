@@ -11,6 +11,7 @@ dependencies:
   async: ^2.11.0
   audio_service: ^0.18.13
   audio_service_mpris: ^0.1.5
+  background_downloader: ^8.5.3
   cast: 
     git:
       url: https://github.com/johnvuko/flutter_cast.git
@@ -20,7 +21,6 @@ dependencies:
   ffmpeg_kit_flutter: ^6.0.3
   flutter:
     sdk: flutter
-  flutter_downloader: ^1.11.7
   flutter_hls_parser: ^2.0.1
   flutter_svg: ^2.0.10+1
   html: ^0.15.4

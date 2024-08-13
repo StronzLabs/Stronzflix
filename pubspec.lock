@@ -65,6 +65,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.19"
+  background_downloader:
+    dependency: "direct main"
+    description:
+      name: background_downloader
+      sha256: "5323dfc5519d7a646f7e61adee31f44f2ede54861d5318dfd451a8e38a285538"
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.5.3"
   bonsoir:
     dependency: "direct overridden"
     description:
@@ -288,14 +296,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.1"
-  flutter_downloader:
-    dependency: "direct main"
-    description:
-      name: flutter_downloader
-      sha256: "188d921f78471cb28ec2346bcf4045a27a516e384e2bfc9b4be12ae12d3ff8c8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.11.7"
   flutter_hls_parser:
     dependency: "direct main"
     description:
