@@ -27,7 +27,7 @@ class LocalSite extends Site {
 
     @override
     Future<List<TitleMetadata>> search(String query) async {
-        Directory downloadDir = await DownloadManager.downloadDirctory;
+        Directory downloadDir = await DownloadManager.downloadDirectory;
         List<TitleMetadata> results = [];
 
         for(FileSystemEntity entity in downloadDir.listSync()) {
@@ -49,7 +49,7 @@ class LocalSite extends Site {
 
     @override
     Future<List<TitleMetadata>> latests() async {
-        Directory downloadDir = await DownloadManager.downloadDirctory;
+        Directory downloadDir = await DownloadManager.downloadDirectory;
 
         List<TitleMetadata> results = [];
         List<FileSystemEntity> entities = downloadDir.listSync().toList();

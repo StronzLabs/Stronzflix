@@ -25,7 +25,7 @@ class DownloadOptions {
 class DownloadManager {
     const DownloadManager._();
 
-    static Future<Directory> get downloadDirctory async {
+    static Future<Directory> get downloadDirectory async {
         Directory outputDir = await getApplicationDocumentsDirectory();
         return Directory('${outputDir.path}/Stronzflix/downloads/');
     }
@@ -39,7 +39,7 @@ class DownloadManager {
     static void _cleanTmpDownload(DownloadState download) async {
         String titleID = _calcTitleId(download.options.watchable);
         String watchableID = _calcWatchableId(download.options.watchable);
-        Directory directory = Directory('${(await downloadDirctory).path}${titleID}');
+        Directory directory = Directory('${(await downloadDirectory).path}${titleID}');
         File videoTs = File('${directory.path}/${watchableID}-video.ts');
         File audioTs = File('${directory.path}/${watchableID}-audio.ts');
         if(videoTs.existsSync())
@@ -197,7 +197,7 @@ class DownloadManager {
     static Future<void> download(DownloadOptions options) async {
         String titleID = _calcTitleId(options.watchable);
         String watchableID = _calcWatchableId(options.watchable);
-        Directory outputDir = Directory('${(await downloadDirctory).path}${titleID}');
+        Directory outputDir = Directory('${(await downloadDirectory).path}${titleID}');
         outputDir.createSync(recursive: true);
 
         if(Directory(outputDir.path).listSync().any((e) => e.path.contains(watchableID)))
@@ -245,14 +245,14 @@ class DownloadManager {
 
     static Future<void> _deleteFilm(Film film) async {
         String titleID = _calcTitleId(film);
-        Directory directory = Directory('${(await downloadDirctory).path}${titleID}');
+        Directory directory = Directory('${(await downloadDirectory).path}${titleID}');
         directory.deleteSync(recursive: true);
     }
 
     static Future<void> _deleteEpisode(Episode episode) async {
         String titleID = _calcTitleId(episode);
         String watchableID = _calcWatchableId(episode);
-        Directory directory = Directory('${(await downloadDirctory).path}${titleID}');
+        Directory directory = Directory('${(await downloadDirectory).path}${titleID}');
         Map<String, dynamic> metadata = jsonDecode(File('${directory.path}/metadata.json').readAsStringSync());
     
         metadata["seasons"].firstWhere((e) => e["name"] == episode.season.name)["episodes"].removeWhere((e) => e["name"] == episode.name);
@@ -280,7 +280,7 @@ class DownloadManager {
 
     static Future<void> delete(Title title) async {
         String titleID = _calcId(title.name);
-        Directory directory = Directory('${(await downloadDirctory).path}${titleID}');
+        Directory directory = Directory('${(await downloadDirectory).path}${titleID}');
         try {
             directory.deleteSync(recursive: true);
         } catch (_) {
