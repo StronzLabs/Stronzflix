@@ -44,19 +44,20 @@ class _DownloadsDrawerState extends State<DownloadsDrawer> {
                                         )
                                     ),
                                     const Spacer(),
-                                    InkWell(
-                                        onTap: () {
-                                            if(download.isPaused)
-                                                download.resume();
-                                            else
-                                                download.pause();
-                                        },
-                                        // overlayColor: MaterialStateProperty.all(Colors.transparent),
-                                        borderRadius: const BorderRadius.all(Radius.circular(20)),
-                                        child: Icon(download.isPaused ? Icons.play_arrow : Icons.pause,
-                                            size: 30
-                                        )
-                                    ),
+                                    if(!download.hasError)
+                                        InkWell(
+                                            onTap: () {
+                                                if(download.isPaused)
+                                                    download.resume();
+                                                else
+                                                    download.pause();
+                                            },
+                                            // overlayColor: MaterialStateProperty.all(Colors.transparent),
+                                            borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                            child: Icon(download.isPaused ? Icons.play_arrow : Icons.pause,
+                                                size: 30
+                                            )
+                                        ),
                                     InkWell(
                                         onTap: () => download.cancel(),
                                         // overlayColor: MaterialStateProperty.all(Colors.transparent),
