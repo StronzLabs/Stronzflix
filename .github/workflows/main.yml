@@ -58,15 +58,10 @@ jobs:
           flutter config --enable-windows-desktop
           flutter build windows --release
 
-      - name: Generate MSI
+      - name: Pack Outputs
         run: |
           cd build\windows\x64
           cpack
-
-      - name: Generate MSI
-        run: |
-          cd build\windows\x64
-          cpack -G 7Z
 
       - name: Upload Release Asset (Portable)
         uses: actions/upload-release-asset@v1
@@ -75,8 +70,8 @@ jobs:
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
           asset_path: ./build/windows/x64/Stronzflix.7z
-          asset_name: Stronzflix Windows - amd64 (Portable).zip
-          asset_content_type: application/zip
+          asset_name: Stronzflix Windows - amd64 (Portable).7z
+          asset_content_type: application/x-7z-compressed
 
       - name: Upload Release Asset (MSI)
         uses: actions/upload-release-asset@v1
