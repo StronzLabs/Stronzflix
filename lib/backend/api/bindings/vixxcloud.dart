@@ -32,8 +32,11 @@ class VixxCloud extends Player {
         jsonString = jsonString.replaceAll("'", '"').replaceAll(" ", "").replaceAll("\n", "").replaceAll("\",}", "\"}");
         dynamic json = jsonDecode(jsonString);
 
-        String param = json.keys.map((key) => "$key=${json[key]}").join("&");
+        String param = json.keys.map((key) => "${key}=${json[key]}").join("&");
         String playlist = "${playlistUrl}?${param}";
+
+        if (await http.status(playlist) != 200)
+            playlist = playlist.replaceFirst(RegExp(r"expires=\d+"), "");
 
         return Uri.parse(playlist);
     }
