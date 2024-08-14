@@ -7,11 +7,10 @@ import 'package:stronzflix/utils/simple_http.dart' as http;
 
 class StreamingCommunity extends Site {
 
-    static Site instance = StreamingCommunity._();
-
     String get _cdn => super.url.replaceFirst("//", "//cdn.");
     final Map<String, String> _inhertia = {};
 
+    static Site instance = StreamingCommunity._();
     StreamingCommunity._() : super("StreamingCommunity", "streamingcommunity");
 
     @override
