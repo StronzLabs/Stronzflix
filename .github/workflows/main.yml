@@ -53,28 +53,20 @@ jobs:
           cache-path: "${{ runner.tool_cache }}/flutter/windows"
           architecture: x64
 
-      - name: Download ffmpeg
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip" -OutFile "ffmpeg.zip"
-          Expand-Archive -Path "ffmpeg.zip" -DestinationPath "ffmpeg"
-
       - name: Build Windows App
         run: |
           flutter config --enable-windows-desktop
           flutter build windows --release
 
-      - name: Copy dependencies
-        run: |
-          cp ffmpeg\ffmpeg-master-latest-win64-gpl\bin\ffmpeg.exe build\windows\x64\runner\Release
-          cp ffmpeg\ffmpeg-master-latest-win64-gpl\LICENSE.txt build\windows\x64\runner\ffmpeg_LICENSE.txt
-
-      - name: Zip File
-        run: Compress-Archive -Path build\windows\x64\runner\Release* -Destination build.zip
-
       - name: Generate MSI
         run: |
           cd build\windows\x64
           cpack
+
+      - name: Generate MSI
+        run: |
+          cd build\windows\x64
+          cpack -G 7Z
 
       - name: Upload Release Asset (Portable)
         uses: actions/upload-release-asset@v1
@@ -82,7 +74,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ./build.zip
+          asset_path: ./build/windows/x64/Stronzflix.7z
           asset_name: Stronzflix Windows - amd64 (Portable).zip
           asset_content_type: application/zip
 
