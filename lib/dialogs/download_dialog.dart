@@ -16,18 +16,17 @@ class DownloadDialog extends StatefulWidget {
 
     const DownloadDialog({
         super.key,
-        required this.variants,
+        this.variants = const [],
+        this.audios = const [],
         required this.name,
         required this.defaults,
-        required this.audios
     });
 
     @override
     State<DownloadDialog> createState() => _DownloadDialogState();
 
-    static Future<void> open(BuildContext context, Watchable watchable) async {
+    static Future<DownloadOptions?> _openHls(BuildContext context, Watchable watchable, Uri url) async {
         HlsPlaylist playlist = await LoadingDialog.load(context, () async {
-            Uri url = await watchable.player.getSource(watchable);
             return await HlsPlaylistParser.create().parseString(url, await http.get(url));
         });        
     
@@ -42,18 +41,50 @@ class DownloadDialog extends StatefulWidget {
         );
         Rendition? defaultAudio = audios.firstOrNull;
 
-        DownloadOptions defaultOptions = DownloadOptions(defaultVariant, defaultAudio, watchable);
+        if(!context.mounted)
+            return null;
 
         DownloadOptions? options = await showDialog(
-            // ignore: use_build_context_synchronously
             context: context,
             builder: (context) => DownloadDialog(
                 variants: variants,
                 audios: audios,
                 name: watchable.name,
-                defaults: defaultOptions
+                defaults:  DownloadOptions(watchable, variant: defaultVariant, audio: defaultAudio)
             )
         );
+
+        return options;
+    }
+
+    static Future<DownloadOptions?> _openMp4(BuildContext context, Watchable watchable, Uri url) async {
+        DownloadOptions? options = await showDialog(
+            // ignore: use_build_context_synchronously
+            context: context,
+            builder: (context) => DownloadDialog(
+                name: watchable.name,
+                defaults: DownloadOptions(watchable, url: url)
+            )
+        );
+
+        return options;
+    }
+
+    static Future<void> open(BuildContext context, Watchable watchable) async {
+
+        Uri url = await LoadingDialog.load(context, () async => await watchable.player.getSource(watchable));
+        String mime = await http.mime(url);
+
+        if(!context.mounted)
+            return;
+
+        DownloadOptions? options = switch(mime) {
+            // ignore: use_build_context_synchronously
+            "application/vnd.apple.mpegurl" => await _openHls(context, watchable, url),
+            // ignore: use_build_context_synchronously
+            "video/mp4" => await _openMp4(context, watchable, url),
+            _ => throw Exception("Unsupported mime type: ${mime}")
+        };
 
         if (options == null)
             return;
@@ -64,7 +95,7 @@ class DownloadDialog extends StatefulWidget {
 
 class _DownloadDialogState extends State<DownloadDialog> {
 
-    late Variant _selectedVariant = super.widget.defaults.variant;
+    late Variant? _selectedVariant = super.widget.defaults.variant;
     late Rendition? _selectedAudio = super.widget.defaults.audio;
 
     @override
@@ -79,20 +110,26 @@ class _DownloadDialogState extends State<DownloadDialog> {
                 TextButton(
                     child: const Text("Scarica"),
                     onPressed: () => Navigator.of(context).pop(
-                        DownloadOptions(this._selectedVariant, this._selectedAudio, super.widget.defaults.watchable)
+                        DownloadOptions(
+                            super.widget.defaults.watchable,
+                            variant: this._selectedVariant,
+                            audio: this._selectedAudio,
+                            url: super.widget.defaults.url
+                        )
                     )
                 )
             ],
             content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                    SelectDropDown(
-                        label: "Qualità",
-                        options: super.widget.variants,
-                        selectedValue: this._selectedVariant,
-                        onSelected: (e) => this._selectedVariant = e,
-                        stringify: (e) => "${deduceVariantResolution(e)}p",
-                    ),
+                    if (super.widget.variants.isNotEmpty)
+                        SelectDropDown(
+                            label: "Qualità",
+                            options: super.widget.variants,
+                            selectedValue: this._selectedVariant,
+                            onSelected: (e) => this._selectedVariant = e,
+                            stringify: (e) => "${deduceVariantResolution(e)}p",
+                        ),
                     if (super.widget.audios.isNotEmpty)
                         SelectDropDown(
                             label: "Audio",
