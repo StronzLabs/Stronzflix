@@ -6,6 +6,7 @@ import 'package:background_downloader/background_downloader.dart';
 import 'package:process_run/process_run.dart';
 import 'package:stronzflix/utils/simple_http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:win32_registry/win32_registry.dart';
 
 abstract class Updater {
 
@@ -74,8 +75,16 @@ class AndroidUpdater extends Updater {
 
 class WindowsUpdater extends Updater {
 
-    @override
-    Future<Stream<double>?> doUpdate() async {
+    bool _isPortable() {
+        try {
+            RegistryKey key = Registry.openPath(RegistryHive.currentUser, path: r'Software\Stronzflix');
+            key.close();
+            return false;
+        } catch(_) {}
+        return true;
+    }
+
+    Future<Stream<double>?> _msiUpdate() async  {
         final task = DownloadTask(
             url: await Updater.platformUrl,
             baseDirectory: BaseDirectory.temporary
@@ -95,6 +104,14 @@ class WindowsUpdater extends Updater {
         });
 
         return progressController.stream;
+    }
+
+    @override
+    Future<Stream<double>?> doUpdate() async {
+        if(this._isPortable())
+            return GenericUpdater().doUpdate(); 
+
+        return this._msiUpdate();
     }
 }
 
