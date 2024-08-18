@@ -130,7 +130,7 @@ hr {
     content: "⮟ ";
 }
 
-section img {
+.collapsible-content img {
     border: 2px solid #AAAAAA;
     border-radius: 5px;
 }
