@@ -27,6 +27,8 @@ body {
     right: 50%;
     transform: translateX(50%);
     align-self: center;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 a {
@@ -64,11 +66,11 @@ hr {
     text-decoration: none;
 }
 
-.info p {
+.hilight p {
     font-size: 20px;
 }
 
-.credits p {
+.gray-out p {
     color: #AAAAAA;
 }
 

@@ -8,10 +8,10 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="#">
+        <a href="/">
             <img class="logo" src="svg/logo.svg">
         </a>
-        <h1 class="title">Stronzflix</h1>
+        <a class="title" href="/">Stronzflix</a>
         <div class="nav-links">
             <a href="#Informazioni">Informazioni</a>
             <a href="#Download">Download</a>
@@ -21,9 +21,9 @@
         </div>
     </nav>
 
-    <div class="sections" id="Informazioni">
-        <a href="#Informazioni" class="heading">Informazioni</a>
-        <section class="info">
+    <div class="sections">
+        <section class="hilight" id="Informazioni">
+            <a href="#Informazioni" class="heading">Informazioni</a>
             <p>
                 Stronzflix è un'applicazione open source per la visualizzazione di contenuti multimediali in streaming.<br>
                 L'applicazione è compilata nativamente e può essere eseguita su diverse piattaforme. Anche se al momento sono supportate solo le piattaforme elencate di seguito, il team di sviluppo sta lavorando per estendere il supporto ad altre piattaforme in futuro.
@@ -31,28 +31,36 @@
         </section>
     
         <hr>
-        <section class="download" id="Download">
+        <section id="Download">
             <a href="#Download" class="heading">Download</a>
             <div class="download-buttons">
                 <a href="javascript:downloadFor('.apk')" class="download-button">
                     <img src="svg/android.svg" alt="Android" class="download-icon">
-                    <span>Download for Android</span>
+                    <span>Download Android</span>
                 </a>
-                <a href="javascript:downloadFor('Windows')" class="download-button">
+                <a href="javascript:downloadFor('.msi')" class="download-button">
                     <img src="svg/windows.svg" alt="Windows" class="download-icon">
-                    <span>Download for Windows</span>
+                    <span>Download Windows</span>
                 </a>
                 <a href="javascript:downloadFor('Linux')" class="download-button">
                     <img src="svg/linux.svg" alt="Linux" class="download-icon">
-                    <span>Download for Linux</span>
+                    <span>Download Linux</span>
                 </a>
                 <a href="javascript:downloadFor('Mac')" class="download-button">
                     <img src="svg/macos.svg" alt="Mac" class="download-icon">
-                    <span>Download for Mac</span>
+                    <span>Download Mac</span>
                 </a>
-            </div>    
+            </div>
+            <p>
+                Se riscontri difficoltà prova a consulare la <a href=guida.html>guida di installazione</a>.
+            </p> 
+            <p>
+                Altre opzioni di download per le piattaforme sopraccitate sono disponibili nella <a href="https://github.com/Bonfra04/Stronzflix/releases">sezione dedicata</a>.
+            </p>
+        </section>
+
         <hr>
-        <section class="contribs" id="Contribuisci">
+        <section id="Contribuisci">
             <a href="#Contribuisci" class="heading">Contribuisci</a>
             <p>
                 Se hai interesse a contribuire al progetto, puoi inviare una pull request su <a href="https://github.com/Bonfra04/Stronzflix">GitHub</a>.
@@ -60,7 +68,7 @@
         </section>
 
         <hr>
-        <section class="credits" id="Crediti">
+        <section class="gray-out" id="Crediti">
             <a href="#Crediti" class="heading">Crediti</a>
             <p>
                 Stronzflix è un progetto open source rilasciato sotto licenza GNU GPLv3.<br>Il codice sorgente è disponibile su <a href="https://github.com/Bonfra04/Stronzflix">GitHub</a>.
@@ -71,7 +79,7 @@
         </section>
 
         <hr>
-        <section class="changelog" id="Changelog">
+        <section id="Changelog">
             <a href="#Changelog" class="heading">Changelog</a>
             <div id="changelog"></div>
         </section>
