@@ -35,6 +35,12 @@ a {
     color: #ff9800;;
 }
 
+@media screen and (max-width: 1080px) {
+    .nav-links {
+        display: none;
+    }
+}
+
 .nav-links a {
     text-decoration: none;
     margin-left: 10px;
