@@ -122,12 +122,17 @@ hr {
 }
 
 .collapsible-button:before {
-    content: "⮞ ";
+    content: "⮞";
     font-size: 25px;
+    margin-right: 5px;
+    display: inline-block;
+    transform: rotate(0deg);
+    transition: transform 0.25s ease-out;
 }
 
 .collapsible-button.active:before {
-    content: "⮟ ";
+    transform: rotate(90deg);
+    transition: transform 0.25s ease-out;
 }
 
 .collapsible-content img {
