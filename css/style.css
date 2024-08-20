@@ -21,7 +21,7 @@ body {
 
 .title {
     color: #ff9800;
-    font-size: 50px;
+    font-size: 3.125rem;
     margin: 0;
     position: absolute;
     right: 50%;
@@ -44,7 +44,7 @@ a {
 .nav-links a {
     text-decoration: none;
     margin-left: 10px;
-    font-size: 20px;
+    font-size: 1.25rem;
 }
 
 .nav-links a:hover {
@@ -65,7 +65,7 @@ hr {
 }
 
 .heading {
-    font-size: 30px;
+    font-size: 1.875rem;
     margin: 0;
     color: #ff9800;
     font-weight: bold;
@@ -73,7 +73,7 @@ hr {
 }
 
 .hilight {
-    font-size: 20px;
+    font-size: 1.25rem;
 }
 
 .gray-out {
@@ -92,7 +92,7 @@ hr {
     border: none;
     border-radius: 5px;
     text-decoration: none;
-    font-size: 20px;
+    font-size: 1.25rem;
     margin: 10px;
     display: flex;
     align-items: center;
@@ -129,7 +129,7 @@ hr {
 
 .collapsible-button:before {
     content: "⮞";
-    font-size: 25px;
+    font-size: 1.5rem;
     margin-right: 5px;
     display: inline-block;
     transform: rotate(0deg);
