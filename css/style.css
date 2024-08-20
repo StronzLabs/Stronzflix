@@ -122,8 +122,7 @@ hr {
 }
 
 .collapsible-button:before {
-    content: "⮞";
-    font-size: 25px;
+    content: url("../svg/arrow.svg");
     margin-right: 5px;
     display: inline-block;
     transform: rotate(0deg);
