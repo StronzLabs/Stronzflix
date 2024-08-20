@@ -81,7 +81,7 @@ dependency_overrides:
 
   bonsoir_windows:
     git:
-      url: https://github.com/Bonfra04/Bonsoir.git
+      url: https://github.com/Skyost/Bonsoir.git
       path: ./packages/bonsoir_windows
       ref: master
 

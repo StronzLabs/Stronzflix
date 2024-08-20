@@ -118,8 +118,8 @@ packages:
     description:
       path: "packages/bonsoir_windows"
       ref: master
-      resolved-ref: af7ad70eeaf9a9628097e4c269065bdfa9bbff7e
-      url: "https://github.com/Bonfra04/Bonsoir.git"
+      resolved-ref: a165bdfc55409d9776742256aa86b2e3ca488e7a
+      url: "https://github.com/Skyost/Bonsoir.git"
     source: git
     version: "5.1.5"
   boolean_selector:
