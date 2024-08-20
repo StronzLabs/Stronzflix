@@ -83,6 +83,7 @@ hr {
 .download-buttons {
     display: flex;
     justify-content: space-evenly;
+    flex-wrap: wrap;
 }
 
 .download-button {
@@ -96,6 +97,19 @@ hr {
     margin: 10px;
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    box-sizing: border-box;
+}
+
+@media screen and (max-width: 1080px) {
+    .download-button {
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: calc(50% - 10px * 2);
+        font-size: 2.25rem;
+        height: 5rem;
+    }
 }
 
 .download-icon {
