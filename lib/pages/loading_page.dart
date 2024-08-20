@@ -71,10 +71,12 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         StreamController<dynamic> loading = StreamController.broadcast();
         int done = 0;
         List<StreamSubscription> subscriptions = loadingPhase.map((stream) {
+            int index = loadingPhase.indexOf(stream);
             return stream.listen(
-                (percentage) => loading.add([ stream, percentage / loadingPhase.length ]),
+                (percentage) => loading.add([ index, percentage ]),
                 onError: (error) => loading.addError(error),
                 onDone: () {
+                    loading.add([ index, 1.0 ]);
                     if(++done == loadingPhase.length)
                         loading.close();
                 }
@@ -84,7 +86,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         List<double> advance = List.filled(loadingPhase.length, 0.0);
         await for (dynamic percentage in loading.stream) {
             if (percentage is List) {
-                advance[loadingPhase.indexOf(percentage[0])] = percentage[1];
+                advance[percentage[0]] = percentage[1] / loadingPhase.length;
                 yield advance.reduce((a, b) => a + b);
             }
             else {
@@ -95,7 +97,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         }
 
         for (StreamSubscription<dynamic> subscription in subscriptions)
-          subscription.cancel();
+            subscription.cancel();
     }
 
     Future<bool> _checkConnection() async {

@@ -22,8 +22,10 @@ abstract class Site extends Initializable {
     Future<void> construct() async{
         await super.construct();
 
-        if(this.isLocal)
+        if(this.isLocal) {
+            super.reportProgress(1.0);
             return;
+        }
 
         if(Settings.domains.containsKey(this.name))
             if(!await this.tuner.validateDomain(Settings.domains[this.name]!))
