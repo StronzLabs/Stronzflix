@@ -42,6 +42,7 @@ class Tuner {
                 break;
             }
 
+            // TODO: maybe use a logarithmic scale for progress instead of linear
             progress += groupSize / domains.length;
             yield progress;
         }
