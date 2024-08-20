@@ -102,3 +102,8 @@ if (window.location.hash) {
     if (collapsible)
         focusCollapsible(collapsible.id);
 }
+
+const sidenavButton = document.getElementById('sidenav-button');
+sidenavButton.addEventListener('click', () => {
+    sidenavButton.classList.toggle('open');
+})

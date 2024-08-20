@@ -175,3 +175,62 @@ hr {
     border-radius: 5px;
     box-sizing: border-box;
 }
+
+
+div#sidenav-button {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    color: var(--accent-color);
+    transition: all .5s ease-in-out;
+}
+
+@media screen and (min-width: 1080px) {
+    div#sidenav-button {
+        display: none;
+    }
+}
+
+div#sidenav-button .line {
+    width: 50px;
+    height: 6px;
+    background: var(--accent-color);
+    border-radius: 5px;
+    transition: all .5s ease-in-out;
+}
+
+div#sidenav-button .line::before,
+div#sidenav-button .line::after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 6px;
+    background: var(--accent-color);
+    border-radius: 5px;
+    transition: all .5s ease-in-out;
+}
+
+div#sidenav-button .line::before {
+    transform: translateY(-16px);
+}
+
+div#sidenav-button .line::after {
+    transform: translateY(16px);
+}
+
+div#sidenav-button.open .line {
+    background: transparent;
+    box-shadow: none;
+}
+
+div#sidenav-button.open .line::before {
+    transform: rotate(-45deg);
+}
+
+div#sidenav-button.open .line::after {
+    transform: rotate(45deg);
+}
