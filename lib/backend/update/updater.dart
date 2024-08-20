@@ -11,7 +11,7 @@ import 'package:win32_registry/win32_registry.dart';
 abstract class Updater {
 
     static Future<Map<String, dynamic>> get latestRelease async =>
-        jsonDecode(await http.get('https://api.github.com/repos/Bonfra04/Stronzflix/releases/latest'));
+        jsonDecode(await http.get('https://api.github.com/repos/StronzLabs/Stronzflix/releases/latest'));
 
     static Future<String> get platformUrl async {
         String platform;

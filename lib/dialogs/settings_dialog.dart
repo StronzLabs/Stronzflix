@@ -23,7 +23,7 @@ class SettingsDialog extends StatelessWidget {
                             color: Theme.of(context).colorScheme.secondary,
                             decoration: TextDecoration.underline
                         ),
-                        recognizer: TapGestureRecognizer()..onTap = () => SPlatform.launchURL("https://github.com/Bonfra04/Stronzflix")
+                        recognizer: TapGestureRecognizer()..onTap = () => SPlatform.launchURL("https://github.com/StronzLabs/Stronzflix")
                     ),
                     const TextSpan(
                         text: ".\nSegui gli aggiornamenti o scarica la versione più recente sul "
@@ -34,7 +34,7 @@ class SettingsDialog extends StatelessWidget {
                             color: Theme.of(context).colorScheme.secondary,
                             decoration: TextDecoration.underline
                         ),
-                        recognizer: TapGestureRecognizer()..onTap = () => SPlatform.launchURL("https://bonfra04.github.io/Stronzflix/")
+                        recognizer: TapGestureRecognizer()..onTap = () => SPlatform.launchURL("https://StronzLabs.github.io/Stronzflix/")
                     ),const TextSpan(
                         text: ".\n"
                     ),

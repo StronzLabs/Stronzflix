@@ -2,7 +2,7 @@
 
 Stronzflix is an open-source application for streaming multimedia content. The application is natively compiled and can be run on a variety of platforms. Although only the platforms listed below are currently supported, the development team is working to extend support to other platforms in the future.
 
-Learn more on  [the official website](https://bonfra04.github.io/Stronzflix/).
+Learn more on  [the official website](https://StronzLabs.github.io/Stronzflix/).
 
 ---
 
