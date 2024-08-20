@@ -91,17 +91,16 @@ class _DownloadsDrawerState extends State<DownloadsDrawer> {
                         children: [
                             Container(
                                 color: Colors.orange,
-                                padding: const EdgeInsets.only(
-                                    top: 20,
-                                    bottom: 20
-                                ),
-                                child: const Text(
+                                height: 56,
+                                child: const Center(
+                                    child: Text(
                                     'Download in corso',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 20
                                     ),
+                                ),
                                 ),
                             ),
                             const SizedBox(height: 10),
