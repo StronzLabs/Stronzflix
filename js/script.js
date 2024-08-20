@@ -29,8 +29,8 @@ async function downloadFor(platform) {
     const tmpAElement = document.createElement('a');
     const blobUrl = URL.createObjectURL(fileBlob);
     tmpAElement.href = blobUrl;
-    tmpAElement.setAttribute('download', attachment.name);
-    tmpAElement.setAttribute('target', '_blank');
+    tmpAElement.download = attachment.name;
+    tmpAElement.target = '_blank';
     tmpAElement.click();
     URL.revokeObjectURL(blobUrl);
     tmpAElement.remove();
