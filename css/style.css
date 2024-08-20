@@ -1,6 +1,14 @@
+:root {
+    --background-color: #212121;
+    --background-accent-color: #121212;
+    --accent-color: #ff9800;
+    --text-color: #ffffff;
+    --text-accent-color: #aaaaaa;
+}
+
 body {
     margin: 0;
-    background-color: #212121;
+    background-color: var(--background-color);
     font-family: Arial, sans-serif;
     color: white;
 }
@@ -10,7 +18,7 @@ body {
     justify-content: space-between;
     align-items: baseline;
     padding: 10px 20px;
-    background-color: #121212;
+    background-color: var(--background-accent-color);
 }
 
 .logo {
@@ -26,13 +34,13 @@ body {
     margin: 0;
     font-weight: bold;
     font-size: 3.125rem;
-    color: #ff9800;
+    color: var(--accent-color);
     transform: translateX(50%);
     text-decoration: none;
 }
 
 a {
-    color: #ff9800;
+    color: var(--accent-color);
 }
 
 @media screen and (max-width: 1080px) {
@@ -48,7 +56,7 @@ a {
 }
 
 .nav-links a:hover {
-    color: #AAAAAA;
+    color: var(--text-accent-color);
 }
 
 .sections {
@@ -58,14 +66,14 @@ a {
 hr {
     margin: 20px -2px;
     border: 0;
-    border-top: 1px solid #AAAAAA;
+    border-top: 1px solid var(--text-accent-color);
 }
 
 .heading {
     margin: 0;
     font-size: 1.875rem;
     font-weight: bold;
-    color: #ff9800;
+    color: var(--accent-color);
     text-decoration: none;
 }
 
@@ -74,7 +82,7 @@ hr {
 }
 
 .gray-out {
-    color: #AAAAAA;
+    color: var(--text-accent-color);
 }
 
 .download-buttons {
@@ -96,7 +104,7 @@ hr {
     border-radius: 5px;
     font-size: 1.25rem;
     color: black;
-    background-color: #ff9800;
+    background-color: var(--accent-color);
     text-decoration: none;
 }
 
