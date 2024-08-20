@@ -1,7 +1,7 @@
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
     background-color: #212121;
+    font-family: Arial, sans-serif;
     color: white;
 }
 
@@ -9,8 +9,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    background-color: #121212;
     padding: 10px 20px;
+    background-color: #121212;
 }
 
 .logo {
@@ -20,19 +20,19 @@ body {
 }
 
 .title {
-    color: #ff9800;
-    font-size: 3.125rem;
-    margin: 0;
     position: absolute;
     right: 50%;
-    transform: translateX(50%);
     align-self: center;
-    text-decoration: none;
+    margin: 0;
     font-weight: bold;
+    font-size: 3.125rem;
+    color: #ff9800;
+    transform: translateX(50%);
+    text-decoration: none;
 }
 
 a {
-    color: #ff9800;;
+    color: #ff9800;
 }
 
 @media screen and (max-width: 1080px) {
@@ -42,9 +42,9 @@ a {
 }
 
 .nav-links a {
-    text-decoration: none;
     margin-left: 10px;
     font-size: 1.25rem;
+    text-decoration: none;
 }
 
 .nav-links a:hover {
@@ -56,19 +56,16 @@ a {
 }
 
 hr {
-    margin-left: -2px;
-    margin-right: -2px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin: 20px -2px;
     border: 0;
     border-top: 1px solid #AAAAAA;
 }
 
 .heading {
-    font-size: 1.875rem;
     margin: 0;
-    color: #ff9800;
+    font-size: 1.875rem;
     font-weight: bold;
+    color: #ff9800;
     text-decoration: none;
 }
 
@@ -82,24 +79,24 @@ hr {
 
 .download-buttons {
     display: flex;
-    justify-content: space-evenly;
     flex-wrap: wrap;
+    justify-content: space-evenly;
 }
 
 .download-button {
-    background-color: #ff9800;
-    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    box-sizing: border-box;
+    margin: 10px;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    text-decoration: none;
     font-size: 1.25rem;
-    margin: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1;
-    box-sizing: border-box;
+    color: black;
+    background-color: #ff9800;
+    text-decoration: none;
 }
 
 @media screen and (max-width: 1080px) {
@@ -123,8 +120,8 @@ hr {
 }
 
 .release a {
-    text-decoration: none;
     margin-bottom: 0px;
+    text-decoration: none;
 }
 
 .release p {
@@ -137,15 +134,15 @@ hr {
 
 .collapsible-content {
     max-height: 0;
-    overflow-y: hidden;
     transition: max-height 0.5s ease-out;
+    overflow-y: hidden;
 }
 
 .collapsible-button:before {
     content: "⮞";
-    font-size: 1.5rem;
-    margin-right: 5px;
     display: inline-block;
+    margin-right: 5px;
+    font-size: 1.5rem;
     transform: rotate(0deg);
     transition: transform 0.25s ease-out;
 }
