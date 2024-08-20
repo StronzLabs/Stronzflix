@@ -21,6 +21,12 @@ body {
     background-color: var(--background-accent-color);
 }
 
+@media screen and (max-width: 1080px) {
+    .navbar {
+        align-items: center;
+    }
+}
+
 .logo {
     width: 40px;
     height: auto;
