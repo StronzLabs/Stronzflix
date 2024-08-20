@@ -1,6 +1,6 @@
 async function fetchLatestReleaseAttachments() {
     try {
-        const response = await fetch(`https://api.github.com/repos/Bonfra04/Stronzflix/releases/latest`);
+        const response = await fetch(`https://api.github.com/repos/StronzLabs/Stronzflix/releases/latest`);
         const release = await response.json();
 
         if (response.ok) {
@@ -39,7 +39,7 @@ async function downloadFor(platform) {
 async function populateChangelog() {
     const changelog = document.getElementById('changelog');
     
-    const response = await fetch(`https://api.github.com/repos/Bonfra04/Stronzflix/releases`);
+    const response = await fetch(`https://api.github.com/repos/StronzLabs/Stronzflix/releases`);
     if (!response.ok)
         return;
     const releases = await response.json();
