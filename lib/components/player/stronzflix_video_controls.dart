@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/fullscreen.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
-import 'package:stronzflix/backend/storage/player_preferences.dart';
 import 'package:stronzflix/components/player/stronzflix_player_controller.dart';
 import 'package:stronzflix/components/player_info_prodiver.dart';
 import 'package:stronzflix/dialogs/notification_overlay.dart';
