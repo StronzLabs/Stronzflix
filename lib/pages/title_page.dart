@@ -218,6 +218,7 @@ class _TitlePageState extends State<TitlePage> {
                             imageUrl: episode.cover,
                             text: episode.name,
                             progress: progress,
+                            footer: episode.episodeNo.toString(),
                         )
                     );
                 }).toList()
@@ -308,7 +309,7 @@ class _TitlePageState extends State<TitlePage> {
                     if (snapshot.connectionState != ConnectionState.done)
                         return const Center(child: CircularProgressIndicator());
 
-                    // TODO mainly caused by coming soons
+                    // // TODO mainly caused by coming soons
                     if (snapshot.hasError)
                         return const Center(child: Text("Errore durante il caricamento del titolo"));
 
