@@ -57,7 +57,7 @@ class DownloadManager {
 
     static Future<bool> _downloadEpisodeMetadata(Directory outputDirectory, Episode episode) async {
         Series series = episode.season.series;
-        if(!await _downloadTitleMetadata(outputDirectory, series))
+        if(!await DownloadManager._downloadTitleMetadata(outputDirectory, series))
             return false;
 
         String coverID = _calcId("${episode.name}-cover");
@@ -73,14 +73,18 @@ class DownloadManager {
                 "episodes": []
             });
         }
+
         if(metadata["seasons"].firstWhere((e) => e["name"] == episode.season.name)["episodes"].where((e) => e["name"] == episode.name).isEmpty)
-            metadata["seasons"].firstWhere((e) => e["name"] == episode.season.name)["episodes"].add({
+            metadata["seasons"].firstWhere((e) => e["name"] == episode.season.name)["episodes"].add(<String, dynamic>{
                 "name": episode.name
             });
     
-        Map<String, dynamic> episodeObject = metadata["seasons"].firstWhere((e) => e["name"] == episode.season.name)["episodes"].firstWhere((e) => e["name"] == episode.name);
+        Map<String, dynamic> episodeObject = metadata["seasons"].firstWhere(
+            (e) => e["name"] == episode.season.name
+        )["episodes"].firstWhere((e) => e["name"] == episode.name);
         episodeObject["cover"] = coverID;
         episodeObject["url"] = DownloadManager.calcWatchableId(episode);
+        episodeObject["episodeNo"] = episode.episodeNo;
 
         metadataFile.writeAsStringSync(jsonEncode(metadata));
         return true;        

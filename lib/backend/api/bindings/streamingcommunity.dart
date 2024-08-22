@@ -101,7 +101,8 @@ class StreamingCommunity extends Site {
                     url: "/watch/${titleId}?e=${episode["id"]}",
                     name: episode["name"],
                     cover: "${this._cdn}/images/${this._findImage(episode, "cover")}",
-                    season: season
+                    season: season,
+                    episodeNo: episode["number"]
                 )
         ];
     }

@@ -98,6 +98,7 @@ class LocalSite extends Site {
                     name: episodeMetadata["name"],
                     cover: "${metadata.url}/${episodeMetadata["cover"]}.jpg",
                     url: "${metadata.url}/${episodeMetadata["url"]}.mp4",
+                    episodeNo: episodeMetadata["episodeNo"],
                     season: season,
                     player: LocalPlayer.instance
                 ));

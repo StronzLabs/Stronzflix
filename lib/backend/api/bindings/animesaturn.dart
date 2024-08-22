@@ -24,6 +24,7 @@ class AnimeSaturn extends Site {
         for(Element element in episodesGrid.querySelectorAll(".btn")) {
             String name = element.text.trim();
             String url = element.attributes["href"]!;
+            int episodeNo = int.parse(element.text.trim().split("Episodio ")[1]);
 
             episodes.add(Episode(
                 season: season,
@@ -31,6 +32,7 @@ class AnimeSaturn extends Site {
                 url: url,
                 cover: cover,
                 player: Streampeaker.instance,
+                episodeNo: episodeNo
             ));
         }
 

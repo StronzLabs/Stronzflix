@@ -97,6 +97,7 @@ class Episode implements Watchable {
     final String name;
     final String cover;
     final Season season;
+    final int episodeNo;
 
     @override
     final String url;
@@ -111,7 +112,8 @@ class Episode implements Watchable {
         required this.cover,
         required this.url,
         required this.season,
-        required this.player
+        required this.player,
+        required this.episodeNo
     });
 }
 
