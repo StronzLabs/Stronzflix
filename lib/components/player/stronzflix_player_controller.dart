@@ -175,6 +175,7 @@ class LocalPlayerController extends StronzflixPlayerController {
         await this._player.setSubtitleTrack(
             this._player.state.tracks.subtitle.firstWhere((track) => track.id == "no")
         );
+        await this._player.setVolume(PlayerPreferences.volume);
     }
 
     @override

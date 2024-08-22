@@ -162,7 +162,6 @@ abstract class StronzflixVideoControlsState<T extends StatefulWidget> extends St
     void initState() {
         super.initState();
         this._peerMessagesSubscription = PeerMessenger.messages.listen(this._handlePeerMessage);
-        playerController(super.context).setVolume(PlayerPreferences.volume);
         this.restartTimer();
     }
 
