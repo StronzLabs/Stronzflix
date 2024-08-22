@@ -96,7 +96,7 @@ function focusCollapsible(collapsible) {
 }
 
 if (/index/.test(window.location.href)) {
-populateChangelog();
+    populateChangelog();
 }
 
 if (window.location.hash && /guida/.test(window.location.href)) {
@@ -106,6 +106,15 @@ if (window.location.hash && /guida/.test(window.location.href)) {
 }
 
 const sidenavButton = document.getElementById('sidenav-button');
+const burgerMenu = document.getElementById('burger-menu');
 sidenavButton.addEventListener('click', () => {
     sidenavButton.classList.toggle('open');
+    burgerMenu.classList.toggle('open');
 })
+
+burgerMenu.addEventListener('click', (event) => {
+    if (event.target.tagName === 'A') {
+        sidenavButton.classList.toggle('open');
+        burgerMenu.classList.toggle('open');
+    }
+});

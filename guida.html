@@ -8,22 +8,32 @@
     <meta name="google-site-verification" content="YF6BYw4CT2I7u98-trN3HJhzQlf0j-0U0vyvKxu22DE" />
 </head>
 <body>
-    <nav class="navbar">
-        <a href="#">
-            <img class="logo" src="svg/logo.svg">
-        </a>
-        <a class="title" href="#">Stronzflix</a>
-        <div class="nav-links">
+    <div id="navbar-wrapper">
+        <nav class="navbar">
+            <a href="#">
+                <img class="logo" src="svg/logo.svg">
+            </a>
+            <a class="title" href="#">Stronzflix</a>
+            <div class="nav-links">
+                <a href="javascript:focusCollapsible('Android')">Android</a>
+                <a href="javascript:focusCollapsible('Windows')">Windows</a>
+                <a href="javascript:focusCollapsible('Linux')">Linux</a>
+                <a href="javascript:focusCollapsible('Mac')">Mac</a>
+                <a href="javascript:focusCollapsible('Altre_Opzioni')">Altre Opzioni</a>
+            </div>
+            <div id="sidenav-button">
+                <div class="line"></div>
+            </div>
+        </nav>
+
+        <div id="burger-menu">
             <a href="javascript:focusCollapsible('Android')">Android</a>
             <a href="javascript:focusCollapsible('Windows')">Windows</a>
             <a href="javascript:focusCollapsible('Linux')">Linux</a>
             <a href="javascript:focusCollapsible('Mac')">Mac</a>
             <a href="javascript:focusCollapsible('Altre_Opzioni')">Altre Opzioni</a>
         </div>
-        <div id="sidenav-button">
-            <div class="line"></div>
-        </div>
-    </nav>
+    </div>
 
     <div class="sections">
         <section id="Android" class="collapsible">
