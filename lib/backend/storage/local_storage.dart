@@ -22,6 +22,8 @@ abstract class LocalStorage extends Initializable {
                 this._data[key] = this._prefs.getString(key) ?? this._data[key]!;
             else if(this._data[key] is List<String>)
                 this._data[key] = this._prefs.getStringList(key) ?? this._data[key]!;
+            else if(this._data[key] is double)
+                this._data[key] = this._prefs.getDouble(key) ?? this._data[key]!;
             else
                 throw Exception("Invalid data type");
         }
@@ -34,6 +36,8 @@ abstract class LocalStorage extends Initializable {
                 await this._prefs.setString(key, this._data[key]);
             else if(this._data[key] is List<String>)
                 await this._prefs.setStringList(key, this._data[key]);
+            else if(this._data[key] is double)
+                await this._prefs.setDouble(key, this._data[key]);
             else
                 throw Exception("Invalid data type");
     }
