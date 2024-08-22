@@ -9,6 +9,7 @@ import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/cast.dart';
 import 'package:stronzflix/backend/media_session.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
+import 'package:stronzflix/backend/storage/player_preferences.dart';
 import 'package:stronzflix/utils/utils.dart';
 import 'package:http/http.dart' as http;
 
@@ -112,7 +113,12 @@ abstract class StronzflixPlayerController {
     
     @mustCallSuper
     Future<void> seekTo(Duration position, {bool sink = false}) async { if(!sink) PeerMessenger.seek(position.inSeconds); } 
-    Future<void> setVolume(double volume);
+    
+    @mustCallSuper
+    Future<void> setVolume(double volume) async {
+        PlayerPreferences.volume = volume;
+        await PlayerPreferences.instance.save();
+    }
 }
 
 StronzflixPlayerController playerController(BuildContext context, {bool listen = false}) {
@@ -196,7 +202,10 @@ class LocalPlayerController extends StronzflixPlayerController {
     }
 
     @override
-    Future<void> setVolume(double volume) => this._controller.player.setVolume(volume);
+    Future<void> setVolume(double volume) async {
+        await super.setVolume(volume);
+        await this._controller.player.setVolume(volume);
+    }
 }
 
 class CastPlayerController extends StronzflixPlayerController {
@@ -330,9 +339,6 @@ class CastPlayerController extends StronzflixPlayerController {
             "currentTime": position.inSeconds,
         });
     }
-
-    @override
-    Future<void> setVolume(double volume) async {}
 
     void _updateValue(Map<String, dynamic> message) {
         if(this._mediaSessionId == null || message["type"] != "MEDIA_STATUS")
