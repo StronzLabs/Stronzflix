@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:stronzflix/components/border_text.dart';
 import 'package:stronzflix/utils/platform.dart';
 
 class ResultCard extends StatefulWidget {
@@ -13,6 +14,7 @@ class ResultCard extends StatefulWidget {
     final String text;
     final double? width;
     final double? progress;
+    final String? footer;
 
     const ResultCard({
         super.key,
@@ -23,6 +25,7 @@ class ResultCard extends StatefulWidget {
         this.action,
         this.actionIcon,
         this.progress,
+        this.footer
     });
 
   @override
@@ -76,6 +79,26 @@ class _ResultCardState extends State<ResultCard> {
                                                                 alignment: Alignment.bottomCenter,
                                                                 child: LinearProgressIndicator(
                                                                     value: super.widget.progress,
+                                                                ),
+                                                            ),
+                                                        if(super.widget.footer != null)
+                                                            Align(
+                                                                alignment: Alignment.bottomLeft,
+                                                                child: Padding(
+                                                                    padding: const EdgeInsets.only(
+                                                                        bottom: 2.0,
+                                                                        left: 10
+                                                                    ),
+                                                                    child: BorderText(
+                                                                        builder: (style) => TextSpan(
+                                                                            text: super.widget.footer!,
+                                                                            style: style?.copyWith(
+                                                                                fontSize: 32,
+                                                                            ) ?? const TextStyle(
+                                                                                fontSize: 32,
+                                                                            ),
+                                                                        ),
+                                                                    ),
                                                                 ),
                                                             ),
                                                     ],
