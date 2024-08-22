@@ -95,9 +95,11 @@ function focusCollapsible(collapsible) {
     openCollapsible(collapsible);
 }
 
+if (/index/.test(window.location.href)) {
 populateChangelog();
+}
 
-if (window.location.hash) {
+if (window.location.hash && /guida/.test(window.location.href)) {
     const collapsible = document.getElementById(window.location.hash.slice(1));
     if (collapsible)
         focusCollapsible(collapsible.id);
