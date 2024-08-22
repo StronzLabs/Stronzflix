@@ -86,8 +86,7 @@ class _DownloadsDrawerState extends State<DownloadsDrawer> {
             child: ValueListenableBuilder(
                 valueListenable: DownloadManager.downloads,
                 builder: (context, value, _) {
-                    return ListView(
-                        padding: EdgeInsets.zero,
+                    return Column(
                         children: [
                             Container(
                                 color: Colors.orange,
@@ -104,18 +103,25 @@ class _DownloadsDrawerState extends State<DownloadsDrawer> {
                                 ),
                             ),
                             const SizedBox(height: 10),
-                            if (value.isNotEmpty)
-                                ...[ for(DownloadState download in value) _buildDownloadTile(context, download) ]
-                            else
-                                const Center(
-                                    child: Text(
-                                        'Nessun download in corso',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 20
-                                        ),
-                                    ),
+                            Flexible(
+                                child: ListView(
+                                    padding: EdgeInsets.zero,
+                                    children: [
+                                        if (value.isNotEmpty)
+                                            ...[ for(DownloadState download in value) _buildDownloadTile(context, download) ]
+                                        else
+                                            const Center(
+                                                child: Text(
+                                                    'Nessun download in corso',
+                                                    style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 20
+                                                    ),
+                                                ),
+                                            )
+                                    ],
                                 )
+                            )
                         ],
                     );
                 }
