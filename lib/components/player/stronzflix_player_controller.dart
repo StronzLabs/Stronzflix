@@ -5,12 +5,12 @@ import 'package:cast/session.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:provider/provider.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/cast.dart';
 import 'package:stronzflix/backend/media_session.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
 import 'package:stronzflix/backend/storage/player_preferences.dart';
-import 'package:stronzflix/utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class StronzflixPlayerStream {
@@ -122,7 +122,7 @@ abstract class StronzflixPlayerController {
 }
 
 StronzflixPlayerController playerController(BuildContext context, {bool listen = false}) {
-    return FullScreenProvider.of<StronzflixPlayerController>(context, listen: listen);
+    return Provider.of<StronzflixPlayerController>(context, listen: listen);
 }
 
 class LocalPlayerController extends StronzflixPlayerController {

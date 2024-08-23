@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/components/player/stronzflix_player_controller.dart';
 import 'package:stronzflix/components/player_info_prodiver.dart';
-import 'package:stronzflix/utils/utils.dart';
 
 class NextButton extends StatefulWidget {
     final double iconSize;
@@ -49,7 +49,7 @@ class _NextButtonState extends State<NextButton> {
 
         return IconButton(
             focusNode: this._focusNode,
-            onPressed: () => FullScreenProvider.of<PlayerInfo>(context, listen: false).switchTo(this._next!),
+            onPressed: () => Provider.of<PlayerInfo>(context, listen: false).switchTo(this._next!),
             iconSize: widget.iconSize,
             icon: const Icon(Icons.skip_next),
         );

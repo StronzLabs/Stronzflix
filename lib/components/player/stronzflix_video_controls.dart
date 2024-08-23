@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/fullscreen.dart';
+import 'package:provider/provider.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
 import 'package:stronzflix/components/player/stronzflix_player_controller.dart';
 import 'package:stronzflix/components/player_info_prodiver.dart';
 import 'package:stronzflix/dialogs/notification_overlay.dart';
-import 'package:stronzflix/utils/utils.dart';
+import 'package:stronzflix/utils/platform.dart';
 
 abstract class StronzflixVideoControlsState<T extends StatefulWidget> extends State<T> {
     final List<StreamSubscription> _subscriptions = [];
@@ -21,42 +21,45 @@ abstract class StronzflixVideoControlsState<T extends StatefulWidget> extends St
     late PlayerInfo playerInfo;
 
     Widget _buildBuffering(BuildContext context) {
-        return IgnorePointer(
-            child: Padding(
-                padding: isFullscreen(context)
-                    ? MediaQuery.of(context).padding
-                    : EdgeInsets.zero,
-                child: Column(
-                    children: [
-                        Container(
-                            height: 56,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                        ),
-                        Expanded(
-                            child: Center(
-                                child: TweenAnimationBuilder<double>(
-                                    tween: Tween<double>(
-                                        begin: 0.0,
-                                        end: this._buffering ? 1.0 : 0.0,
+        return ValueListenableBuilder(
+            valueListenable: SPlatform.isFullScreenSync(),
+            builder: (context, isFullScreen, child) =>  IgnorePointer(
+                child: Padding(
+                    padding: isFullScreen
+                        ? MediaQuery.of(context).padding
+                        : EdgeInsets.zero,
+                    child: Column(
+                        children: [
+                            Container(
+                                height: 56,
+                                margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                            ),
+                            Expanded(
+                                child: Center(
+                                    child: TweenAnimationBuilder<double>(
+                                        tween: Tween<double>(
+                                            begin: 0.0,
+                                            end: this._buffering ? 1.0 : 0.0,
+                                        ),
+                                        duration: const Duration(milliseconds: 150),
+                                        builder: (context, value, child) {
+                                            if (value > 0.0)
+                                                return Opacity(
+                                                    opacity: value,
+                                                    child: child!,
+                                                );
+                                            return const SizedBox.shrink();
+                                        },
+                                        child: const CircularProgressIndicator(),
                                     ),
-                                    duration: const Duration(milliseconds: 150),
-                                    builder: (context, value, child) {
-                                        if (value > 0.0)
-                                            return Opacity(
-                                                opacity: value,
-                                                child: child!,
-                                            );
-                                        return const SizedBox.shrink();
-                                    },
-                                    child: const CircularProgressIndicator(),
                                 ),
                             ),
-                        ),
-                        Container(
-                            height: 56,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                        )
-                    ]
+                            Container(
+                                height: 56,
+                                margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                            )
+                        ]
+                    )
                 )
             )
         );
@@ -121,26 +124,29 @@ abstract class StronzflixVideoControlsState<T extends StatefulWidget> extends St
                         children: [
                             this._buildTopGradient(context),
                             this._buildBottomGradient(context),
-                            Padding(
-                                padding: isFullscreen(context)
-                                    ? MediaQuery.of(context).padding
-                                    : EdgeInsets.zero,
-                                child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                        if(this.mount)
-                                            this.buildTopBar(context),
-                                        Expanded(
-                                            child: this.buildPrimaryBar(context)
-                                        ),
-                                        if(this.mount)
-                                            ...[
-                                                this.buildSeekBar(context),
-                                                this.buildBottomBar(context)
-                                            ]
-                                    ]
+                            ValueListenableBuilder(
+                                valueListenable: SPlatform.isFullScreenSync(),
+                                builder: (context, isFullScreen, child) => Padding(
+                                    padding: isFullScreen
+                                        ? MediaQuery.of(context).padding
+                                        : EdgeInsets.zero,
+                                    child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                            if(this.mount)
+                                                this.buildTopBar(context),
+                                            Expanded(
+                                                child: this.buildPrimaryBar(context)
+                                            ),
+                                            if(this.mount)
+                                                ...[
+                                                    this.buildSeekBar(context),
+                                                    this.buildBottomBar(context)
+                                                ]
+                                        ]
+                                    )
                                 )
                             )
                         ],
@@ -173,13 +179,13 @@ abstract class StronzflixVideoControlsState<T extends StatefulWidget> extends St
                     (event) => this.setState(() => this._buffering = event)
                 ),
                 playerController(super.context).stream.position.listen(
-                    (event) => FullScreenProvider.of<PlayerInfo>(super.context, listen: false).updateTimes(
+                    (event) => Provider.of<PlayerInfo>(super.context, listen: false).updateTimes(
                         playerController(context).duration.inSeconds, event.inSeconds
                     )
                 )
             ]);
 
-        this.playerInfo = FullScreenProvider.of<PlayerInfo>(super.context);
+        this.playerInfo = Provider.of<PlayerInfo>(super.context);
     }
 
     @override

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:window_manager/window_manager.dart';
 
 final class SPlatform {
     static bool get isWeb => kIsWeb;
@@ -28,5 +29,23 @@ final class SPlatform {
     static Future<void> checkTV() async {
         const MethodChannel channel = MethodChannel('stronzflix.app/is_tv');
         SPlatform._isTV = Platform.isAndroid ? await channel.invokeMethod<bool>('isTV') ?? false : false;
+    }
+
+    static final ValueNotifier<bool> _isFullScreen = ValueNotifier(false);
+
+    static Future<void> setFullScreen(bool fullscreen) async {
+        await windowManager.setFullScreen(fullscreen);
+        SPlatform._isFullScreen.value = fullscreen;
+    }
+
+    static Future<bool> isFullScreen() async {
+        SPlatform._isFullScreen.value = await windowManager.isFullScreen();
+        return SPlatform._isFullScreen.value;
+    }
+
+    static ValueNotifier<bool> isFullScreenSync() => SPlatform._isFullScreen;
+
+    static Future<void> toggleFullScreen() async {
+        return SPlatform.setFullScreen(!await SPlatform.isFullScreen());
     }
 }

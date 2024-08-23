@@ -72,8 +72,8 @@ class SettingsDialog extends StatelessWidget {
             ),
             content: SizedBox(
                 width: 444,
-                child: ListView(
-                    shrinkWrap: true,
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                         const SizedBox(height: 16),
                         SelectDropDown<Site>(

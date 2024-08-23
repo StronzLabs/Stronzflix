@@ -1,9 +1,9 @@
 import 'package:cast/device.dart';
 import 'package:flutter/material.dart';
-import 'package:media_kit_video/media_kit_video.dart';
+import 'package:provider/provider.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/components/player_info_prodiver.dart';
-import 'package:stronzflix/utils/utils.dart';
+import 'package:stronzflix/utils/platform.dart';
 
 class CastButton extends StatelessWidget {
     final void Function()? onOpened;
@@ -38,10 +38,12 @@ class CastButton extends StatelessWidget {
                             )
                     ],
                     onSelected: (value) {
-                        if(isFullscreen(context))
-                            exitFullscreen(context);
-                        KeepWatching.add(playerInfo.watchable, playerInfo.timestamp, playerInfo.duration);
-                        playerInfo.startCasting(value);
+                        SPlatform.isFullScreen().then((isFullscreen) {
+                            if(isFullscreen)
+                                SPlatform.setFullScreen(false);
+                            KeepWatching.add(playerInfo.watchable, playerInfo.timestamp, playerInfo.duration);
+                            playerInfo.startCasting(value);
+                        });
                     }
                 );
             }
@@ -60,7 +62,7 @@ class CastButton extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
-        PlayerInfo playerInfo = FullScreenProvider.of<PlayerInfo>(context);
+        PlayerInfo playerInfo = Provider.of<PlayerInfo>(context);
         return playerInfo.isCasting
             ? this._buildDisableCastButton(context, playerInfo)
             : this._buildEnableCastButton(context, playerInfo);

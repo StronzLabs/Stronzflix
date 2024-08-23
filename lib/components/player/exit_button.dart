@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/fullscreen.dart';
+import 'package:stronzflix/utils/platform.dart';
 
 class ExitButton extends StatelessWidget {
     const ExitButton({super.key});
@@ -9,8 +9,8 @@ class ExitButton extends StatelessWidget {
         return IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () async {
-                if (isFullscreen(context))
-                    await exitFullscreen(context);
+                if(await SPlatform.isFullScreen())
+                    await SPlatform.setFullScreen(false);
                 if (context.mounted)
                     Navigator.of(context).pop();
             },

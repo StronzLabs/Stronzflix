@@ -9,7 +9,6 @@ import 'package:stronzflix/components/player/stronzflix_player_controller.dart';
 import 'package:stronzflix/components/player/tv_video_controls.dart';
 import 'package:stronzflix/components/player_info_prodiver.dart';
 import 'package:stronzflix/utils/platform.dart';
-import 'package:stronzflix/utils/utils.dart';
 
 class VideoPlayerView extends StatefulWidget {
     final Uri uri;
@@ -32,7 +31,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     void initState() {
         super.initState();
         // FIXME: https://github.com/media-kit/media-kit/issues/837#issuecomment-2125734802
-        this._controller = LocalPlayerController(FullScreenProvider.of<PlayerInfo>(context, listen: false).watchable);
+        this._controller = LocalPlayerController(Provider.of<PlayerInfo>(context, listen: false).watchable);
     }
 
     @override
@@ -44,7 +43,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
                     future: this._controllerMemorizer.runOnce(
                         () => this._controller.initialize(
                             super.widget.uri,
-                            FullScreenProvider.of<PlayerInfo>(context, listen: false).startAt
+                            Provider.of<PlayerInfo>(context, listen: false).startAt
                         )
                     ),
                     builder: (context, snapshot) {

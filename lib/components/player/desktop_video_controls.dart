@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/fullscreen.dart';
 import 'package:stronzflix/components/player/cast_button.dart';
 import 'package:stronzflix/components/player/chat_button.dart';
 import 'package:stronzflix/components/player/exit_button.dart';
@@ -14,6 +13,7 @@ import 'package:stronzflix/components/player/settings_button.dart';
 import 'package:stronzflix/components/player/stronzflix_player_controller.dart';
 import 'package:stronzflix/components/player/stronzflix_video_controls.dart';
 import 'package:stronzflix/components/player/volume_button.dart';
+import 'package:stronzflix/utils/platform.dart';
 
 class DesktopVideoControls extends StatefulWidget {
     const DesktopVideoControls({super.key});
@@ -66,7 +66,7 @@ class _DesktopVideoControlsState extends StronzflixVideoControlsState<DesktopVid
                     Duration  difference = now.difference(this._lastTap);
                     this._lastTap = now;
                     if (difference < const Duration(milliseconds: 400))
-                        toggleFullscreen(context);
+                        SPlatform.toggleFullScreen();
                 },
                 onTap: playerController(context).playOrPause,
                 child: Container(
@@ -170,8 +170,8 @@ class _DesktopVideoControlsState extends StronzflixVideoControlsState<DesktopVid
                     } else
                         playerController(context).setVolume(this._savedVolume);
                 },
-                const SingleActivator(LogicalKeyboardKey.keyF): () => toggleFullscreen(context),
-                const SingleActivator(LogicalKeyboardKey.escape): () => exitFullscreen(context),
+                const SingleActivator(LogicalKeyboardKey.keyF): () => SPlatform.toggleFullScreen(),
+                const SingleActivator(LogicalKeyboardKey.escape): () => SPlatform.setFullScreen(false),
             },
             child: Focus(
                 autofocus: true,
