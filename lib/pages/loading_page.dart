@@ -18,6 +18,7 @@ import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/backend/update/version.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/update_dialog.dart';
+import 'package:stronzflix/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 
 class LoadingPage extends StatefulWidget {
@@ -122,7 +123,8 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         MediaKit.ensureInitialized();
         
         await for (double percentage in this._load([
-            windowManager.ensureInitialized(),
+            if(SPlatform.isDesktop)
+                windowManager.ensureInitialized(),
             Settings.instance.ensureInitialized()
         ]))
             yield advance + percentage * phasesWeights[0];
