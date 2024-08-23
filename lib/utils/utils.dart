@@ -1,11 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/widgets/fullscreen_inherited_widget.dart';
 import 'package:pointycastle/api.dart';
 import 'package:pointycastle/block/modes/cbc.dart';
-import 'package:provider/provider.dart';
 
 Uint8List hexToUint8List(String hex) {
     if (hex.length % 2 != 0) {
@@ -51,13 +48,4 @@ int deduceVariantResolution(Variant variant) {
 
 extension StringExtension on String {
     String capitalize() => "${this[0].toUpperCase()}${this.substring(1)}";
-}
-
-sealed class FullScreenProvider {
-    const FullScreenProvider._();
-
-    static T of<T>(BuildContext context, {bool listen = true}) {
-        FullscreenInheritedWidget? fullscreen = FullscreenInheritedWidget.maybeOf(context);
-        return Provider.of<T>(fullscreen == null ? context : fullscreen.parent.context, listen: listen);
-    }
 }
