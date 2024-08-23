@@ -9,6 +9,7 @@ import 'package:stronzflix/backend/storage/saved_titles.dart';
 import 'package:stronzflix/backend/peer/peer_manager.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
+import 'package:stronzflix/components/download_icon.dart';
 import 'package:stronzflix/components/downloads_drawer.dart';
 import 'package:stronzflix/components/result_card_row.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
@@ -35,7 +36,12 @@ class _HomePageState extends State<HomePage> {
             title: const Text("Stronzflix"),
             leading: Builder(
                 builder: (context) => IconButton(
-                    icon: const Icon(Icons.download),
+                    icon: ValueListenableBuilder(
+                        valueListenable: DownloadManager.downloads,
+                        builder: (context, downloads, child) => DownloadIcon(
+                            isDownloading: downloads.isNotEmpty
+                        )
+                    ),
                     onPressed: () => Scaffold.of(context).openDrawer()
                 )
             ),
