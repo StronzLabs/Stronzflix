@@ -10,12 +10,23 @@ class MediaTitle extends StatelessWidget {
             child: FittedBox(
                 fit: BoxFit.scaleDown,
                 alignment: Alignment.centerLeft,
-                child: Text(
-                    playerController(context).title,
-                    style: const TextStyle(
-                        fontSize: 21.0
-                    ),
-                ),
+                child: RichText(
+                    text: playerController(context).isEpisode
+                            ? TextSpan(
+                                text: playerController(context).seriesTitle,
+                                style: const TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold),
+                                children: <TextSpan>[
+                                    TextSpan(
+                                        text: '     ${playerController(context).episodeTitle}',
+                                        style: const TextStyle(fontSize: 21.0, fontWeight: FontWeight.w300)
+                                    )
+                                ]
+                            )
+                            : TextSpan(
+                                text: playerController(context).title,
+                                style: const TextStyle(fontSize: 21.0, fontWeight: FontWeight.normal)
+                            )
+                )
             ),
         );
     }

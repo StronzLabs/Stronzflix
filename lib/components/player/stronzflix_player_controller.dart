@@ -48,13 +48,33 @@ abstract class StronzflixPlayerController {
     bool get isCompleted;
     StronzflixPlayerStream get stream;
 
+    bool get isEpisode => this._watchable is Episode;
+
     String get title {
         if (this._watchable is Film)
             return this._watchable.name;
-        else if (this._watchable is Episode)
-            return '${this._watchable.season.series.name} - ${this._watchable.name}';
+        else if (this._watchable is Episode) {
+            final String seasonNoPadded = this._watchable.season.seasonNo.toString().padLeft(2, '0');
+            final String episodeNoPadded = this._watchable.episodeNo.toString().padLeft(2, '0');
+            return 'S${seasonNoPadded}:E${episodeNoPadded} ${this._watchable.season.series.name} ${this._watchable.name}';
+        }
         else
             throw Exception('Unknown watchable type');
+    }
+
+    String? get seriesTitle {
+        if (this._watchable is! Episode) return null;
+
+        return this._watchable.season.series.name;
+    }
+
+    String? get episodeTitle {
+        if (this._watchable is! Episode) return null;
+
+        final String seasonNoPadded = this._watchable.season.seasonNo.toString().padLeft(2, '0');
+        final String episodeNoPadded = this._watchable.episodeNo.toString().padLeft(2, '0');
+
+        return 'S${seasonNoPadded}:E${episodeNoPadded} ${this._watchable.name}';
     }
 
     String get thumbnail {
