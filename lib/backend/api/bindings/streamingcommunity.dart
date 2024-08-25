@@ -122,13 +122,14 @@ class StreamingCommunity extends Site {
         );
 
         List<Season> seasons = [];
-        for(var seasonObject in title["seasons"]) {
+        for(int index = 0; index < title["seasons"].length; index++) {
             Season season = Season(
+                seasonNo: index + 1,
                 series: series,
-                name: seasonObject["name"] ?? "Stagione ${seasonObject["number"]}",
                 episodes: []
             );
 
+            dynamic seasonObject = title["seasons"][index];
             season.episodes.addAll(
                 await this.getEpisodes(season, "/titles/${title["id"]}-${title["slug"]}/stagione-${seasonObject["number"]}")
             );

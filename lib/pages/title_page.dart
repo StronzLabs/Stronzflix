@@ -178,10 +178,10 @@ class _TitlePageState extends State<TitlePage> {
             child: DropdownButton(
                 value: this._selectedSeason,
                 items: [
-                    for (int i = 0; i < (this._title as Series).seasons.length; i++)
+                    for (final (index, season) in (this._title as Series).seasons.indexed)
                         DropdownMenuItem(
-                            value: i,
-                            child: Text((this._title as Series).seasons[i].name)
+                            value: index,
+                            child: Text(season.name ?? "Stagione ${season.seasonNo}")
                         )
                 ],
                 onChanged: (index) => super.setState(() => this._selectedSeason = index!),

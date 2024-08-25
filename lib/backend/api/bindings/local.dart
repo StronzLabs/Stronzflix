@@ -88,8 +88,9 @@ class LocalSite extends Site {
 
         for(Map<String, dynamic> seasonMetadata in jsonMetadata["seasons"]) {
             Season season = Season(
-                series: series,
+                seasonNo: seasonMetadata["seasonNo"],
                 name: seasonMetadata["name"],
+                series: series,
                 episodes: []
             );
 

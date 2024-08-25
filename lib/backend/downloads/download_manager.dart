@@ -69,6 +69,7 @@ class DownloadManager {
         metadata["seasons"] ??= [];
         if(metadata["seasons"].where((e) => e["name"] == episode.season.name).isEmpty) {
             metadata["seasons"].add({
+                "seasonNo": episode.season.seasonNo,
                 "name": episode.season.name,
                 "episodes": []
             });

@@ -118,12 +118,14 @@ class Episode implements Watchable {
 }
 
 class Season {
-    final String name;
+    final int seasonNo;
+    final String? name;
     final Series series;
     final List<Episode> episodes;
 
     const Season({
-        required this.name,
+        required this.seasonNo,
+        this.name,
         required this.series,
         required this.episodes
     });

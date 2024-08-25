@@ -87,8 +87,9 @@ class AnimeSaturn extends Site {
             Element episodes = document.querySelector("#range-anime-0")!;
 
             Season season = Season(
-                series: series,
+                seasonNo: 1,
                 name: name,
+                series: series,
                 episodes: []
             );
 
@@ -96,12 +97,13 @@ class AnimeSaturn extends Site {
             series.seasons.add(season);
         }
         else
-            for(Element element in segments) {
+            for(final (index, element) in segments.indexed) {
                 String name = element.text.trim();
                 String episodesTag = element.attributes["href"]!;
                 Element episodes = document.querySelector(episodesTag)!;
 
                 Season season = Season(
+                    seasonNo: index + 1,
                     series: series,
                     name: name,
                     episodes: []
