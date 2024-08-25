@@ -20,14 +20,15 @@ class Stronzflix extends StatelessWidget {
                 fillColor: Colors.red
             )
         ),
-        colorScheme: ColorScheme.dark(
+        scaffoldBackgroundColor: (Colors.grey[900])!,
+        colorScheme: const ColorScheme.dark(
             brightness: Brightness.dark,
             primary: Colors.orange,
             secondary: Colors.orangeAccent,
-            background: (Colors.grey[900])!,
-            surface: const Color(0xff121212),
-            surfaceTint: Colors.transparent,
+            surface: Color(0xff121212),
+            surfaceTint: Colors.transparent
         ),
+        dialogBackgroundColor: (Colors.grey[900])!,
         useMaterial3: true,
         cardTheme: const CardTheme(
             clipBehavior: Clip.hardEdge,
