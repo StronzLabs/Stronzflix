@@ -39,6 +39,9 @@ final class SPlatform {
     }
 
     static Future<bool> isFullScreen() async {
+        if(!SPlatform.isDesktop)
+            return false;
+
         SPlatform._isFullScreen.value = await windowManager.isFullScreen();
         return SPlatform._isFullScreen.value;
     }
