@@ -4,47 +4,92 @@ import 'package:cast/cast.dart';
 
 class CastManager {
 
-    final CastSession _session;
-    final Map<int, Completer> _subscribedIds = {};
-    void Function(Map<String, dynamic>)? _listener;
-    int _id;
+    static List<CastDevice> _devices = [];
+    static final StreamController<List<CastDevice>> _devicesController = StreamController.broadcast();
+    static final Stream<List<CastDevice>> devicesStream = CastManager._devicesController.stream;
+    static List<CastDevice> get devices => CastManager._devices;
 
-    CastManager._(this._session) : _id = 1 {
-        this._session.messageStream.listen(this._messageHandler);
+    static bool _discovering = false;
+    static final StreamController<bool> _discoveringController = StreamController.broadcast();
+    static final Stream<bool> discoveringStream = CastManager._discoveringController.stream;
+    static bool get discovering => CastManager._discovering;
+
+    static bool _connected = false;
+    static final StreamController<bool> _connectedController = StreamController.broadcast();
+    static final Stream<bool> connectedStream = CastManager._connectedController.stream;
+    static bool get connected => CastManager._connected;
+
+    static bool _connecting = false;
+    static final StreamController<bool> _connectingController = StreamController.broadcast();
+    static final Stream<bool> connectingStream = CastManager._connectingController.stream;
+    static bool get connecting => CastManager._connecting;
+
+    static CastSession? _session;
+    static final Map<int, Completer> _subscribedIds = {};
+    static int _messageId = 1;
+
+    static Future<void> startDiscovery() async {
+        CastManager._discoveringController.add(CastManager._discovering = true);
+        List<CastDevice> devices = await CastDiscoveryService().search();
+        CastManager._devicesController.add(CastManager._devices = devices);
+        CastManager._discoveringController.add(CastManager._discovering = false);
     }
 
-    Future<Map<String, dynamic>> sendMessage(String namespace, Map<String, dynamic> payload) async {
-        int id = this._id++;
+    static Future<void> connect(CastDevice device) async {
+        CastManager._connectingController.add(CastManager._connecting = true);
+        
+        try {
+            CastManager._session = await CastSessionManager().startSession(device);
+            CastManager._session!.messageStream.listen(
+                (message) => CastManager._subscribedIds[message["requestId"]]?.complete(message)
+            );
+            CastManager._session!.stateStream.listen(
+                (state) {
+                    if(state == CastSessionState.closed)
+                        CastManager.disconnect();
+                }
+            );
+
+            Map<String, dynamic> status = await CastManager.sendMessage(CastSession.kNamespaceReceiver, {
+                'type': 'LAUNCH',
+                'appId': 'CC1AD845',
+            });
+
+            bool succesfullyLaunched = status["status"]["applications"]?.any((app) => app["appId"] == "CC1AD845") ?? false;
+
+            CastManager._connectingController.add(CastManager._connecting = false);
+            CastManager._connectedController.add(CastManager._connected = true);
+
+            if(!succesfullyLaunched)
+                await CastManager.disconnect();
+        } catch (_) {
+            CastManager._connectingController.add(CastManager._connecting = false);
+            CastManager._connectedController.add(CastManager._connected = false);
+        }
+    }
+
+    static Future<void> disconnect() async {
+        try {
+            await CastManager._session?.close();
+        } catch (_) {}
+        CastManager._session = null;
+        CastManager._connectedController.add(CastManager._connected = false);
+    }
+
+    static Future<Map<String, dynamic>> sendMessage(String namespace, Map<String, dynamic> payload) async {
+        int id = CastManager._messageId++;
         Completer c = Completer();
         payload["requestId"] = id;
-        this._subscribedIds[id] = c;
+        CastManager._subscribedIds[id] = c;
 
         try {
-            this._session.sendMessage(namespace, payload);
+            CastManager._session?.sendMessage(namespace, payload);
         } catch (_) {
             c.complete({"error": "Failed to send message"});
         }
 
         Map<String, dynamic> response = await c.future;
-        this._subscribedIds.remove(id);
+        CastManager._subscribedIds.remove(id);
         return response;
-    }
-
-    void registerListener(void Function(Map<String, dynamic>) listener) {
-        this._listener = listener;
-    }
-
-    Future<void> disconnect() async {
-        await this._session.close();
-    }
-
-    void _messageHandler(Map<String, dynamic> message) {
-        this._subscribedIds[message["requestId"]]?.complete(message);
-        this._listener?.call(message);
-    }
-
-    static Future<CastManager> connect(CastDevice device) async {
-        final CastSession session = await CastSessionManager().startSession(device);
-        return CastManager._(session);
     }
 }

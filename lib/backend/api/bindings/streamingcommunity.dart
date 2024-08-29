@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:stronzflix/backend/api/bindings/vixxcloud.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
-import 'package:stronzflix/utils/simple_http.dart' as http;
+import 'package:sutils/sutils.dart';
 
 class StreamingCommunity extends Site {
 
@@ -28,7 +28,7 @@ class StreamingCommunity extends Site {
     }
 
     Future<void> _getInhertia() async {
-        String body = await http.get(super.url);
+        String body = await HTTP.get(super.url);
         RegExpMatch match = RegExp(r'version&quot;:&quot;(?<inertia>[a-z0-9]+)&quot;').firstMatch(body)!;
         this._inhertia["X-Inertia"] = "true";
         this._inhertia["X-Inertia-Version"] = match.namedGroup("inertia")!;
@@ -42,7 +42,7 @@ class StreamingCommunity extends Site {
     }
 
     Future<List<TitleMetadata>> _fetch(String url) async {
-        String body = await http.get("${super.url}${url}", headers: this._inhertia);
+        String body = await HTTP.get("${super.url}${url}", headers: this._inhertia);
         dynamic json = jsonDecode(body);
         dynamic titles = json["props"]["titles"];
 
@@ -88,7 +88,7 @@ class StreamingCommunity extends Site {
     }
 
     Future<List<Episode>> getEpisodes(Season season, String seasonUrl) async {
-        String body = await http.get("${super.url}${seasonUrl}", headers: this._inhertia);
+        String body = await HTTP.get("${super.url}${seasonUrl}", headers: this._inhertia);
         dynamic json = jsonDecode(body);
 
         dynamic seasonObject = json["props"]["loadedSeason"];
@@ -142,7 +142,7 @@ class StreamingCommunity extends Site {
 
     @override
     Future<Title> getTitle(TitleMetadata metadata) async {
-        String body = await http.get("${super.url}${metadata.url}", headers: this._inhertia);
+        String body = await HTTP.get("${super.url}${metadata.url}", headers: this._inhertia);
         dynamic json = jsonDecode(body);
         dynamic title = json["props"]["title"];
 

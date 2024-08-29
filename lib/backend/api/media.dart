@@ -1,6 +1,8 @@
 import 'package:stronzflix/backend/api/player.dart';
 import 'package:stronzflix/backend/api/site.dart';
 
+import 'package:stronz_video_player/stronz_video_player.dart' show Playable;
+
 class TitleMetadata {
     final String name;
     final String url;
@@ -15,12 +17,16 @@ class TitleMetadata {
     });
 }
 
-abstract class Watchable {
-    String get name;
+mixin Watchable implements Playable {
     String get url;
     Player get player;
 
     TitleMetadata get metadata;
+
+    @override
+    Future<Uri> get source => this.player.getSource(this);
+    @override
+    Playable? get next => null;
 
     static String genInfo(Watchable watchable) {
         if (watchable is Film)
@@ -76,11 +82,17 @@ abstract class Title {
     });
 }
 
-class Film extends Title implements Watchable {
+class Film extends Title with Watchable {
     @override
     final Player player;
     @override
     final String url;
+
+    @override
+    String get title => this.name;
+
+    @override
+    Uri get thumbnail => Uri.parse(this.banner);
 
     const Film({
         required super.banner,
@@ -92,8 +104,7 @@ class Film extends Title implements Watchable {
     });
 }
 
-class Episode implements Watchable {
-    @override
+class Episode with Watchable {
     final String name;
     final String cover;
     final Season season;
@@ -105,7 +116,27 @@ class Episode implements Watchable {
     final Player player;
 
     @override
+    String get title => "${this.season.series.name} - ${this.name}";
+
+    @override
     TitleMetadata get metadata => season.series.metadata;
+
+    @override
+    Uri get thumbnail => Uri.parse(this.cover);
+
+    @override
+    Watchable? get next {
+        Season season = this.season;
+        Series series = season.series;
+        int episodeNo = season.episodes.indexOf(this);
+        int seasonNo = series.seasons.indexOf(season);
+
+        if (episodeNo < season.episodes.length - 1)
+            return season.episodes[episodeNo + 1];
+        else if (seasonNo < series.seasons.length - 1)
+            return series.seasons[seasonNo + 1].episodes[0];
+        return null;
+    }
 
     const Episode({
         required this.name,

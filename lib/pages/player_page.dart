@@ -1,14 +1,14 @@
-import 'dart:async';
-
-import 'package:async/async.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:stronz_video_player/stronz_video_player.dart';
 import 'package:stronzflix/backend/api/media.dart';
+import 'package:stronzflix/backend/cast.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
-import 'package:stronzflix/components/player_info_prodiver.dart';
-import 'package:stronzflix/components/player/cast_view.dart';
-import 'package:stronzflix/components/player/videoplayer_view.dart';
+import 'package:stronzflix/components/cast_button.dart';
+import 'package:stronzflix/components/player/cast_video_player_controller.dart';
+import 'package:stronzflix/components/player/cast_video_view.dart';
+import 'package:stronzflix/components/player/chat_button.dart';
+import 'package:sutils/sutils.dart';
 
 class PlayerPage extends StatefulWidget {
     const PlayerPage({super.key});
@@ -17,104 +17,68 @@ class PlayerPage extends StatefulWidget {
     State<PlayerPage> createState() => _PlayerPageState();
 }
 
-class _PlayerPageState extends State<PlayerPage> {
+class _PlayerPageState extends State<PlayerPage> with StreamListener {
     
-    late Watchable _watchable = ModalRoute.of(super.context)!.settings.arguments as Watchable;
-    final PlayerInfo _playerInfo = PlayerInfo();
-    AsyncMemoizer _memoizer = AsyncMemoizer();
-
     bool _exited = false;
-    StreamSubscription<Message>? _peerMessagesSubscription;
-
-    @override
-    void initState() {
-        super.initState();
-        this._peerMessagesSubscription = PeerMessenger.messages.listen((message) {
-            if (message.type == MessageType.stopWatching)
-                if(super.mounted && !this._exited)
-                    Navigator.of(super.context).pop();
-        });
-    }
-
-    @override
-    void dispose() {
-        super.dispose();
-        this._peerMessagesSubscription?.cancel();
-    }
+    bool _casting = CastManager.connected;
 
     @override
     void didChangeDependencies() {
         super.didChangeDependencies();
-        
-        this._playerInfo.startWatching(this._watchable);
-        this._playerInfo.startCastDiscovery();
-        int? timestamp = KeepWatching.getTimestamp(this._watchable);
-        if (timestamp != null)
-            this._playerInfo.setStartAt(Duration(seconds: timestamp));
+        super.updateSubscriptions([
+            PeerMessenger.messages.listen((message) {
+                if (message.type == MessageType.stopWatching)
+                    if(super.mounted && !this._exited)
+                        Navigator.of(super.context).pop();
+            }),
+            CastManager.connectedStream.listen(
+                (event) => this.setState(() => this._casting = event)
+            )
+        ]);
+    }
+
+    @override
+    void setState(VoidCallback fn) {
+        if(super.mounted)
+            super.setState(fn);
+    }
+
+    @override
+    void dispose() {
+        super.disposeSubscriptions();
+        super.dispose();
     }
 
     @override
     Widget build(BuildContext context) {
-        return PopScope(
-            onPopInvoked: (_) => this._exitPlayer(),
-            child: Scaffold(
-                backgroundColor: Colors.black,
-                body: ChangeNotifierProvider(
-                    create: (context) => this._playerInfo,
-                    child: Consumer<PlayerInfo>(
-                        builder: (context, playerInfo, _) {
-                            if (playerInfo.watchable != this._watchable) {
-                                this._watchable = playerInfo.watchable;
-                                this._memoizer = AsyncMemoizer();
-                            }
-                            return FutureBuilder(
-                                future: this._memoizer.runOnce(
-                                    () => playerInfo.watchable.player.getSource(playerInfo.watchable)
-                                ),
-                                builder: (context, snapshot) {
-                                    if (snapshot.hasError) {
-                                        Future.microtask(() => this._errorPlaying());
-                                        return const Center(child: CircularProgressIndicator());
-                                    }
+        Watchable watchable = ModalRoute.of(super.context)!.settings.arguments as Watchable;
 
-                                    if (snapshot.connectionState != ConnectionState.done)
-                                        return const Center(child: CircularProgressIndicator());
-
-                                    Uri uri = snapshot.data!;
-                                    return Provider.of<PlayerInfo>(context).isCasting
-                                            ? CastView(uri: uri)
-                                            : VideoPlayerView(uri: uri);
-                                },
-                            );
-                        }
-                    ),
-                )
-            )
-        );
-    }
-
-    Future<void> _errorPlaying() async {
-        await showDialog(
-            context: super.context,
-            builder: (context) => AlertDialog(
-                title: const Text('Errore imprevisto'),
-                content: const Text('Si è verificato un errore durante la riproduzione, riprova più tardi.'),
-                actions: [
-                    TextButton(
-                        onPressed: () => Navigator.of(super.context).pop(),
-                        child: const Text('Torna indietro')
+        return Scaffold(
+            backgroundColor: Colors.black,
+            body: StronzVideoPlayer(
+                playable: watchable,
+                controllerState: StronzControllerState.autoPlay(
+                    position: Duration(
+                        seconds: KeepWatching.getTimestamp(watchable) ?? 0
                     )
+                ),
+                onBeforeExit: (controller) {
+                    KeepWatching.add(controller.playable as Watchable, controller.position.inSeconds, controller.duration.inSeconds);
+                    PeerMessenger.stopWatching();
+                    this._exited = true;
+                },
+                additionalControlsBuilder: (context, onMenuOpened, onMenuClosed) => [
+                    CastButton(
+                        onOpened: onMenuOpened,
+                        onClosed: onMenuClosed,
+                    ),
+                    const ChatButton(),
                 ],
+                videoBuilder: !this._casting ? null : (context) => const SizedBox.expand(
+                    child: CastVideoView()
+                ),
+                controller: !this._casting ? null : CastVideoPlayerController(),
             )
         );
-        if(super.mounted)
-            Navigator.of(super.context).pop();
-    }
-
-    void _exitPlayer() {
-        this._exited = true;
-        if(this._playerInfo.hasStarted)
-            KeepWatching.add(this._playerInfo.watchable, this._playerInfo.timestamp, this._playerInfo.duration);
-        PeerMessenger.stopWatching();
     }
 }

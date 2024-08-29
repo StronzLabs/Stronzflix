@@ -4,14 +4,14 @@ import 'dart:io';
 
 import 'package:background_downloader/background_downloader.dart';
 import 'package:process_run/process_run.dart';
-import 'package:stronzflix/utils/simple_http.dart' as http;
+import 'package:sutils/sutils.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:win32_registry/win32_registry.dart';
 
 abstract class Updater {
 
     static Future<Map<String, dynamic>> get latestRelease async =>
-        jsonDecode(await http.get('https://api.github.com/repos/StronzLabs/Stronzflix/releases/latest'));
+        jsonDecode(await HTTP.get('https://api.github.com/repos/StronzLabs/Stronzflix/releases/latest'));
 
     static Future<String> get platformUrl async {
         String platform;

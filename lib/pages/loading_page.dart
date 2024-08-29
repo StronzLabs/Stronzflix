@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:media_kit/media_kit.dart';
+import 'package:stronz_video_player/stronz_video_player.dart';
 import 'package:stronzflix/backend/api/bindings/animesaturn.dart';
 import 'package:stronzflix/backend/api/bindings/streampeaker.dart';
 import 'package:stronzflix/backend/api/bindings/local.dart';
@@ -18,8 +18,7 @@ import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/backend/update/version.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/update_dialog.dart';
-import 'package:stronzflix/utils/platform.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class LoadingPage extends StatefulWidget {
     const LoadingPage({super.key});
@@ -119,12 +118,9 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     Stream<double> _doLoading() async* {
         List<double> phasesWeights = [ 0.01, 0.97, 0.01, 0.01 ];
         double advance = 0.0;
-
-        MediaKit.ensureInitialized();
         
         await for (double percentage in this._load([
-            if(SPlatform.isDesktop)
-                windowManager.ensureInitialized(),
+            StronzVideoPlayer.initialize(),
             Settings.instance.ensureInitialized()
         ]))
             yield advance + percentage * phasesWeights[0];
@@ -183,6 +179,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     @override
     void initState() {
         super.initState();
+        WakelockPlus.enable();
 
         this._doLoading().listen(
             (percentage) {
@@ -198,8 +195,8 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
             cancelOnError: true,
             onError: (error) => super.setState(() => this._error = error.toString()),
             onDone: () {
-                if(!this._update)
-                    Navigator.of(context).pushReplacementNamed("/home");
+                if(!this._update && super.mounted)
+                    Navigator.of(super.context).pushReplacementNamed("/home");
             }
         );
     }
@@ -208,6 +205,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     void dispose() {
         this._controller.dispose();
         this._additionalInfoTimer?.cancel();
+        WakelockPlus.disable();
         super.dispose();
     }
 

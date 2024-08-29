@@ -8,7 +8,7 @@ import 'package:stronzflix/pages/home_page.dart';
 import 'package:stronzflix/pages/loading_page.dart';
 import 'package:stronzflix/pages/player_page.dart';
 import 'package:stronzflix/pages/title_page.dart';
-import 'package:stronzflix/utils/platform.dart';
+import 'package:sutils/sutils.dart';
 
 class Stronzflix extends StatelessWidget {
 
@@ -72,7 +72,7 @@ class Stronzflix extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         SystemChrome.setPreferredOrientations([
-            if(SPlatform.isTV) ...[
+            if(EPlatform.isTV) ...[
                 DeviceOrientation.landscapeLeft,
                 DeviceOrientation.landscapeRight
             ] else

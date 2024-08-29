@@ -9,6 +9,7 @@ import 'package:stronzflix/backend/storage/saved_titles.dart';
 import 'package:stronzflix/backend/peer/peer_manager.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
+import 'package:stronzflix/components/cast_button.dart';
 import 'package:stronzflix/components/download_icon.dart';
 import 'package:stronzflix/components/downloads_drawer.dart';
 import 'package:stronzflix/components/result_card_row.dart';
@@ -17,7 +18,7 @@ import 'package:stronzflix/dialogs/loading_dialog.dart';
 import 'package:stronzflix/dialogs/settings_dialog.dart';
 import 'package:stronzflix/dialogs/sink_dialog.dart';
 import 'package:stronzflix/pages/search_page.dart';
-import 'package:stronzflix/utils/platform.dart';
+import 'package:sutils/sutils.dart';
 
 class HomePage extends StatefulWidget {
     const HomePage({super.key});
@@ -46,6 +47,8 @@ class _HomePageState extends State<HomePage> {
                 )
             ),
             actions: [
+                const CastButton(),
+                const SizedBox(width: 8),
                 IconButton(
                     icon: const Icon(Icons.settings),
                     onPressed: () => showDialog(
@@ -117,7 +120,7 @@ class _HomePageState extends State<HomePage> {
         return Scaffold(
             appBar: this._buildAppBar(context),
             drawer: const DownloadsDrawer(),
-            floatingActionButton: SPlatform.isDesktop && Settings.online ? this._buildSinkButton(context) : null,
+            floatingActionButton: EPlatform.isDesktop && Settings.online ? this._buildSinkButton(context) : null,
             body: ListView(
                 padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
                 children: [

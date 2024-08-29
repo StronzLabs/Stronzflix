@@ -3,8 +3,11 @@ import 'package:stronzflix/backend/peer/peer_manager.dart';
 import 'package:stronzflix/components/player/chat_drawer.dart';
 
 class ChatButton extends StatelessWidget {
+    final double iconSize;
+    
     const ChatButton({
-        super.key
+        super.key,
+        this.iconSize = 28
     });
 
     void _showChat(BuildContext context) {
@@ -41,7 +44,7 @@ class ChatButton extends StatelessWidget {
 
         return IconButton(
             icon: const Icon(Icons.chat),
-            iconSize: 28,
+            iconSize: this.iconSize,
             onPressed: () => this._showChat(context),
         );
     }

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:stronzflix/components/border_text.dart';
-import 'package:stronzflix/utils/platform.dart';
+import 'package:sutils/sutils.dart';
 
 class ResultCard extends StatefulWidget {
 
@@ -50,7 +50,7 @@ class _ResultCardState extends State<ResultCard> {
             : Card(
                 child: InkWell(
                     onTap: super.widget.onTap,
-                    onLongPress: SPlatform.isMobile ? super.widget.action : null,
+                    onLongPress: EPlatform.isMobile ? super.widget.action : null,
                     onHover: (value) => super.setState(() => this._hover = value),
                     child: Padding(
                         padding: const EdgeInsets.all(10.0),
