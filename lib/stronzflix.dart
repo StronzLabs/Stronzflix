@@ -8,7 +8,7 @@ import 'package:stronzflix/pages/home_page.dart';
 import 'package:stronzflix/pages/loading_page.dart';
 import 'package:stronzflix/pages/player_page.dart';
 import 'package:stronzflix/pages/title_page.dart';
-import 'package:stronzflix/utils/platform.dart';
+import 'package:sutils/sutils.dart';
 
 class Stronzflix extends StatelessWidget {
 
@@ -20,14 +20,15 @@ class Stronzflix extends StatelessWidget {
                 fillColor: Colors.red
             )
         ),
-        colorScheme: ColorScheme.dark(
+        scaffoldBackgroundColor: (Colors.grey[900])!,
+        colorScheme: const ColorScheme.dark(
             brightness: Brightness.dark,
             primary: Colors.orange,
             secondary: Colors.orangeAccent,
-            background: (Colors.grey[900])!,
-            surface: const Color(0xff121212),
-            surfaceTint: Colors.transparent,
+            surface: Color(0xff121212),
+            surfaceTint: Colors.transparent
         ),
+        dialogBackgroundColor: (Colors.grey[900])!,
         useMaterial3: true,
         cardTheme: const CardTheme(
             clipBehavior: Clip.hardEdge,
@@ -71,7 +72,7 @@ class Stronzflix extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         SystemChrome.setPreferredOrientations([
-            if(SPlatform.isTV) ...[
+            if(EPlatform.isTV) ...[
                 DeviceOrientation.landscapeLeft,
                 DeviceOrientation.landscapeRight
             ] else

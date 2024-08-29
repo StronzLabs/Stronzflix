@@ -1,4 +1,4 @@
-import 'package:stronzflix/utils/simple_http.dart' as http;
+import 'package:sutils/sutils.dart';
 
 class Tuner {
 
@@ -10,7 +10,7 @@ class Tuner {
     Future<bool> validateDomain(String domain) async {
         domain = domain.startsWith('https://') ? domain : 'https://${domain}';
         try {
-            String body = await http.get(domain, followRedirects: false).timeout(Tuner.timeout).onError((error, stackTrace) => "");
+            String body = await HTTP.get(domain, followRedirects: false).timeout(Tuner.timeout).onError((error, stackTrace) => "");
             return this.validator(body);
         } catch (_) {
             return false;
@@ -18,7 +18,7 @@ class Tuner {
     }
 
     Future<List<String>> _getDomains() async {
-        String response = await http.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt");
+        String response = await HTTP.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt");
         List<String> domains = response.split("\n").where((String line) => !line.startsWith("#")).toList();
         domains.shuffle();
         return domains;

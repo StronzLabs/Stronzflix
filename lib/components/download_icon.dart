@@ -9,7 +9,7 @@ class DownloadIcon extends StatefulWidget {
     });
 
     @override
-    State<StatefulWidget> createState() => _DownloadIconState();
+    State<DownloadIcon> createState() => _DownloadIconState();
 }
 
 class _DownloadIconState extends State<DownloadIcon> with SingleTickerProviderStateMixin {

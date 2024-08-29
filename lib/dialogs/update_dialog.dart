@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/update/version.dart';
-import 'package:stronzflix/utils/platform.dart';
+import 'package:sutils/sutils.dart';
 
 class UpdateDialog extends StatelessWidget {
 
@@ -8,7 +8,7 @@ class UpdateDialog extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
-        String action = SPlatform.isMobile ? "Installa" : "Scarica";
+        String action = EPlatform.isMobile ? "Installa" : "Scarica";
 
         return AlertDialog(
             title: const Text('Aggiornamento disponibile!'),

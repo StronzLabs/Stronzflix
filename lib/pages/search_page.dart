@@ -100,8 +100,8 @@ class SearchPage extends SearchDelegate {
         );
         if (delete) {
             await DownloadManager.delete(await Settings.site.getTitle(metadata));
-            // ignore: use_build_context_synchronously
-            super.showResults(context);
+            if(context.mounted)
+                super.showResults(context);
         }
     }
 }

@@ -1,9 +1,9 @@
 import 'package:stronzflix/backend/api/bindings/streampeaker.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
-import 'package:stronzflix/utils/simple_http.dart' as http;
 import 'package:html/parser.dart' as html;
 import 'package:html/dom.dart';
+import 'package:sutils/sutils.dart';
 
 class AnimeSaturn extends Site {
 
@@ -41,7 +41,7 @@ class AnimeSaturn extends Site {
 
     @override
     Future<Title> getTitle(TitleMetadata metadata) async {
-        String body = await http.get(metadata.url);
+        String body = await HTTP.get(metadata.url);
         Document document = html.parse(body);
 
         String banner = document.querySelector(".banner")!.attributes["style"]!.split("'")[1];
@@ -116,7 +116,7 @@ class AnimeSaturn extends Site {
 
     @override
     Future<List<TitleMetadata>> latests() async {
-        String body = await http.get("${super.url}/newest");
+        String body = await HTTP.get("${super.url}/newest");
         Document document = html.parse(body);
 
         List<TitleMetadata> results = [];
@@ -139,7 +139,7 @@ class AnimeSaturn extends Site {
 
     @override
     Future<List<TitleMetadata>> search(String query) async {
-        String body = await http.get("${super.url}/animelist?search=${Uri.encodeQueryComponent(query)}");
+        String body = await HTTP.get("${super.url}/animelist?search=${Uri.encodeQueryComponent(query)}");
         Document document = html.parse(body);
 
         List<TitleMetadata> results = [];

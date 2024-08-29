@@ -6,9 +6,10 @@ import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/downloads/download_state.dart';
 import 'package:stronzflix/backend/ffmpeg_wrapper.dart';
 import 'package:stronzflix/utils/utils.dart';
-import 'package:stronzflix/utils/simple_http.dart' as http;
 
 import 'dart:typed_data';
+
+import 'package:sutils/sutils.dart';
 
 abstract class Downloader {
     static const Downloader hls = HLSDownloader();
@@ -27,10 +28,10 @@ class HLSDownloader extends Downloader {
         Uint8List? iv;
         for (Segment segment in segments) {
             Uri url = Uri.parse(segment.url!);
-            Uint8List bytes = await http.getRaw(url, timeout: const Duration(seconds: 30), maxRetries: 5);
+            Uint8List bytes = await HTTP.getRaw(url, timeout: const Duration(seconds: 30), maxRetries: 5);
 
             if(segment.encryptionIV != null) {
-                key ??= await http.getRaw(Uri.parse("$baseUri/..${segment.fullSegmentEncryptionKeyUri}"));
+                key ??= await HTTP.getRaw(Uri.parse("$baseUri/..${segment.fullSegmentEncryptionKeyUri}"));
                 iv ??= hexToUint8List(segment.encryptionIV!.substring(2));
                 bytes = decryptAES128(bytes, key, iv);
             }
@@ -40,7 +41,7 @@ class HLSDownloader extends Downloader {
     }
 
     Future<bool> _downloadPlaylist(DownloadState state, void Function(double) progressCallback, Uri url, IOSink outputSink) async {
-        HlsPlaylist playlist = await HlsPlaylistParser.create().parseString(url, await http.get(url));
+        HlsPlaylist playlist = await HlsPlaylistParser.create().parseString(url, await HTTP.get(url));
         if(playlist is! HlsMediaPlaylist)
             throw Exception("Not a master playlist");
 

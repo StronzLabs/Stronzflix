@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/downloader.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
-import 'package:stronzflix/utils/simple_http.dart' as http;
+import 'package:sutils/sutils.dart';
 
 import 'download_state.dart';
 
@@ -42,10 +42,10 @@ class DownloadManager {
             return true;
 
         File bannerFile = File('${outputDirectory.path}/banner.jpg');
-        await bannerFile.writeAsBytes(await http.getRaw(Uri.parse(title.banner)));
+        await bannerFile.writeAsBytes(await HTTP.getRaw(Uri.parse(title.banner)));
 
         File posterFile = File('${outputDirectory.path}/poster.jpg');
-        await posterFile.writeAsBytes(await http.getRaw(Uri.parse(title.metadata.poster)));
+        await posterFile.writeAsBytes(await HTTP.getRaw(Uri.parse(title.metadata.poster)));
 
         Map<String, dynamic> metadata = {
             "description": title.description,
@@ -63,7 +63,7 @@ class DownloadManager {
 
         String coverID = _calcId("${episode.name}-cover");
         File coverFile = File('${outputDirectory.path}/${coverID}.jpg');
-        await coverFile.writeAsBytes(await http.getRaw(Uri.parse(episode.cover)));
+        await coverFile.writeAsBytes(await HTTP.getRaw(Uri.parse(episode.cover)));
 
         File metadataFile = File('${outputDirectory.path}/metadata.json');
         Map<String, dynamic> metadata = jsonDecode(metadataFile.readAsStringSync());
@@ -117,7 +117,7 @@ class DownloadManager {
         watchable is Film ? DownloadManager._calcId(watchable.name) :
         watchable is Episode ? DownloadManager._calcId(watchable.season.series.name) :
         throw Exception("Unknown watchable type");
-    static String calcWatchableId(Watchable watchable) => DownloadManager._calcId(watchable.name);
+    static String calcWatchableId(Watchable watchable) => DownloadManager._calcId(watchable.title);
 
     static String _downloadName(Watchable watchable) =>
         watchable is Film ? watchable.name :

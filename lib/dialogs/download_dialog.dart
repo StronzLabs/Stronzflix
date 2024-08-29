@@ -4,8 +4,8 @@ import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/components/select_dropdown.dart';
 import 'package:stronzflix/dialogs/loading_dialog.dart';
-import 'package:stronzflix/utils/simple_http.dart' as http;
 import 'package:stronzflix/utils/utils.dart';
+import 'package:sutils/sutils.dart';
 
 class DownloadDialog extends StatefulWidget {
 
@@ -27,7 +27,7 @@ class DownloadDialog extends StatefulWidget {
 
     static Future<DownloadOptions?> _openHls(BuildContext context, Watchable watchable, Uri url) async {
         HlsPlaylist playlist = await LoadingDialog.load(context, () async {
-            return await HlsPlaylistParser.create().parseString(url, await http.get(url));
+            return await HlsPlaylistParser.create().parseString(url, await HTTP.get(url));
         });        
     
         if(playlist is! HlsMasterPlaylist)
@@ -49,7 +49,7 @@ class DownloadDialog extends StatefulWidget {
             builder: (context) => DownloadDialog(
                 variants: variants,
                 audios: audios,
-                name: watchable.name,
+                name: watchable.title,
                 defaults:  DownloadOptions(watchable, variant: defaultVariant, audio: defaultAudio)
             )
         );
@@ -62,7 +62,7 @@ class DownloadDialog extends StatefulWidget {
             // ignore: use_build_context_synchronously
             context: context,
             builder: (context) => DownloadDialog(
-                name: watchable.name,
+                name: watchable.title,
                 defaults: DownloadOptions(watchable, url: url)
             )
         );
@@ -73,7 +73,7 @@ class DownloadDialog extends StatefulWidget {
     static Future<void> open(BuildContext context, Watchable watchable) async {
 
         Uri url = await LoadingDialog.load(context, () async => await watchable.player.getSource(watchable));
-        String mime = await http.mime(url);
+        String mime = await HTTP.mime(url);
 
         if(!context.mounted)
             return;

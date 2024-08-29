@@ -309,7 +309,7 @@ class _TitlePageState extends State<TitlePage> {
                     if (snapshot.connectionState != ConnectionState.done)
                         return const Center(child: CircularProgressIndicator());
 
-                    // // TODO mainly caused by coming soons
+                    // TODO mainly caused by coming soons
                     if (snapshot.hasError)
                         return const Center(child: Text("Errore durante il caricamento del titolo"));
 
@@ -340,8 +340,8 @@ class _TitlePageState extends State<TitlePage> {
 
     void _delete(Watchable watchable) async {
         bool delete = await ConfirmationDialog.ask(context,
-            "Elimina ${watchable.name}",
-            "Sei sicuro di voler eliminare ${watchable.name}?",
+            "Elimina ${watchable.title}",
+            "Sei sicuro di voler eliminare ${watchable.title}?",
             action: "Elimina"
         );
         if (delete) {

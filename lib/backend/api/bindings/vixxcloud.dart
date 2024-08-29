@@ -4,7 +4,7 @@ import 'package:html_unescape/html_unescape.dart';
 import 'package:stronzflix/backend/api/bindings/streamingcommunity.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/player.dart';
-import 'package:stronzflix/utils/simple_http.dart' as http;
+import 'package:sutils/sutils.dart';
 
 class VixxCloud extends Player {
 
@@ -21,10 +21,10 @@ class VixxCloud extends Player {
         String episodeId = RegExp(r"\?e=(\d+)").firstMatch(media.url)?.group(1) ?? "";
         String iframeSrc = "/iframe/${titleId}?episode_id=${episodeId}";
 
-        String iframe = await http.get("${this._streamingCommunityUrl}${iframeSrc}");
+        String iframe = await HTTP.get("${this._streamingCommunityUrl}${iframeSrc}");
         String src = this._html.convert(RegExp(r'src="(.+?)"').firstMatch(iframe)!.group(1)!);
     
-        String data = await http.get(src);
+        String data = await HTTP.get(src);
 
         String playlistUrl = RegExp(r"url: '(.+?)'").firstMatch(data)!.group(1)!;
 
@@ -35,7 +35,7 @@ class VixxCloud extends Player {
         String param = json.keys.map((key) => "${key}=${json[key]}").join("&");
         String playlist = "${playlistUrl}?${param}";
 
-        if (await http.status(playlist) != 200)
+        if (await HTTP.status(playlist) != 200)
             playlist = playlist.replaceFirst(RegExp(r"expires=\d+"), "");
 
         return Uri.parse(playlist);

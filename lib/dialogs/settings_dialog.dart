@@ -5,10 +5,18 @@ import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/backend/update/version.dart';
 import 'package:stronzflix/components/select_dropdown.dart';
 import 'package:stronzflix/dialogs/loading_dialog.dart';
-import 'package:stronzflix/utils/platform.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsDialog extends StatelessWidget {
     const SettingsDialog({super.key});
+
+    void _launchURL(String url) async {
+        Uri uri = Uri.parse(url);
+        if (await canLaunchUrl(uri))
+            await launchUrl(uri);
+        else
+            throw 'Could not launch ${url}';
+    }
 
     Widget _buildLegalClause(BuildContext context) {
         return RichText(
@@ -23,7 +31,7 @@ class SettingsDialog extends StatelessWidget {
                             color: Theme.of(context).colorScheme.secondary,
                             decoration: TextDecoration.underline
                         ),
-                        recognizer: TapGestureRecognizer()..onTap = () => SPlatform.launchURL("https://github.com/StronzLabs/Stronzflix")
+                        recognizer: TapGestureRecognizer()..onTap = () => this._launchURL("https://github.com/StronzLabs/Stronzflix")
                     ),
                     const TextSpan(
                         text: ".\nSegui gli aggiornamenti o scarica la versione più recente sul "
@@ -34,7 +42,7 @@ class SettingsDialog extends StatelessWidget {
                             color: Theme.of(context).colorScheme.secondary,
                             decoration: TextDecoration.underline
                         ),
-                        recognizer: TapGestureRecognizer()..onTap = () => SPlatform.launchURL("https://StronzLabs.github.io/Stronzflix/")
+                        recognizer: TapGestureRecognizer()..onTap = () => this._launchURL("https://StronzLabs.github.io/Stronzflix/")
                     ),const TextSpan(
                         text: ".\n"
                     ),

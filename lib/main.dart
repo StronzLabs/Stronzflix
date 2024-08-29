@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/stronzflix.dart';
-import 'package:stronzflix/utils/platform.dart';
+import 'package:sutils/sutils.dart';
 
 void main() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await SPlatform.checkTV();
+    await SUtils.ensureInitialized();
     runApp(const Stronzflix());
 } 
