@@ -10,6 +10,7 @@ import 'package:stronzflix/backend/api/bindings/streampeaker.dart';
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/bindings/streamingcommunity.dart';
 import 'package:stronzflix/backend/api/bindings/vixxcloud.dart';
+import 'package:stronzflix/backend/cast.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/player_preferences.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
@@ -176,6 +177,10 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         yield advance;
     }
 
+    Future<void> _backgroundLoading() async {
+        CastManager.startDiscovery();
+    }
+
     @override
     void initState() {
         super.initState();
@@ -199,6 +204,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
                     Navigator.of(super.context).pushReplacementNamed("/home");
             }
         );
+        this._backgroundLoading();
     }
 
     @override
