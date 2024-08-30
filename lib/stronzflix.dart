@@ -72,7 +72,7 @@ class Stronzflix extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         SystemChrome.setPreferredOrientations([
-            if(EPlatform.isTV) ...[
+            if(EPlatform.isTV || EPlatform.isTablet) ...[
                 DeviceOrientation.landscapeLeft,
                 DeviceOrientation.landscapeRight
             ] else
