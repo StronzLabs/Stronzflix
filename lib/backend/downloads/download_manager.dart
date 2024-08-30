@@ -8,6 +8,7 @@ import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/downloader.dart';
+import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:sutils/sutils.dart';
 
 import 'download_state.dart';
@@ -150,6 +151,8 @@ class DownloadManager {
         String titleID = DownloadManager.calcTitleId(film);
         Directory directory = Directory('${(await downloadDirectory).path}${titleID}');
         directory.deleteSync(recursive: true);
+
+        KeepWatching.remove(film.metadata);
     }
 
     static Future<void> _deleteEpisode(Episode episode) async {
@@ -157,7 +160,7 @@ class DownloadManager {
         String watchableID = DownloadManager.calcWatchableId(episode);
         Directory directory = Directory('${(await downloadDirectory).path}${titleID}');
         Map<String, dynamic> metadata = jsonDecode(File('${directory.path}/metadata.json').readAsStringSync());
-    
+
         metadata["seasons"].firstWhere((e) => e["name"] == episode.season.name)["episodes"].removeWhere((e) => e["name"] == episode.name);
         if(metadata["seasons"].firstWhere((e) => e["name"] == episode.season.name)["episodes"].isEmpty)
             metadata["seasons"].removeWhere((e) => e["name"] == episode.season.name);
@@ -171,6 +174,11 @@ class DownloadManager {
             File episodeFile = File('${directory.path}/${watchableID}.mp4');
             episodeFile.deleteSync();
         }
+
+        final Watchable? inKeepWatching = await KeepWatching.getWatchable(episode.metadata);
+        if (inKeepWatching == null) return;
+
+        if (inKeepWatching.url == episode.url) KeepWatching.remove(episode.metadata);
     }
 
     static Future<void> deleteSingle(Watchable watchable) async {
@@ -192,5 +200,7 @@ class DownloadManager {
                     entity.deleteSync();
                 } catch (_) {}
         }
+        
+        KeepWatching.remove(title.metadata);
     }
 }
