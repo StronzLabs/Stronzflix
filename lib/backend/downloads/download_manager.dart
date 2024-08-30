@@ -178,9 +178,7 @@ class DownloadManager {
         final Watchable? inKeepWatching = await KeepWatching.getWatchable(episode.metadata);
         if (inKeepWatching == null) return;
 
-        if (inKeepWatching.url == episode.url) {
-            KeepWatching.remove(episode.metadata);
-        }
+        if (inKeepWatching.url == episode.url) KeepWatching.remove(episode.metadata);
     }
 
     static Future<void> deleteSingle(Watchable watchable) async {
