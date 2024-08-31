@@ -117,6 +117,7 @@ class CastVideoPlayerController extends StronzPlayerController {
 
     @override
     Future<void> setVolume(double volume) async {
+        await super.setVolume(volume);
         // TODO: Stream volume must not be used in conjunction with the volume slider or volume buttons to control the device volume
         // https://developers.google.com/cast/docs/media/messages#Volume
     }
