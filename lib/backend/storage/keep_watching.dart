@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
-import 'package:stronzflix/backend/storage/local_storage.dart';
+import 'package:sutils/sutils.dart';
 
 class SerialMetadata {
     final TitleMetadata metadata;
@@ -57,14 +57,16 @@ class SerialMetadata {
 
 class KeepWatching extends LocalStorage {
     static final KeepWatching instance = KeepWatching._();
-    KeepWatching._() : super({ "KeepWatching": <String>[] });
+    KeepWatching._() : super("KeepWatching", {
+        "KeepWatching": <String>[]
+    });
 
     final Map<String, SerialMetadata> _keepWatching = {};
     static List<TitleMetadata> get metadata => KeepWatching.instance._keepWatching.values.map((data) => data.metadata).toList();
 
     @override
-    Future<void> construct() async {
-        await super.construct();
+    Future<void> unserialize() async {
+        await super.unserialize();
 
         for (String json in super["KeepWatching"]) {
             Map<String, dynamic> data = jsonDecode(json);
@@ -89,14 +91,14 @@ class KeepWatching extends LocalStorage {
     }
 
     @override
-    Future<void> save() async {
+    Future<void> serialize() async {
         List<String> list = [];
 
         for (SerialMetadata data in this._keepWatching.values)
             list.add(jsonEncode(data.serialize()));
         super["KeepWatching"] = list;
 
-        super.save();
+        super.serialize();
     }
 
     static Future<Watchable?> getWatchable(TitleMetadata metadata) async{
@@ -133,13 +135,13 @@ class KeepWatching extends LocalStorage {
         String id = data.metadata.site.name + data.metadata.url;
         KeepWatching.instance._keepWatching[id] = data;
 
-        KeepWatching.instance.save();
+        KeepWatching.instance.serialize();
     }
 
     static void remove(TitleMetadata metadata) {
         String id = metadata.site.name + metadata.url;
         KeepWatching.instance._keepWatching.remove(id);
 
-        KeepWatching.instance.save();
+        KeepWatching.instance.serialize();
     }
 }

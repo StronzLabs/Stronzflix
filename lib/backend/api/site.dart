@@ -45,10 +45,10 @@ abstract class Site extends Initializable {
         await for(dynamic res in this.tuner.findDomain(this.domain)) {
             if(res is String) {
                 // TODO: find a better solution for this
-                Map<String, String> domains = Settings.domains;
+                Map<String, dynamic> domains = Settings.domains;
                 domains[this.name] = "https://${this.domain}.${res}";
                 Settings.domains = domains;
-                Settings.update();
+                Settings.instance.serialize();
                 return;
             }
             else

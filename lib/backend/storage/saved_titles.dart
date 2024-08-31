@@ -2,17 +2,19 @@ import 'dart:convert';
 
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
-import 'package:stronzflix/backend/storage/local_storage.dart';
+import 'package:sutils/sutils.dart';
 
 class SavedTitles extends LocalStorage {
     static final SavedTitles instance = SavedTitles._();
-    SavedTitles._() : super({ "SavedTitles": <String>[] });
+    SavedTitles._() : super("SavedTitles", {
+        "SavedTitles": <String>[]
+    });
 
     final Map<String, TitleMetadata> _savedTitles = {};
 
     @override
-    Future<void> construct() async {
-        await super.construct();
+    Future<void> unserialize() async {
+        await super.unserialize();
 
         for (String json in super["SavedTitles"]) {
             Map<String, dynamic> data = jsonDecode(json);
@@ -33,7 +35,7 @@ class SavedTitles extends LocalStorage {
     }
 
     @override
-    Future<void> save() async {
+    Future<void> serialize() async {
         List<String> list = [];
 
         for (TitleMetadata metadata in this._savedTitles.values) {
@@ -48,7 +50,7 @@ class SavedTitles extends LocalStorage {
         }
         super["SavedTitles"] = list;
 
-        super.save();
+        super.serialize();
     }
 
     static List<TitleMetadata> getAll() {
@@ -58,13 +60,13 @@ class SavedTitles extends LocalStorage {
     static void add(TitleMetadata metadata) {
         String id = metadata.site.name + metadata.url;
         SavedTitles.instance._savedTitles[id] = metadata;
-        SavedTitles.instance.save();
+        SavedTitles.instance.serialize();
     }
 
     static void remove(TitleMetadata metadata) {
         String id = metadata.site.name + metadata.url;
         SavedTitles.instance._savedTitles.remove(id);
-        SavedTitles.instance.save();
+        SavedTitles.instance.serialize();
     }
 
     static bool isSaved(TitleMetadata metadata) {

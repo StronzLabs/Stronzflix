@@ -90,7 +90,7 @@ class SettingsDialog extends StatelessWidget {
                             selectedValue: Settings.site,
                             onSelected: (selection) {
                                 Settings.site = selection;
-                                Settings.update();
+                                Settings.instance.serialize();
                             },
                             actionIcon: Icons.find_replace_rounded,
                             action: (site) {
