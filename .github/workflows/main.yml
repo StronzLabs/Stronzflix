@@ -123,8 +123,8 @@ jobs:
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: "main" # app crushes with animated icons on stable
-          flutter-version: "333c076" # commit_id. Use a flutter version if channel != master/main
+          flutter-version: "3.24.1"
+          channel: "stable"
           cache: true
           cache-key: "flutter-linux"
           cache-path: "${{ runner.tool_cache }}/flutter/linux"
