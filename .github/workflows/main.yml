@@ -1,5 +1,27 @@
 name: Release
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+    inputs:
+      build_windows:
+        description: 'Build for Windows'
+        type: boolean
+        required: true
+        default: true
+      build_linux:
+        description: 'Build for Linux'
+        type: boolean
+        required: true
+        default: true
+      build_macos:
+        description: 'Build for MacOS'
+        type: boolean
+        required: true
+        default: true
+      build_android:
+        description: 'Build for Android'
+        type: boolean
+        required: true
+        default: true
 jobs:
   create_release:
     name: Create Draft Release
@@ -34,6 +56,7 @@ jobs:
     name: Build Windows
     needs: create_release
     runs-on: windows-latest
+    if:  ${{ inputs.build_windows }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -87,6 +110,7 @@ jobs:
     name: Build Linux
     needs: create_release
     runs-on: ubuntu-latest
+    if:  ${{ inputs.build_linux }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -140,6 +164,7 @@ jobs:
     name: Build MacOS
     needs: create_release
     runs-on: macos-14
+    if:  ${{ inputs.build_macos }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -176,6 +201,7 @@ jobs:
     name: Build Android
     needs: create_release
     runs-on: ubuntu-latest
+    if:  ${{ inputs.build_android }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
