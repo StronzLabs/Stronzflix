@@ -949,7 +949,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "9eb0556beeafd2e12d82b91e4967a61c11628699"
+      resolved-ref: "8a190171d51af66cf3d679af45c8e2acbc69a45b"
       url: "https://github.com/StronzLabs/StronzVideoPlayer.git"
     source: git
     version: "0.0.1"
@@ -958,7 +958,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "69710f389c3adab55d5050eee5c021c8581d8984"
+      resolved-ref: "09ab1e19ef1c0fd2a3a90f5a89945cd3cdd522c5"
       url: "https://github.com/StronzLabs/SUtils.git"
     source: git
     version: "0.0.1"
@@ -1086,10 +1086,10 @@ packages:
     dependency: "direct main"
     description:
       name: uuid
-      sha256: "83d37c7ad7aaf9aa8e275490669535c8080377cfa7a7004c24dfac53afffaa90"
+      sha256: f33d6bb662f0e4f79dcd7ada2e6170f3b3a2530c28fc41f49a411ddedd576a77
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.2"
+    version: "4.5.0"
   vector_graphics:
     dependency: transitive
     description:
