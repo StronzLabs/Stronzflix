@@ -6,14 +6,11 @@ import 'package:stronz_video_player/stronz_video_player.dart';
 import 'package:stronzflix/backend/cast.dart';
 
 class CastVideoPlayerController extends StronzPlayerController {
-    
-    @override
-    Tracks get tracks => const EmptyTracks();
 
     int? _mediaSessionId;
     Timer? _pollTimer;
 
-    Future<void> _load(String uri) async {
+    Future<void> _load(Uri uri) async {
         Map<String, dynamic> mediaStatus = await CastManager.sendMessage(CastSession.kNamespaceMedia, {
             "type": "LOAD",
             "media": {
@@ -35,8 +32,7 @@ class CastVideoPlayerController extends StronzPlayerController {
     Future<void> initialize(Playable playable, {StronzControllerState? initialState}) async {
         await super.initialize(playable, initialState: initialState);
 
-        Uri uri = await playable.source;
-        await this._load(uri.toString());
+        await this._load(super.tracks.masterSource);
 
         this._pollTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
             CastManager.sendMessage(CastSession.kNamespaceMedia, {
@@ -126,7 +122,7 @@ class CastVideoPlayerController extends StronzPlayerController {
     Future<void> switchTo(Playable playable) async {
         super.buffering = true;
         Uri uri = await playable.source;
-        await this._load(uri.toString());
+        await this._load(uri);
         await super.switchTo(playable);
         super.buffering = false;
     }
