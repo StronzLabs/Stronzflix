@@ -15,12 +15,11 @@ class Stronzflix extends StatelessWidget {
     const Stronzflix({super.key});
 
     static ThemeData get theme => ThemeData(
-        dropdownMenuTheme: const DropdownMenuThemeData(
-            inputDecorationTheme: InputDecorationTheme(
-                fillColor: Colors.red
-            )
-        ),
+        useMaterial3: true,
         scaffoldBackgroundColor: (Colors.grey[900])!,
+        drawerTheme: DrawerThemeData(
+            backgroundColor: (Colors.grey[900])!
+        ),
         colorScheme: const ColorScheme.dark(
             brightness: Brightness.dark,
             primary: Colors.orange,
@@ -29,7 +28,6 @@ class Stronzflix extends StatelessWidget {
             surfaceTint: Colors.transparent
         ),
         dialogBackgroundColor: (Colors.grey[900])!,
-        useMaterial3: true,
         cardTheme: const CardTheme(
             clipBehavior: Clip.hardEdge,
         ),
