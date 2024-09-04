@@ -79,7 +79,6 @@ class _DownloadsDrawerState extends State<DownloadsDrawer> {
     Widget build(BuildContext context) {
         return SafeArea(
             child: Drawer(
-            backgroundColor: Theme.of(context).colorScheme.background,
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.zero
             ),
