@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
@@ -6,6 +7,9 @@ import 'package:stronzflix/components/result_card.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 
 class SearchPage extends SearchDelegate {
+
+    String _lastQuery = "";
+    AsyncMemoizer _memorizer = AsyncMemoizer();
 
     // fluterr doesn't propagate the theme to the search bar automatically
     @override
@@ -73,18 +77,20 @@ class SearchPage extends SearchDelegate {
 
     @override
     Widget buildResults(BuildContext context) {
+        if(super.query != this._lastQuery) {
+            this._lastQuery = super.query;
+            this._memorizer = AsyncMemoizer();
+        }
+
         return FutureBuilder(
-            future: Settings.site.search(super.query),
+            future: this._memorizer.runOnce(() => Settings.site.search(super.query)),
             builder: (context, snapshot) {
-                if (snapshot.hasData)
-                    if(snapshot.data!.isEmpty)
-                        return this._buildNoResults(context);
-                    else
-                        return this._buildGrid(context, snapshot.data!);
-                else
-                    return const Center(
-                        child: CircularProgressIndicator()
-                    );
+                if (!snapshot.hasData)
+                    return const Center(child: CircularProgressIndicator());
+                if(snapshot.data!.isEmpty)
+                    return this._buildNoResults(context);
+
+                return this._buildGrid(context, snapshot.data!);
             }
         );
     }
