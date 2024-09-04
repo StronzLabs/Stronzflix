@@ -77,7 +77,7 @@ class KeepWatching extends LocalStorage {
 
             TitleMetadata metadata = TitleMetadata(
                 name: data["metadata"]["name"],
-                uri: Uri.parse(data["metadata"]["url"]),
+                uri: Uri.parse(data["metadata"]["uri"]),
                 site: site,
                 poster: Uri.parse(data["metadata"]["poster"])
             );
