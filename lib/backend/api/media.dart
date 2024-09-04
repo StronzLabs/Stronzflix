@@ -5,20 +5,20 @@ import 'package:stronz_video_player/stronz_video_player.dart' show Playable;
 
 class TitleMetadata {
     final String name;
-    final String url;
+    final Uri uri;
     final Site site;
-    final String poster;
+    final Uri poster;
 
     const TitleMetadata({
         required this.name,
-        required this.url,
+        required this.uri,
         required this.site,
         required this.poster
     });
 }
 
 mixin Watchable implements Playable {
-    String get url;
+    Uri get uri;
     Player get player;
 
     TitleMetadata get metadata;
@@ -42,7 +42,7 @@ mixin Watchable implements Playable {
         return {
             "metadata":  {
                 "name": data.name,
-                "url": data.url,
+                "uri": data.uri,
                 "site": data.site.name,
                 "poster": data.poster
             },
@@ -66,7 +66,7 @@ mixin Watchable implements Playable {
 }
 
 abstract class Title {
-    final String banner;
+    final Uri banner;
     final String description;
     final TitleMetadata metadata;
     final DateTime? comingSoon;
@@ -86,32 +86,32 @@ class Film extends Title with Watchable {
     @override
     final Player player;
     @override
-    final String url;
+    final Uri uri;
 
     @override
     String get title => this.name;
 
     @override
-    Uri get thumbnail => Uri.parse(this.banner);
+    Uri get thumbnail => this.banner;
 
     const Film({
         required super.banner,
         required super.description,
         required super.metadata,
         super.comingSoon,
-        required this.url,
+        required this.uri,
         required this.player
     });
 }
 
 class Episode with Watchable {
     final String name;
-    final String cover;
+    final Uri cover;
     final Season season;
     final int episodeNo;
 
     @override
-    final String url;
+    final Uri uri;
     @override
     final Player player;
 
@@ -122,7 +122,7 @@ class Episode with Watchable {
     TitleMetadata get metadata => season.series.metadata;
 
     @override
-    Uri get thumbnail => Uri.parse(this.cover);
+    Uri get thumbnail => this.cover;
 
     @override
     Watchable? get next {
@@ -141,7 +141,7 @@ class Episode with Watchable {
     const Episode({
         required this.name,
         required this.cover,
-        required this.url,
+        required this.uri,
         required this.season,
         required this.player,
         required this.episodeNo

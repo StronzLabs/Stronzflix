@@ -29,8 +29,8 @@ class AnimeSaturn extends Site {
             episodes.add(Episode(
                 season: season,
                 name: name,
-                url: url,
-                cover: cover,
+                uri: Uri.parse(url),
+                cover: Uri.parse(cover),
                 player: Streampeaker.instance,
                 episodeNo: episodeNo
             ));
@@ -41,7 +41,7 @@ class AnimeSaturn extends Site {
 
     @override
     Future<Title> getTitle(TitleMetadata metadata) async {
-        String body = await HTTP.get(metadata.url);
+        String body = await HTTP.get(metadata.uri);
         Document document = html.parse(body);
 
         String banner = document.querySelector(".banner")!.attributes["style"]!.split("'")[1];
@@ -72,7 +72,7 @@ class AnimeSaturn extends Site {
         DateTime? coomingSoon = releaseDate != null ? DateTime.parse(releaseDate) : null;
 
         Series series = Series(
-            banner: banner,
+            banner: Uri.parse(banner),
             description: description,
             seasons: [],
             metadata: metadata,
@@ -128,9 +128,9 @@ class AnimeSaturn extends Site {
 
             results.add(TitleMetadata(
                 name: name,
-                url: url,
+                uri: Uri.parse(url),
                 site: this,
-                poster: poster
+                poster: Uri.parse(poster)
             ));
         }
 
@@ -152,9 +152,9 @@ class AnimeSaturn extends Site {
 
             results.add(TitleMetadata(
                 name: name,
-                url: url,
+                uri: Uri.parse(url),
                 site: this,
-                poster: poster
+                poster: Uri.parse(poster)
             ));
         }
 

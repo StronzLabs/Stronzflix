@@ -62,7 +62,7 @@ class SearchPage extends SearchDelegate {
                 Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ResultCard(
-                        onTap: () => Navigator.pushNamed(context, '/title', arguments: result),
+                        onTap: (uuid) => Navigator.pushNamed(context, '/title', arguments: [ uuid, result ]),
                         imageUrl: result.poster,
                         text: result.name,
                         action: Settings.site.isLocal

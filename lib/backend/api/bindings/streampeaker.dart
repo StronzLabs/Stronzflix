@@ -11,7 +11,7 @@ class Streampeaker extends Player {
 
     @override
     Future<Uri> getSource(Watchable media) async {
-        String passBody = await HTTP.get(media.url);
+        String passBody = await HTTP.get(media.uri);
         Document passDocument = html.parse(passBody);
 
         String episodeUrl = passDocument.querySelector(".card-body")!.querySelector("a")!.attributes["href"]!;

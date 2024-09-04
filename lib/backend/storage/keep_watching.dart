@@ -21,7 +21,7 @@ class SerialMetadata {
         return SerialMetadata(
             metadata: TitleMetadata(
                 name: data["metadata"]["name"],
-                url: data["metadata"]["url"],
+                uri: Uri.parse(data["metadata"]["uri"]),
                 site: Site.get(data["metadata"]["site"])!,
                 poster: data["metadata"]["poster"]
             ),
@@ -45,9 +45,9 @@ class SerialMetadata {
     Map<String, dynamic> serialize() => {
         "metadata":  {
             "name": this.metadata.name,
-            "url": this.metadata.url,
+            "uri": this.metadata.uri.toString(),
             "site": this.metadata.site.name,
-            "poster": this.metadata.poster
+            "poster": this.metadata.poster.toString()
         },
         "info": this.info,
         "timestamp": this.timestamp,
@@ -77,15 +77,15 @@ class KeepWatching extends LocalStorage {
 
             TitleMetadata metadata = TitleMetadata(
                 name: data["metadata"]["name"],
-                url: data["metadata"]["url"],
+                uri: Uri.parse(data["metadata"]["url"]),
                 site: site,
-                poster: data["metadata"]["poster"]
+                poster: Uri.parse(data["metadata"]["poster"])
             );
             String info = data["info"];
             int timestamp = data["timestamp"];
             int duration = data["duration"];
 
-            String id = metadata.site.name + metadata.url;
+            String id = metadata.site.name + metadata.uri.toString();
             this._keepWatching[id] = SerialMetadata(metadata: metadata, info: info, timestamp: timestamp, duration: duration);
         }
     }
@@ -102,7 +102,7 @@ class KeepWatching extends LocalStorage {
     }
 
     static Future<Watchable?> getWatchable(TitleMetadata metadata) async{
-        String id = metadata.site.name + metadata.url;
+        String id = metadata.site.name + metadata.uri.toString();
         if(KeepWatching.instance._keepWatching.containsKey(id))
             return Watchable.unserialize(
                 KeepWatching.instance._keepWatching[id]!.metadata,
@@ -115,7 +115,7 @@ class KeepWatching extends LocalStorage {
     static int? getTimestamp(Watchable watchable) {
         TitleMetadata data = watchable.metadata;
         String info = Watchable.genInfo(watchable);
-        String id = data.site.name + data.url;
+        String id = data.site.name + data.uri.toString();
         if (KeepWatching.instance._keepWatching.containsKey(id) && KeepWatching.instance._keepWatching[id]?.info == info)
             return KeepWatching.instance._keepWatching[id]?.timestamp;
         return null;
@@ -124,7 +124,7 @@ class KeepWatching extends LocalStorage {
     static int? getDuration(Watchable watchable) {
         TitleMetadata data = watchable.metadata;
         String info = Watchable.genInfo(watchable);
-        String id = data.site.name + data.url;
+        String id = data.site.name + data.uri.toString();
         if (KeepWatching.instance._keepWatching.containsKey(id) && KeepWatching.instance._keepWatching[id]?.info == info)
             return KeepWatching.instance._keepWatching[id]?.duration;
         return null;
@@ -132,14 +132,14 @@ class KeepWatching extends LocalStorage {
 
     static void add(Watchable watchable, int timestamp, int duration) {
         SerialMetadata data = SerialMetadata.fromWatchable(watchable, timestamp, duration);
-        String id = data.metadata.site.name + data.metadata.url;
+        String id = data.metadata.site.name + data.metadata.uri.toString();
         KeepWatching.instance._keepWatching[id] = data;
 
         KeepWatching.instance.serialize();
     }
 
     static void remove(TitleMetadata metadata) {
-        String id = metadata.site.name + metadata.url;
+        String id = metadata.site.name + metadata.uri.toString();
         KeepWatching.instance._keepWatching.remove(id);
 
         KeepWatching.instance.serialize();

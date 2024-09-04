@@ -6,7 +6,7 @@ class ResultCardRow extends StatefulWidget {
 
     final String title;
     final Future<Iterable<TitleMetadata?>> values;
-    final void Function(TitleMetadata) onTap;
+    final void Function(String uuid, TitleMetadata metadata) onTap;
     final IconData? actionIcon;
     final void Function(TitleMetadata)? action;
 
@@ -65,7 +65,7 @@ class _ResultCardRowState extends State<ResultCardRow> {
                             child: ResultCard(
                                 imageUrl: metadata?.poster,
                                 text: metadata?.name ?? "",
-                                onTap: metadata == null ? null : () => super.widget.onTap.call(metadata),
+                                onTap: metadata == null ? null : (uuid) => super.widget.onTap.call(uuid, metadata),
                                 action: metadata == null || super.widget.action == null ? null : () => super.widget.action!.call(metadata),
                                 actionIcon: super.widget.actionIcon,
                             )

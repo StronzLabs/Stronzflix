@@ -42,10 +42,10 @@ class DownloadManager {
             return true;
 
         File bannerFile = File('${outputDirectory.path}/banner.jpg');
-        await bannerFile.writeAsBytes(await HTTP.getRaw(Uri.parse(title.banner)));
+        await bannerFile.writeAsBytes(await HTTP.getRaw(title.banner));
 
         File posterFile = File('${outputDirectory.path}/poster.jpg');
-        await posterFile.writeAsBytes(await HTTP.getRaw(Uri.parse(title.metadata.poster)));
+        await posterFile.writeAsBytes(await HTTP.getRaw(title.metadata.poster));
 
         Map<String, dynamic> metadata = {
             "description": title.description,
@@ -63,7 +63,7 @@ class DownloadManager {
 
         String coverID = _calcId("${episode.name}-cover");
         File coverFile = File('${outputDirectory.path}/${coverID}.jpg');
-        await coverFile.writeAsBytes(await HTTP.getRaw(Uri.parse(episode.cover)));
+        await coverFile.writeAsBytes(await HTTP.getRaw(episode.cover));
 
         File metadataFile = File('${outputDirectory.path}/metadata.json');
         Map<String, dynamic> metadata = jsonDecode(metadataFile.readAsStringSync());
@@ -176,9 +176,8 @@ class DownloadManager {
         }
 
         final Watchable? inKeepWatching = await KeepWatching.getWatchable(episode.metadata);
-        if (inKeepWatching == null) return;
-
-        if (inKeepWatching.url == episode.url) KeepWatching.remove(episode.metadata);
+        if (inKeepWatching?.uri == episode.uri)
+            KeepWatching.remove(episode.metadata);
     }
 
     static Future<void> deleteSingle(Watchable watchable) async {

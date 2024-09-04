@@ -127,14 +127,14 @@ class _HomePageState extends State<HomePage> {
                     ResultCardRow(
                         title: "Continua a guardare",
                         values: Future.value(KeepWatching.metadata),
-                        onTap: this._openMedia,
+                        onTap: (_, metadata) => this._openMedia(metadata),
                         action: (metadata) => super.setState(() => KeepWatching.remove(metadata)),
                         actionIcon: Icons.delete,
                     ),
                     ResultCardRow(
                         title: "Ultime aggiunte",
                         values: Settings.site.latests(),
-                        onTap: (metadata) => this._openTitle(context, metadata),
+                        onTap: (uuid, metadata) => this._openTitle(context, uuid, metadata),
                         action: Settings.site.isLocal
                             ? (metadata) => this._delete(context, metadata)
                             : null,
@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                         ResultCardRow(
                             title: "La mia lista",
                             values: Future.value(SavedTitles.getAll()),
-                            onTap: (metadata) => this._openTitle(context, metadata),
+                            onTap: (uuid, metadata) => this._openTitle(context, uuid, metadata),
                             action: (metadata) => super.setState(() => SavedTitles.remove(metadata)),
                             actionIcon: Icons.delete,
                         ),
@@ -174,7 +174,8 @@ class _HomePageState extends State<HomePage> {
         }
     }
 
-    void _openTitle(BuildContext context, TitleMetadata metadata) {
-        Navigator.pushNamed(context, '/title', arguments: metadata).then((value) => super.setState(() {}));
+    void _openTitle(BuildContext context, String uuid, TitleMetadata metadata) {
+        Navigator.pushNamed(context, '/title', arguments: [ uuid, metadata ])
+            .then((value) => super.setState(() {}));
     }
 }

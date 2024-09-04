@@ -19,9 +19,9 @@ class LocalSite extends Site {
         );
         return TitleMetadata(
             name: metadata!["name"],
-            url: directory.path,
+            uri: directory.uri,
             site: this,
-            poster: "${directory.path}/poster.jpg"
+            poster: Uri.parse("${directory.path}/poster.jpg")
         );
     }
 
@@ -71,8 +71,8 @@ class LocalSite extends Site {
     Future<Film> getFilm(TitleMetadata metadata, Map<String, dynamic> jsonMetadata) async {
         return Film(
             metadata: metadata,
-            url: "${metadata.url}/${jsonMetadata["url"]}.mp4",
-            banner: "${metadata.url}/banner.jpg",
+            uri: Uri.parse("${metadata.uri}/${jsonMetadata["url"]}.mp4"),
+            banner: Uri.parse("${metadata.uri}/banner.jpg"),
             description: jsonMetadata["description"],
             player: LocalPlayer.instance
         );
@@ -80,7 +80,7 @@ class LocalSite extends Site {
 
     Future<Series> getSeries(TitleMetadata metadata, Map<String, dynamic> jsonMetadata) async {
         Series series = Series(
-            banner: "${metadata.url}/banner.jpg",
+            banner: Uri.parse("${metadata.uri}/banner.jpg"),
             description: jsonMetadata["description"],
             seasons: [],
             metadata: metadata
@@ -96,8 +96,8 @@ class LocalSite extends Site {
             for(Map<String, dynamic> episodeMetadata in seasonMetadata["episodes"]) {
                 season.episodes.add(Episode(
                     name: episodeMetadata["name"],
-                    cover: "${metadata.url}/${episodeMetadata["cover"]}.jpg",
-                    url: "${metadata.url}/${episodeMetadata["url"]}.mp4",
+                    cover: Uri.parse("${metadata.uri}/${episodeMetadata["cover"]}.jpg"),
+                    uri: Uri.parse("${metadata.uri}/${episodeMetadata["url"]}.mp4"),
                     episodeNo: episodeMetadata["episodeNo"],
                     season: season,
                     player: LocalPlayer.instance
@@ -113,7 +113,7 @@ class LocalSite extends Site {
     @override
     Future<Title> getTitle(TitleMetadata metadata) async {
         Map<String, dynamic> jsonMetadata = jsonDecode(
-            File("${metadata.url}/metadata.json").readAsStringSync()
+            File("${metadata.uri}/metadata.json").readAsStringSync()
         );
         return jsonMetadata.containsKey("url")
             ? getFilm(metadata, jsonMetadata)
@@ -126,5 +126,5 @@ class LocalPlayer extends Player {
     LocalPlayer._() : super("Local");
 
     @override
-    Future<Uri> getSource(Watchable media) async => Uri.file(media.url);
+    Future<Uri> getSource(Watchable media) async => media.uri;
 }

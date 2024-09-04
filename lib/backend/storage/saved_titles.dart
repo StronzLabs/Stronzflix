@@ -25,11 +25,11 @@ class SavedTitles extends LocalStorage {
 
             TitleMetadata metadata = TitleMetadata(
                 name: data["name"],
-                url: data["url"],
+                uri: Uri.parse(data["uri"]),
                 site: site,
-                poster: data["poster"]);
+                poster: Uri.parse(data["poster"]));
 
-            String id = metadata.site.name + metadata.url;
+            String id = metadata.site.name + metadata.uri.toString();
             this._savedTitles[id] = metadata;
         }
     }
@@ -41,9 +41,9 @@ class SavedTitles extends LocalStorage {
         for (TitleMetadata metadata in this._savedTitles.values) {
             String serializedMetadata = jsonEncode({
                 "name": metadata.name,
-                "url": metadata.url,
+                "uri": metadata.uri.toString(),
                 "site": metadata.site.name,
-                "poster": metadata.poster
+                "poster": metadata.poster.toString()
             });
 
             list.add(serializedMetadata);
@@ -58,19 +58,19 @@ class SavedTitles extends LocalStorage {
     }
 
     static void add(TitleMetadata metadata) {
-        String id = metadata.site.name + metadata.url;
+        String id = metadata.site.name + metadata.uri.toString();
         SavedTitles.instance._savedTitles[id] = metadata;
         SavedTitles.instance.serialize();
     }
 
     static void remove(TitleMetadata metadata) {
-        String id = metadata.site.name + metadata.url;
+        String id = metadata.site.name + metadata.uri.toString();
         SavedTitles.instance._savedTitles.remove(id);
         SavedTitles.instance.serialize();
     }
 
     static bool isSaved(TitleMetadata metadata) {
-        String id = metadata.site.name + metadata.url;
+        String id = metadata.site.name + metadata.uri.toString();
         return SavedTitles.instance._savedTitles.containsKey(id);
     }
 }

@@ -17,8 +17,8 @@ class VixxCloud extends Player {
 
     @override
     Future<Uri> getSource(Watchable media) async {
-        String titleId = RegExp(r"watch/(\d+)").firstMatch(media.url)!.group(1)!;
-        String episodeId = RegExp(r"\?e=(\d+)").firstMatch(media.url)?.group(1) ?? "";
+        String titleId = RegExp(r"watch/(\d+)").firstMatch(media.uri.toString())!.group(1)!;
+        String episodeId = RegExp(r"\?e=(\d+)").firstMatch(media.uri.toString())?.group(1) ?? "";
         String iframeSrc = "/iframe/${titleId}?episode_id=${episodeId}";
 
         String iframe = await HTTP.get("${this._streamingCommunityUrl}${iframeSrc}");

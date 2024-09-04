@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:async/async.dart';
@@ -9,7 +8,9 @@ import 'package:stronzflix/backend/api/media.dart' as sf show Title;
 import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
+import 'package:stronzflix/components/cast_button.dart';
 import 'package:stronzflix/components/expandable_text.dart';
+import 'package:stronzflix/components/resource_image.dart';
 import 'package:stronzflix/components/result_card.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/download_dialog.dart';
@@ -23,30 +24,34 @@ class TitlePage extends StatefulWidget {
 
 class _TitlePageState extends State<TitlePage> {
 
-    late /* final */ sf.Title _title;
-    late final TitleMetadata _metadata = ModalRoute.of(super.context)!.settings.arguments as TitleMetadata;
-    int _selectedSeason = 0;
+    sf.Title? _title;
+    sf.Title get title => this._title!;
+    late TitleMetadata _metadata;
+    late String _heroUuid;
+    late Season _selectedSeason;
     
     AsyncMemoizer _memoizer = AsyncMemoizer();
 
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        List args = ModalRoute.of(super.context)!.settings.arguments as List;
+        this._heroUuid = args[0];
+        this._metadata = args[1];
+    }
+
     Widget _buildBanner(BuildContext context) {
-        double bannerHeight = 200;
         return ClipRRect(
-            child: SizedBox(
-                height: bannerHeight + 25,
-                child: Stack(
-                    children: [
-                        Container(
-                            height: bannerHeight,
+            child: Stack(
+                children: [
+                    Hero(
+                        tag: this._heroUuid,
+                        child: Container(
                             decoration: BoxDecoration(
                                 image: DecorationImage(
-                                    image: this._title.banner.startsWith("http")
-                                        ? NetworkImage(
-                                            this._title.banner,
-                                        ) as ImageProvider<Object>
-                                        : FileImage(
-                                            File(this._title.banner),
-                                        ) as ImageProvider<Object>,
+                                    image: resourceImageProvider(
+                                        uri: this._metadata.poster
+                                    ),
                                     fit: BoxFit.cover,
                                 ),
                             ),
@@ -55,23 +60,48 @@ class _TitlePageState extends State<TitlePage> {
                                 child: const SizedBox.expand(),
                             ),
                         ),
+                    ),
+                    if(this._title != null)
                         Align(
                             alignment: Alignment.topCenter,
-                            child: this._title.banner.startsWith("https")
-                                ? Image.network(
-                                    this._title.banner,
-                                    fit: BoxFit.cover,
-                                    height: bannerHeight,
-                                )
-                                : Image.file(
-                                    File(this._title.banner),
-                                    fit: BoxFit.cover,
-                                    height: bannerHeight,
-                                )
+                            child: ResourceImage(
+                                uri: this.title.banner,
+                                fit: BoxFit.cover,
+                            )
                         )
-                    ],
-                ),
-            )
+                ],
+            ),
+        );
+    }
+
+    Widget _buildTopBar(BuildContext context) {
+        return SliverAppBar.large(
+            leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.of(context).pop(),
+            ),
+            actions: [
+                const CastButton(),
+                if( this._metadata.site is! LocalSite) ...[
+                    const SizedBox(width: 8),
+                    IconButton(
+                        icon: Icon(SavedTitles.isSaved(this._metadata) ? Icons.bookmark_remove : Icons.bookmark_add_outlined),
+                        onPressed: this._save,
+                    ),
+                    const SizedBox(width: 8)
+                ]
+            ],
+            pinned: true,
+            expandedHeight: 300,
+            flexibleSpace: FlexibleSpaceBar(
+                background: this._buildBanner(context),
+            ),
+            title: Text(this._metadata.name,
+                style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold
+                )
+            ),
         );
     }
 
@@ -85,184 +115,150 @@ class _TitlePageState extends State<TitlePage> {
                         fontWeight: FontWeight.bold
                     )
                 ),
-                ExpandableText(this._title.description,
-                    maxLines: 3,
-                    expandText: "Mostra di più",
-                    collapseText: "Mostra meno",
-                    expandOnTextTap: true,
-                    collapseOnTextTap: true,
-                    animation: true,
-                    animationDuration: const Duration(seconds: 1),
+                ExpandableText(this.title.description,
+                    minLines: 3,
+                    maxLines: 999,
+                    textAlign: TextAlign.justify,
                     style: const TextStyle(
                         fontSize: 16,
-                    ),
-                    textAlign: TextAlign.justify,
+                    )
                 )
             ]
         );
     }
 
-    Widget _buildActions(BuildContext context) {
-        if (this._title.comingSoon != null)
-            return const SizedBox.shrink();
-
-        if (this._title is Film)
-            return LayoutBuilder(
-                builder: (context, constraints) {
-                    bool vertical = constraints.maxWidth < 1200;
-                    List<Widget> children = [
-                        ElevatedButton(
-                            onPressed: () => this._play(this._title as Film),
-                            child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                        const Icon(Icons.play_arrow,
-                                            size: 40,
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Transform.translate(
-                                            offset: const Offset(0, -2.5),
-                                            child: const Text('Guarda ',
-                                                style: TextStyle(
-                                                    fontSize: 30
-                                                )
-                                            ),
-                                        )
-                                    ],
-                                ),
-                            ),
-                        ),
-                        if(this._title.site.allowsDownload)
-                        ...[
-                            const SizedBox.square(dimension: 25),
-                            ElevatedButton(
-                                onPressed: this._title.site.isLocal
-                                    ? () => this._delete(this._title as Film)
-                                    : () => this._download(this._title as Film),
-                                child: Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                            Icon(this._title.site.isLocal ? Icons.delete : Icons.download,
-                                                size: 40,
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Transform.translate(
-                                                offset: const Offset(0, -2.5),
-                                                child: Text(this._title.site.isLocal ? 'Elimina' : 'Scarica',
-                                                    style: const TextStyle(
-                                                        fontSize: 30
-                                                    )
-                                                ),
-                                            )
-                                        ],
-                                    ),
-                                )
-                            ),
-                        ]
-                    ];
-
-                    return vertical
-                        ? Column(children: children)
-                        : Row(children: children);
-                }
+    Widget _buildFilmActions(BuildContext context) {
+        Widget buildButton(String label, IconData icon, void Function() onPressed) {
+            return ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(17.0),
+                    minimumSize: const Size(300, 0),
+                ),
+                onPressed: onPressed,
+                label: Text(label,
+                    style: const TextStyle(
+                        fontSize: 30
+                    )
+                ),
+                icon: Icon(icon,
+                    size: 40
+                )
             );
+        }
 
-        return Align(
-            alignment: Alignment.centerLeft,
-            child: DropdownButton(
-                value: this._selectedSeason,
-                items: [
-                    for (int i = 0; i < (this._title as Series).seasons.length; i++)
-                        DropdownMenuItem(
-                            value: i,
-                            child: Text((this._title as Series).seasons[i].name)
-                        )
-                ],
-                onChanged: (index) => super.setState(() => this._selectedSeason = index!),
-            ),
+        return Column(
+            children: [
+                const SizedBox(height: 10.0),
+                buildButton("Guarda", Icons.play_arrow, () => this._play(this._title! as Film)),
+                if(this.title.site.allowsDownload) ...[
+                    const SizedBox(height: 20.0),
+                    buildButton("Scarica", Icons.download, () => this._download(this._title! as Film))
+                ]
+                else if(this.title.site is LocalSite) ...[
+                    const SizedBox(height: 20.0),
+                    buildButton("Elimina", Icons.delete, () => this._delete(this._title! as Film))
+                ]
+            ]
         );
     }
 
-    Widget _buildEpisodes(BuildContext context) {
-        Season season = (this._title as Series).seasons[this._selectedSeason];
-
-        return Expanded(
-            child: GridView.extent(
-                shrinkWrap: true,
-                childAspectRatio: 3 / 2,
-                maxCrossAxisExtent: 400,
-                children: season.episodes.map((Episode episode) {
-                    int? duration = KeepWatching.getDuration(episode);
-                    int? timestamp = KeepWatching.getTimestamp(episode);
-                    double? progress = duration != null && timestamp != null
-                        ? timestamp / duration
-                        : null;
-                    return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ResultCard(
-                            onTap: () => this._play(episode),
-                            action: this._title.site.isLocal
-                                ? () => this._delete(episode)
-                                : this._title.site.allowsDownload
-                                    ? () => this._download(episode)
-                                    : null,
-                            actionIcon: this._title.site.isLocal
-                                ? Icons.delete
-                                : Icons.download,
-                            imageUrl: episode.cover,
-                            text: episode.name,
-                            progress: progress,
-                            footer: episode.episodeNo.toString(),
-                        )
-                    );
-                }).toList()
+    Widget _buildSeriesActions(BuildContext context) {
+        return Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).disabledColor, width: 2.0),
+                    borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: DropdownButton<Season>(
+                    focusColor: Colors.transparent,
+                    borderRadius: BorderRadius.circular(20.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    underline: const SizedBox.shrink(),
+                    value: this._selectedSeason,
+                    items: [
+                        for (Season season in (this.title as Series).seasons)
+                            DropdownMenuItem(
+                                value: season,
+                                child: Text(season.name)
+                            )
+                    ],
+                    onChanged: (selected) => super.setState(() => this._selectedSeason = selected!),
+                )
             )
         );
     }
 
-    Widget _buildTitle(BuildContext context) {
-        List<Widget> children = [
-            this._buildBanner(context),
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: LayoutBuilder(
-                    builder: (context, constraints) {
-                        bool vertical = constraints.maxWidth < 1200;
-                        List<Widget> children = [
-                            this._buildDescription(context),
-                            const SizedBox.square(dimension: 25),
-                            this._buildActions(context),
-                        ];
+    Widget _buildActions(BuildContext context) {
+        if (this.title.comingSoon != null)
+            return const SizedBox.shrink();
 
-                        return vertical
-                            ? Column(children: children)
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: children.map(
-                                    (e) => e == children[0] ? Expanded(child: e) : e
-                                ).toList(),
-                            );
-                    }
-                )
-            ),
-            if (this._title.comingSoon != null)
-                this._buildComingSoon(context)
-            else if(this._title is Series)
-                this._buildEpisodes(context)
-        ];
-        return this._title is Film
-            ? ListView(children: children + [ const SizedBox(height: 25) ])
-            : Column(children: children);
+        return switch(this.title.runtimeType) {
+            Film => this._buildFilmActions(context),
+            Series => this._buildSeriesActions(context),
+            _ => throw Exception("Unknown title type ${this._title.runtimeType}")
+        };
+    }
+
+    Widget _buildEpisodes(BuildContext context) {
+        return GridView.extent(
+            shrinkWrap: true,
+            childAspectRatio: 3 / 2,
+            maxCrossAxisExtent: 400,
+            children: this._selectedSeason.episodes.map((Episode episode) {
+                int? duration = KeepWatching.getDuration(episode);
+                int? timestamp = KeepWatching.getTimestamp(episode);
+                double? progress = duration != null && timestamp != null
+                    ? timestamp / duration
+                    : null;
+                return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ResultCard(
+                        onTap: (_) => this._play(episode),
+                        action: this.title.site.isLocal
+                            ? () => this._delete(episode)
+                            : this.title.site.allowsDownload
+                                ? () => this._download(episode)
+                                : null,
+                        actionIcon: this.title.site.isLocal
+                            ? Icons.delete
+                            : Icons.download,
+                        imageUrl: episode.cover,
+                        text: episode.name,
+                        progress: progress,
+                        footer: episode.episodeNo.toString(),
+                    )
+                );
+            }).toList()
+        );
+    }
+
+    Widget _buildTitle(BuildContext context) {
+        return SliverList.list(
+            children: [
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                        children: [
+                            Align(
+                                alignment: Alignment.topLeft,
+                                child: this._buildDescription(context),
+                            ),
+                            const SizedBox(height: 10.0),
+                            this._buildActions(context)
+                        ],
+                    )
+                ),
+                if (this.title.comingSoon != null)
+                    this._buildComingSoon(context)
+                else if(this.title is Series)
+                    this._buildEpisodes(context)
+            ]
+        );
     }
 
     Widget _buildComingSoon(BuildContext context) {
-        String date = this._title.comingSoon!.toIso8601String().substring(0, 10).split("-").reversed.join("/");
+        String date = this.title.comingSoon!.toIso8601String().substring(0, 10).split("-").reversed.join("/");
         return Padding(
             padding: const EdgeInsets.all(25),
             child: Column(
@@ -288,36 +284,40 @@ class _TitlePageState extends State<TitlePage> {
     @override
     Widget build(BuildContext context) {
         return Scaffold(
-            appBar: AppBar(
-                centerTitle: true,
-                title: Text(this._metadata.name),
-                leading: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.of(context).pop(),
-                ),
-                actions: this._metadata.site is LocalSite ? null : [
-                    IconButton(
-                        icon: Icon(SavedTitles.isSaved(this._metadata) ? Icons.bookmark_remove : Icons.bookmark_add_outlined),
-                        onPressed: this._save,
-                    ),
-                    const SizedBox(width: 8)
-                ],
-            ),
             body: FutureBuilder(
-                future: this._memoizer.runOnce(() => this._metadata.site.getTitle(this._metadata)),
+                future: this._memoizer.runOnce(() => this._fetchTitle()),
                 builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done)
-                        return const Center(child: CircularProgressIndicator());
+                   
 
-                    // TODO mainly caused by coming soons
-                    if (snapshot.hasError)
-                        return const Center(child: Text("Errore durante il caricamento del titolo"));
-
-                    this._title = snapshot.data!;
-                    return this._buildTitle(context);
-                },
+                    return CustomScrollView(
+                        slivers: [
+                            this._buildTopBar(context),
+                             if (snapshot.hasError)
+                                const SliverFillRemaining(
+                                    child: Center(
+                                        child: Text("Errore durante il caricamento del titolo"),
+                                    ),
+                                )
+                            else if (snapshot.connectionState != ConnectionState.done)
+                                const SliverFillRemaining(
+                                    child: Center(
+                                        child: CircularProgressIndicator(),
+                                    ),
+                                )
+                            else
+                                this._buildTitle(context)
+                        ],
+                    );
+                }
             )
         );
+    }
+
+    Future<void> _fetchTitle() async {
+        sf.Title title = await this._metadata.site.getTitle(this._metadata);
+        this._title = title;
+        if(title is Series)
+            this._selectedSeason = title.seasons.first;
     }
 
     void _play(Watchable watchable) {

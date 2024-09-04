@@ -53,8 +53,8 @@ class StreamingCommunity extends Site {
             results.add(TitleMetadata(
                 site: this,
                 name: title["name"],
-                url: "/titles/${title["id"]}-${title["slug"]}",
-                poster:  "${this._cdn}/images/${poster}" 
+                uri: Uri.parse("/titles/${title["id"]}-${title["slug"]}"),
+                poster:  Uri.parse("${this._cdn}/images/${poster}") 
             ));
         }
 
@@ -79,8 +79,8 @@ class StreamingCommunity extends Site {
 
         return Film(
             player: VixxCloud.instance,
-            url: "/watch/${title["id"]}",
-            banner: "${this._cdn}/images/${banner}",
+            uri: Uri.parse("/watch/${title["id"]}"),
+            banner: Uri.parse("${this._cdn}/images/${banner}"),
             description: title["plot"],
             metadata: metadata,
             comingSoon: coomingDate?.isAfter(DateTime.now()) ?? false ? coomingDate : null
@@ -98,9 +98,9 @@ class StreamingCommunity extends Site {
             for(dynamic episode in seasonObject["episodes"])
                 Episode(
                     player: VixxCloud.instance,
-                    url: "/watch/${titleId}?e=${episode["id"]}",
+                    uri: Uri.parse("/watch/${titleId}?e=${episode["id"]}"),
                     name: episode["name"],
-                    cover: "${this._cdn}/images/${this._findImage(episode, "cover")}",
+                    cover: Uri.parse("${this._cdn}/images/${this._findImage(episode, "cover")}"),
                     season: season,
                     episodeNo: episode["number"]
                 )
@@ -115,7 +115,7 @@ class StreamingCommunity extends Site {
 
         Series series = Series(
             metadata: metadata,
-            banner: "${this._cdn}/images/${banner}",
+            banner: Uri.parse("${this._cdn}/images/${banner}"),
             description: title["plot"],
             seasons: [],
             comingSoon: coomingDate?.isAfter(DateTime.now()) ?? false ? coomingDate : null
@@ -142,7 +142,7 @@ class StreamingCommunity extends Site {
 
     @override
     Future<Title> getTitle(TitleMetadata metadata) async {
-        String body = await HTTP.get("${super.url}${metadata.url}", headers: this._inhertia);
+        String body = await HTTP.get("${super.url}${metadata.uri}", headers: this._inhertia);
         dynamic json = jsonDecode(body);
         dynamic title = json["props"]["title"];
 

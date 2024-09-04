@@ -1,16 +1,16 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:stronzflix/components/border_text.dart';
+import 'package:stronzflix/components/resource_image.dart';
 import 'package:sutils/sutils.dart';
+import 'package:uuid/uuid.dart';
 
 class ResultCard extends StatefulWidget {
 
-    final void Function()? onTap;
+    final void Function(String uuid)? onTap;
     final void Function()? action;
     final IconData? actionIcon;
-    final String? imageUrl;
+    final Uri? imageUrl;
     final String text;
     final double? width;
     final double? progress;
@@ -35,13 +35,14 @@ class ResultCard extends StatefulWidget {
 class _ResultCardState extends State<ResultCard> {
 
     bool _hover = false;
+    final String _uuid = const Uuid().v4();
 
     @override
     Widget build(BuildContext context) {
         Widget child = super.widget.imageUrl == null
             ? Shimmer.fromColors(
                 baseColor: Theme.of(context).colorScheme.surface,
-                highlightColor: Theme.of(context).colorScheme.background,
+                highlightColor: Theme.of(context).scaffoldBackgroundColor,
                 period: const Duration(milliseconds: 2500),
                 child: const Card(
                     child: SizedBox.expand(),
@@ -49,7 +50,7 @@ class _ResultCardState extends State<ResultCard> {
             )
             : Card(
                 child: InkWell(
-                    onTap: super.widget.onTap,
+                    onTap: () => super.widget.onTap?.call(this._uuid),
                     onLongPress: EPlatform.isMobile ? super.widget.action : null,
                     onHover: (value) => super.setState(() => this._hover = value),
                     child: Padding(
@@ -64,15 +65,13 @@ class _ResultCardState extends State<ResultCard> {
                                                     children: [
                                                         Align(
                                                             alignment: Alignment.center,
-                                                            child: super.widget.imageUrl!.startsWith("http")
-                                                            ? Image.network(
-                                                                super.widget.imageUrl!,
-                                                                fit: BoxFit.cover,
+                                                            child: Hero(
+                                                                tag: this._uuid,
+                                                                child: ResourceImage(
+                                                                    uri: super.widget.imageUrl!,
+                                                                    fit: BoxFit.cover,
+                                                                ),
                                                             )
-                                                            : Image.file(
-                                                                File(super.widget.imageUrl!),
-                                                                fit: BoxFit.cover,
-                                                            ),
                                                         ),
                                                         if(super.widget.progress != null)
                                                             Align(
