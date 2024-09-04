@@ -1,5 +1,4 @@
 import 'package:html/dom.dart';
-import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/player.dart';
 import 'package:html/parser.dart' as html;
 import 'package:sutils/sutils.dart';
@@ -10,8 +9,8 @@ class Streampeaker extends Player {
         : super("Streampeaker");
 
     @override
-    Future<Uri> getSource(Watchable media) async {
-        String passBody = await HTTP.get(media.uri);
+    Future<Uri> getSource(Uri uri) async {
+        String passBody = await HTTP.get(uri);
         Document passDocument = html.parse(passBody);
 
         String episodeUrl = passDocument.querySelector(".card-body")!.querySelector("a")!.attributes["href"]!;

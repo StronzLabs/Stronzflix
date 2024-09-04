@@ -1,3 +1,4 @@
+import 'package:stronzflix/backend/api/bindings/JWPlayer.dart';
 import 'package:stronzflix/backend/api/bindings/streampeaker.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
@@ -31,7 +32,6 @@ class AnimeSaturn extends Site {
                 name: name,
                 uri: Uri.parse(url),
                 cover: Uri.parse(cover),
-                player: Streampeaker.instance,
                 episodeNo: episodeNo
             ));
         }
@@ -159,5 +159,39 @@ class AnimeSaturn extends Site {
         }
 
         return results;
+    }
+
+    @override
+    Future<List<WatchOption>> getOptions(Watchable watchable) async {
+        String passBody = await HTTP.get(watchable.uri);
+        Document passDocument = html.parse(passBody);
+
+        String episodeUrl = passDocument.querySelector(".card-body")!.querySelector("a")!.attributes["href"]!;
+        String body = await HTTP.get(episodeUrl);
+        Document document = html.parse(body);
+
+        List<String> urls = [
+            episodeUrl,
+            for(Element element in document.querySelectorAll(".dropdown-item"))
+                element.attributes["href"]!
+        ];
+        
+        List<WatchOption> options = [];
+        for(String url in urls) {
+            String body = await HTTP.get(url);
+
+            if(body.contains("jwplayer"))
+                options.add(WatchOption(
+                    player: JWPlayer.instance,
+                    uri: Uri.parse(url)
+                ));
+            else if(body.contains("streampeaker"))
+                options.add(WatchOption(
+                    player: Streampeaker.instance,
+                    uri: Uri.parse(url)
+                ));
+        }
+
+        return options;
     }
 }

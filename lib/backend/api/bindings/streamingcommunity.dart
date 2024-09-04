@@ -78,7 +78,6 @@ class StreamingCommunity extends Site {
         DateTime? coomingDate = releaseDate.isNotEmpty ? DateTime.parse(releaseDate) : null;
 
         return Film(
-            player: VixxCloud.instance,
             uri: Uri.parse("/watch/${title["id"]}"),
             banner: Uri.parse("${this._cdn}/images/${banner}"),
             description: title["plot"],
@@ -97,7 +96,6 @@ class StreamingCommunity extends Site {
         return [
             for(dynamic episode in seasonObject["episodes"])
                 Episode(
-                    player: VixxCloud.instance,
                     uri: Uri.parse("/watch/${titleId}?e=${episode["id"]}"),
                     name: episode["name"],
                     cover: Uri.parse("${this._cdn}/images/${this._findImage(episode, "cover")}"),
@@ -150,5 +148,15 @@ class StreamingCommunity extends Site {
             return this.getSeries(metadata, title);
         else
             return this.getFilm(metadata, title);
+    }
+
+    @override
+    Future<List<WatchOption>> getOptions(Watchable watchable) async {
+        return [
+            WatchOption(
+                player: VixxCloud.instance,
+                uri: watchable.uri
+            )
+        ];
     }
 }

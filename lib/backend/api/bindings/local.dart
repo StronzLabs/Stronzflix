@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:stronzflix/backend/api/player.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/api/media.dart';
-import 'package:stronzflix/backend/api/player.dart';
 import 'package:stronzflix/backend/api/site.dart';
 
 class LocalSite extends Site {
@@ -73,8 +73,7 @@ class LocalSite extends Site {
             metadata: metadata,
             uri: Uri.parse("${metadata.uri}/${jsonMetadata["url"]}.mp4"),
             banner: Uri.parse("${metadata.uri}/banner.jpg"),
-            description: jsonMetadata["description"],
-            player: LocalPlayer.instance
+            description: jsonMetadata["description"]
         );
     }
 
@@ -99,8 +98,7 @@ class LocalSite extends Site {
                     cover: Uri.parse("${metadata.uri}/${episodeMetadata["cover"]}.jpg"),
                     uri: Uri.parse("${metadata.uri}/${episodeMetadata["url"]}.mp4"),
                     episodeNo: episodeMetadata["episodeNo"],
-                    season: season,
-                    player: LocalPlayer.instance
+                    season: season
                 ));
             }
 
@@ -119,12 +117,22 @@ class LocalSite extends Site {
             ? getFilm(metadata, jsonMetadata)
             : getSeries(metadata, jsonMetadata);
     }
+
+    @override
+    Future<List<WatchOption>> getOptions(Watchable watchable) async {
+        return [
+            WatchOption(
+                player: LocalPlayer.instance,
+                uri: watchable.uri
+            )
+        ];
+    }
 }
 
 class LocalPlayer extends Player {
     static Player instance = LocalPlayer._();
     LocalPlayer._() : super("Local");
-
+    
     @override
-    Future<Uri> getSource(Watchable media) async => media.uri;
+    Future<Uri> getSource(Uri uri) => Future.value(uri);    
 }

@@ -61,6 +61,7 @@ abstract class Site extends Initializable {
     Future<List<TitleMetadata>> search(String query);
     Future<List<TitleMetadata>> latests();
     Future<Title> getTitle(TitleMetadata metadata);
+    Future<List<WatchOption>> getOptions(Watchable watchable);
 
     bool tunerValidator(String homePage);
 

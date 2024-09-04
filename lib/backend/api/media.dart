@@ -17,14 +17,30 @@ class TitleMetadata {
     });
 }
 
+class WatchOption {
+    final Player player;
+    final Uri uri;
+
+    Future<Uri> get source => this.player.getSource(this.uri);
+
+    const WatchOption({
+        required this.player,
+        required this.uri
+    });
+}
+
 mixin Watchable implements Playable {
     Uri get uri;
-    Player get player;
-
+    Site get site;
     TitleMetadata get metadata;
 
     @override
-    Future<Uri> get source => this.player.getSource(this);
+    Future<Uri> get source async {
+        List<WatchOption> options = await this.site.getOptions(this);
+        WatchOption option = options.first;
+        return await option.source;
+    }
+
     @override
     Playable? get next => null;
 
@@ -84,8 +100,6 @@ abstract class Title {
 
 class Film extends Title with Watchable {
     @override
-    final Player player;
-    @override
     final Uri uri;
 
     @override
@@ -99,8 +113,7 @@ class Film extends Title with Watchable {
         required super.description,
         required super.metadata,
         super.comingSoon,
-        required this.uri,
-        required this.player
+        required this.uri
     });
 }
 
@@ -112,8 +125,6 @@ class Episode with Watchable {
 
     @override
     final Uri uri;
-    @override
-    final Player player;
 
     @override
     String get title => "${this.season.series.name} - ${this.name}";
@@ -123,6 +134,9 @@ class Episode with Watchable {
 
     @override
     Uri get thumbnail => this.cover;
+
+    @override
+    Site get site => this.season.series.site;
 
     @override
     Watchable? get next {
@@ -143,7 +157,6 @@ class Episode with Watchable {
         required this.cover,
         required this.uri,
         required this.season,
-        required this.player,
         required this.episodeNo
     });
 }

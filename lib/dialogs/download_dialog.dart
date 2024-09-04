@@ -72,7 +72,7 @@ class DownloadDialog extends StatefulWidget {
 
     static Future<void> open(BuildContext context, Watchable watchable) async {
 
-        Uri url = await LoadingDialog.load(context, () async => await watchable.player.getSource(watchable));
+        Uri url =  await LoadingDialog.load(context, () async => await watchable.source);
         String mime = await HTTP.mime(url);
 
         if(!context.mounted)

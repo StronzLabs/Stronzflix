@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:html_unescape/html_unescape.dart';
 import 'package:stronzflix/backend/api/bindings/streamingcommunity.dart';
-import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/player.dart';
 import 'package:sutils/sutils.dart';
 
@@ -16,9 +15,9 @@ class VixxCloud extends Player {
     VixxCloud._() : super("VixxCloud");
 
     @override
-    Future<Uri> getSource(Watchable media) async {
-        String titleId = RegExp(r"watch/(\d+)").firstMatch(media.uri.toString())!.group(1)!;
-        String episodeId = RegExp(r"\?e=(\d+)").firstMatch(media.uri.toString())?.group(1) ?? "";
+    Future<Uri> getSource(Uri uri) async {
+        String titleId = RegExp(r"watch/(\d+)").firstMatch(uri.toString())!.group(1)!;
+        String episodeId = RegExp(r"\?e=(\d+)").firstMatch(uri.toString())?.group(1) ?? "";
         String iframeSrc = "/iframe/${titleId}?episode_id=${episodeId}";
 
         String iframe = await HTTP.get("${this._streamingCommunityUrl}${iframeSrc}");
