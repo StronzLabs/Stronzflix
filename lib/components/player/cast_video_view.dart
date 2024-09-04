@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:stronz_video_player/stronz_video_player.dart';
+import 'package:stronzflix/components/resource_image.dart';
 import 'package:sutils/sutils.dart';
 
 class CastVideoView extends StatefulWidget {
@@ -40,9 +39,6 @@ class _CastVideoViewState extends State<CastVideoView> with StronzPlayerControl,
     @override
     Widget build(BuildContext context) {
         Uri uri = this._playable.thumbnail;
-        if(uri.scheme == "http" || uri.scheme == "https")
-            return Image.network(uri.toString(), fit: BoxFit.contain);
-        else
-            return Image.file(File.fromUri(uri), fit: BoxFit.contain);
+        return ResourceImage(uri: uri, fit: BoxFit.contain);
     }
 }
