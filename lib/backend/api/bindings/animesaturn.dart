@@ -1,4 +1,4 @@
-import 'package:stronzflix/backend/api/bindings/JWPlayer.dart';
+import 'package:stronzflix/backend/api/bindings/jwplayer.dart';
 import 'package:stronzflix/backend/api/bindings/streampeaker.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';

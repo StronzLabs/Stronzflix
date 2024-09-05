@@ -5,7 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:stronz_video_player/stronz_video_player.dart';
-import 'package:stronzflix/backend/api/bindings/JWPlayer.dart';
+import 'package:stronzflix/backend/api/bindings/jwplayer.dart';
 import 'package:stronzflix/backend/api/bindings/animesaturn.dart';
 import 'package:stronzflix/backend/api/bindings/streampeaker.dart';
 import 'package:stronzflix/backend/api/bindings/local.dart';
@@ -152,7 +152,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         await for (double percentage in this._dynamicLoad([
             StreamingCommunity.instance.progress,
             LocalSite.instance.progress,
-            AnimeSaturn.instance.progress,
+            AnimeSaturn.instance.progress
         ]))
             yield advance + percentage * phasesWeights[1]; 
         advance += phasesWeights[1];
