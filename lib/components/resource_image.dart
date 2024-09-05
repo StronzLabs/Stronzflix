@@ -5,11 +5,17 @@ import 'package:flutter/material.dart';
 class ResourceImage extends StatelessWidget {
     final Uri uri;
     final BoxFit? fit;
+    final double? width;
+    final double? height;
+    final AlignmentGeometry alignment;
     
     const ResourceImage({
         super.key,
         required this.uri,
-        this.fit
+        this.fit,
+        this.width,
+        this.height,
+        this.alignment = Alignment.center,
     });
 
     @override
@@ -18,10 +24,16 @@ class ResourceImage extends StatelessWidget {
             ? Image.network(
                 this.uri.toString(),
                 fit: this.fit,
+                width: this.width,
+                height: this.height,
+                alignment: this.alignment,
             )
             : Image.file(
-                File.fromUri(uri),
+                File(uri.toString()),
                 fit: this.fit,
+                width: this.width,
+                height: this.height,
+                alignment: this.alignment,
             );
     }
 }
