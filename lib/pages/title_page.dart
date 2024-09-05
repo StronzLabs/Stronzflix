@@ -202,6 +202,7 @@ class _TitlePageState extends State<TitlePage> {
 
     Widget _buildEpisodes(BuildContext context) {
         return GridView.extent(
+            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             childAspectRatio: 3 / 2,
             maxCrossAxisExtent: 400,
