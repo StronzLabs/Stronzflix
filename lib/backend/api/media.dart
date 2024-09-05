@@ -1,7 +1,11 @@
+import 'package:flutter/material.dart' show showDialog;
 import 'package:stronzflix/backend/api/player.dart';
 import 'package:stronzflix/backend/api/site.dart';
 
 import 'package:stronz_video_player/stronz_video_player.dart' show Playable;
+import 'package:stronzflix/backend/storage/settings.dart';
+import 'package:stronzflix/dialogs/sources_dialog.dart';
+import 'package:stronzflix/stronzflix.dart';
 
 class TitleMetadata {
     final String name;
@@ -37,7 +41,19 @@ mixin Watchable implements Playable {
     @override
     Future<Uri> get source async {
         List<WatchOption> options = await this.site.getOptions(this);
-        WatchOption option = options.first;
+
+        late WatchOption option;
+        if(!Settings.pickSource || options.length == 1)
+            option = options.first;
+        else
+            option = await showDialog(
+                context: Stronzflix.navigatorKey.currentContext!,
+                barrierDismissible: false,
+                builder: (context) => SourcesDialog(
+                    options: options,
+                )
+            );
+
         return await option.source;
     }
 

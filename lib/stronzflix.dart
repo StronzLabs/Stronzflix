@@ -12,6 +12,8 @@ import 'package:sutils/sutils.dart';
 
 class Stronzflix extends StatelessWidget {
 
+    static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
     const Stronzflix({super.key});
 
     static ThemeData get theme => ThemeData(
@@ -97,6 +99,7 @@ class Stronzflix extends StatelessWidget {
                     '/player': (context) => const PlayerPage(),
                     '/player-sink': (context) => const PlayerPage(),
                 },
+                navigatorKey: Stronzflix.navigatorKey,
                 debugShowCheckedModeBanner: false,
                 navigatorObservers: [
                     SinkNavigatorObserver()
