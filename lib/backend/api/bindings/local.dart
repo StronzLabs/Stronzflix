@@ -21,7 +21,7 @@ class LocalSite extends Site {
             name: metadata!["name"],
             uri: directory.uri,
             site: this,
-            poster: Uri.parse("${directory.path}/poster.jpg")
+            poster: Uri.parse("${directory.uri}/poster.jpg")
         );
     }
 
@@ -111,7 +111,7 @@ class LocalSite extends Site {
     @override
     Future<Title> getTitle(TitleMetadata metadata) async {
         Map<String, dynamic> jsonMetadata = jsonDecode(
-            File("${metadata.uri}/metadata.json").readAsStringSync()
+            File.fromUri(Uri.parse("${metadata.uri}metadata.json")).readAsStringSync()
         );
         return jsonMetadata.containsKey("url")
             ? getFilm(metadata, jsonMetadata)

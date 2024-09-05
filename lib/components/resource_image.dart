@@ -29,7 +29,7 @@ class ResourceImage extends StatelessWidget {
                 alignment: this.alignment,
             )
             : Image.file(
-                File(uri.toString()),
+                File.fromUri(uri),
                 fit: this.fit,
                 width: this.width,
                 height: this.height,
@@ -44,6 +44,6 @@ ImageProvider<Object> resourceImageProvider({required Uri uri}) {
             uri.toString(),
         ) as ImageProvider<Object>
         : FileImage(
-            File(uri.toString()),
+            File.fromUri(uri),
         ) as ImageProvider<Object>;
 }
