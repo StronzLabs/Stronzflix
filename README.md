@@ -24,5 +24,4 @@ The developers of this application neither host nor distribute any of the conten
 TODOs:
 - [ ] Better sink implementation
 - [ ] Optimize for AndroidTV / FireStick
-- [ ] Ship linux mpv library with the bundle since it's a pain to install the right version (or give a guide to)
 - [ ] Preview/Trailer
