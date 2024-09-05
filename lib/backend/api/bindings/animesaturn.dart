@@ -85,7 +85,7 @@ class AnimeSaturn extends Site {
 
             Season season = Season(
                 series: series,
-                name: name,
+                name: "Lista Episodi",
                 episodes: []
             );
 
