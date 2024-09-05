@@ -24,7 +24,7 @@ class _ExpandableTextState extends State<ExpandableText> {
     bool _expanded = false;
 
     Widget _expandableText(bool isExpanded) {
-        return  RichText(
+        return RichText(
             maxLines: isExpanded ? super.widget.maxLines : super.widget.minLines,
             overflow: TextOverflow.ellipsis,
             textAlign: super.widget.textAlign,
