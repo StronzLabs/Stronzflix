@@ -10,11 +10,7 @@ class Streampeaker extends Player {
 
     @override
     Future<Uri> getSource(Uri uri) async {
-        String passBody = await HTTP.get(uri);
-        Document passDocument = html.parse(passBody);
-
-        String episodeUrl = passDocument.querySelector(".card-body")!.querySelector("a")!.attributes["href"]!;
-        String body = await HTTP.get(episodeUrl);
+        String body = await HTTP.get(uri);
         Document document = html.parse(body);
 
         String source = document.querySelector("#video-player")!.querySelector("source")!.attributes["src"]!;
