@@ -12,9 +12,6 @@ class AnimeSaturn extends Site {
     AnimeSaturn._():  super("AnimeSaturn", "www.animesaturn");
 
     @override
-    bool get allowsDownload => true;
-
-    @override
     bool tunerValidator(String homePage) {
         return homePage.contains("<meta content=\"AnimeSaturn - Streaming di Anime in Sub ITA e ITA\">");
     }

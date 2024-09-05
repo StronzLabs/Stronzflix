@@ -14,9 +14,6 @@ class StreamingCommunity extends Site {
     StreamingCommunity._() : super("StreamingCommunity", "streamingcommunity");
 
     @override
-    bool get allowsDownload => true;
-
-    @override
     Future<void> construct() async {
         await super.construct();
         await this._getInhertia();
