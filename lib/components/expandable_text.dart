@@ -24,7 +24,6 @@ class _ExpandableTextState extends State<ExpandableText> {
     bool _expanded = false;
 
     Widget _expandableText(bool isExpanded) {
-        // TODO: read more / read less hyperlink
         return  RichText(
             maxLines: isExpanded ? super.widget.maxLines : super.widget.minLines,
             overflow: TextOverflow.ellipsis,
@@ -40,10 +39,26 @@ class _ExpandableTextState extends State<ExpandableText> {
     Widget build(BuildContext context) {
         return GestureDetector(
             onTap: () => super.setState(() => this._expanded = !this._expanded),
-            child: AnimatedExpandingContainer(
-                isExpanded: this._expanded,
-                expandedWidget: this._expandableText(true),
-                unexpandedWidget: this._expandableText(false),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                    AnimatedExpandingContainer(
+                        isExpanded: this._expanded,
+                        expandedWidget: this._expandableText(true),
+                        unexpandedWidget: this._expandableText(false),
+                    ),
+                    Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(this._expanded
+                            ? "Mostra meno"
+                            : "Mostra altro",
+                            style: (super.widget.style ?? DefaultTextStyle.of(context).style)
+                                .copyWith(
+                                    color: Theme.of(context).colorScheme.primary
+                                ),
+                        ),
+                    )
+                ],
             )
         );
     }
