@@ -172,16 +172,16 @@ class _TitlePageState extends State<TitlePage> {
             );
         }
 
-        return Column(
+        return OverflowBar(
+            spacing: 30.0,
+            overflowSpacing: 20.0,
+            overflowAlignment: OverflowBarAlignment.center,
             children: [
-                const SizedBox(height: 10.0),
                 buildButton("Guarda", Icons.play_arrow, () => this._play(this._title! as Film)),
                 if(this.title.site.allowsDownload) ...[
-                    const SizedBox(height: 20.0),
                     buildButton("Scarica", Icons.download, () => this._download(this._title! as Film))
                 ]
                 else if(this.title.site is LocalSite) ...[
-                    const SizedBox(height: 20.0),
                     buildButton("Elimina", Icons.delete, () => this._delete(this._title! as Film))
                 ]
             ]
