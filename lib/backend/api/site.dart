@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show mustCallSuper;
+import 'package:flutter/material.dart' show Alignment, AlignmentGeometry, mustCallSuper;
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/utils/initializable.dart';
 import 'package:stronzflix/backend/api/media.dart';
@@ -57,7 +57,8 @@ abstract class Site extends Initializable {
     }
 
     bool get isLocal => this is LocalSite;
-    bool get allowsDownload => this is LocalSite;
+    bool get allowsDownload => !this.isLocal;
+    AlignmentGeometry get cropPolicy => Alignment.center;
     Future<List<TitleMetadata>> search(String query);
     Future<List<TitleMetadata>> latests();
     Future<Title> getTitle(TitleMetadata metadata);
