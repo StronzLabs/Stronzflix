@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/site.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/backend/update/version.dart';
+import 'package:stronzflix/components/labeled_checkbox.dart';
 import 'package:stronzflix/components/select_dropdown.dart';
 import 'package:stronzflix/dialogs/loading_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -81,11 +82,12 @@ class SettingsDialog extends StatelessWidget {
             content: SizedBox(
                 width: 444,
                 child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                         const SizedBox(height: 16),
                         SelectDropDown<Site>(
-                            label: "Sorgente",
+                            label: "Canale",
                             options: Site.sites,
                             selectedValue: Settings.site,
                             onSelected: (selection) {
@@ -114,6 +116,16 @@ class SettingsDialog extends StatelessWidget {
                             },
                         ),
                         const SizedBox(height: 32),
+                        LabeledCheckbox(
+                            label: const Text("Scelta avanzata delle sorgenti",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold
+                                )
+                            ),
+                            initialValue: Settings.pickSource,
+                            onChanged: (value) => Settings.pickSource = value
+                        ),
                         const Divider(),
                         this._buildLegalClause(context)
                     ],
