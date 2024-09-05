@@ -63,7 +63,8 @@ class _PlayerPageState extends State<PlayerPage> with StreamListener {
                     )
                 ),
                 onBeforeExit: (controller) {
-                    KeepWatching.add(controller.playable as Watchable, controller.position.inSeconds, controller.duration.inSeconds);
+                    if(controller.duration.inSeconds != 0)
+                        KeepWatching.add(controller.playable as Watchable, controller.position.inSeconds, controller.duration.inSeconds);
                     PeerMessenger.stopWatching();
                     this._exited = true;
                 },
