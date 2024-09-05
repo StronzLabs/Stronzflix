@@ -66,11 +66,32 @@ class _TitlePageState extends State<TitlePage> {
                             alignment: Alignment.topCenter,
                             child: ResourceImage(
                                 uri: this.title.banner,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fitHeight,
+                                height: 300,
+                                alignment: this.title.site.cropPolicy,
                             )
                         )
                 ],
             ),
+        );
+    }
+
+    Widget _buildGradient(BuildContext context) {
+        return Container(
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [
+                        0.0,
+                        0.2,
+                    ],
+                    colors: [
+                        Color(0x61000000),
+                        Color(0x00000000),
+                    ],
+                )
+            )
         );
     }
 
@@ -94,7 +115,12 @@ class _TitlePageState extends State<TitlePage> {
             pinned: true,
             expandedHeight: 300,
             flexibleSpace: FlexibleSpaceBar(
-                background: this._buildBanner(context),
+                background: Stack(
+                    children: [
+                        this._buildBanner(context),
+                        this._buildGradient(context)
+                    ],
+                ),
             ),
             title: Text(this._metadata.name,
                 style: const TextStyle(
@@ -163,6 +189,8 @@ class _TitlePageState extends State<TitlePage> {
     }
 
     Widget _buildSeriesActions(BuildContext context) {
+        Series series = this.title as Series;
+
         return Align(
             alignment: Alignment.centerRight,
             child: Container(
@@ -177,13 +205,14 @@ class _TitlePageState extends State<TitlePage> {
                     underline: const SizedBox.shrink(),
                     value: this._selectedSeason,
                     items: [
-                        for (Season season in (this.title as Series).seasons)
+                        for (Season season in series.seasons)
                             DropdownMenuItem(
                                 value: season,
                                 child: Text(season.name)
                             )
                     ],
-                    onChanged: (selected) => super.setState(() => this._selectedSeason = selected!),
+                    onChanged: series.seasons.length == 1 ? null
+                        : (selected) => super.setState(() => this._selectedSeason = selected!),
                 )
             )
         );
@@ -288,7 +317,6 @@ class _TitlePageState extends State<TitlePage> {
             body: FutureBuilder(
                 future: this._memoizer.runOnce(() => this._fetchTitle()),
                 builder: (context, snapshot) {
-                   
 
                     return CustomScrollView(
                         slivers: [
