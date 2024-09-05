@@ -1,7 +1,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="stronzflix.app">
+    package="org.stronzlabs.stronzflix">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -22,7 +22,7 @@
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />
         <activity
-            android:name="stronzflix.app.MainActivity"
+            android:name="org.stronzlabs.stronzflix.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"

@@ -1,4 +1,4 @@
-package stronzflix.app
+package org.stronzlabs.stronzflix
 
 import android.content.pm.PackageManager
 import androidx.annotation.NonNull

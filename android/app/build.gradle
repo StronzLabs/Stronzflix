@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "stronzflix.app"
+    namespace "org.stronzlabs.stronzflix"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -41,7 +41,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "stronzflix.app"
+        applicationId "org.stronzlabs.stronzflix"
         minSdkVersion 24
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
@@ -65,7 +65,8 @@ android {
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            // signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
         }
     }
 }
