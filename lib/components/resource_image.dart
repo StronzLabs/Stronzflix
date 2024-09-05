@@ -44,6 +44,6 @@ ImageProvider<Object> resourceImageProvider({required Uri uri}) {
             uri.toString(),
         ) as ImageProvider<Object>
         : FileImage(
-            File.fromUri(uri),
+            File(uri.toString()),
         ) as ImageProvider<Object>;
 }
