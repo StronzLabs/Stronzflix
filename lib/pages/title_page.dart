@@ -142,8 +142,9 @@ class _TitlePageState extends State<TitlePage> {
                     )
                 ),
                 ExpandableText(this.title.description,
-                    minLines: 3,
-                    maxLines: 999,
+                    collapsedLabel: "Mostra altro",
+                    expandedLabel: "Mostra meno",
+                    maxLines: 3,
                     textAlign: TextAlign.justify,
                     style: const TextStyle(
                         fontSize: 16,
