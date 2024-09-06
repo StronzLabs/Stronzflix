@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/media.dart';
+import 'package:stronzflix/components/select_dropdown.dart';
 
 class SourcesDialog extends StatelessWidget {
 
@@ -13,21 +14,13 @@ class SourcesDialog extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         return AlertDialog(
-            title: const Text('Seleziona una sorgente'),
-            content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                    for (WatchOption option in this.options)
-                        Card(
-                            child: InkWell(
-                                onTap: () => Navigator.of(context).pop(option),
-                                child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Text(option.player.name),
-                                ),
-                            )
-                        )
-                ]
+            title: const Text('Più sorgenti sono disonibili'),
+            content: SelectDropDown<WatchOption>(
+                options: this.options,
+                selectedValue: null,
+                onSelected: (selection) => Navigator.of(context).pop(selection),
+                stringify: (option) => option.player.name,
+                initiallyExpanded: true,
             )
         );
     }
