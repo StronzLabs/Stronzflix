@@ -4,19 +4,20 @@ on:
     - cron: '0 * * * *'
   workflow_dispatch:
 jobs:
-  get_cache:
-    name: Get cache
+  tune:
+    name: Tune
     runs-on: ubuntu-latest
     steps:
-      - name: Get cache from REST API
+      - name: Get cache
         id: cache
         run: |
-          curl -s https://api.github.com/repos/StronzLabs/Stronzflix/properties/values | jq -r '.[] | select(.property_name == "Cache") | .value' | base64 -d | sed 's/|/ /g' >> "$GITHUB_OUTPUT"
+          cache=$(curl -s https://api.github.com/repos/StronzLabs/Stronzflix/properties/values | jq -r '.[] | select(.property_name == "Cache") | .value' | base64 -d | sed 's/|/ /g')
+          echo "cache=$cache" >> "$GITHUB_OUTPUT"
       - name: Tune
         id: tune
         run: |
-          echo ${{ steps.get_cache.outputs.cache }}
-          echo "Lg==" >> "$GITHUB_OUTPUT"
+          echo ${{ steps.cache.outputs.cache }}
+          echo "cache=Lg==" >> "$GITHUB_OUTPUT"
       - name: Set cache
         run: |
           curl -s -X PATCH \
