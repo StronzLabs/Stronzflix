@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class AnimatedExpandingContainer extends StatelessWidget {
     final Widget unexpandedWidget;
     final Widget expandedWidget;
-    final bool isExpanded;
+    final bool expanded;
     
     const AnimatedExpandingContainer({
         super.key,
         required this.unexpandedWidget,
         required this.expandedWidget,
-        required this.isExpanded,
+        required this.expanded,
     });
 
     @override
@@ -19,7 +19,7 @@ class AnimatedExpandingContainer extends StatelessWidget {
             secondCurve: Curves.fastLinearToSlowEaseIn,
             firstChild: this.unexpandedWidget,
             secondChild: this.expandedWidget,
-            crossFadeState: this.isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            crossFadeState: this.expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
             duration: const Duration(milliseconds: 150)
         );
     }

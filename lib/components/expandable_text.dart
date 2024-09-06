@@ -131,7 +131,7 @@ class _ExpandableTextState extends State<ExpandableText> {
                 return GestureDetector(
                     onTap: () => super.setState(() => this._expanded = !this._expanded),
                     child: AnimatedExpandingContainer(
-                        isExpanded: this._expanded,
+                        expanded: this._expanded,
                         expandedWidget: buildText(context, true),
                         unexpandedWidget: buildText(context, false),
                     ),
