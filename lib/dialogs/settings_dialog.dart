@@ -81,9 +81,9 @@ class SettingsDialog extends StatelessWidget {
             ),
             content: SizedBox(
                 width: 444,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+                child: ListView(
+                    physics: const RangeMaintainingScrollPhysics(),
+                    shrinkWrap: true,
                     children: [
                         const SizedBox(height: 16),
                         SelectDropDown<Site>(
