@@ -33,7 +33,9 @@ class _LabeledCheckboxState extends State<LabeledCheckbox> {
                         super.widget.onChanged?.call(this._checked);
                     },
                 ),
-                super.widget.label
+                Flexible(
+                    child: super.widget.label,
+                )
             ],
         );
     }

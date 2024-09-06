@@ -43,7 +43,9 @@ class _SelectDropDownState<T> extends State<SelectDropDown<T>> {
                     ),
                     const SizedBox(width: 10),
                 ],
-                Text(element == null ? "Seleziona" : this._elementToString(element))
+                Flexible(
+                    child: Text(element == null ? "Seleziona" : this._elementToString(element)),
+                )
             ],
         );
     }
