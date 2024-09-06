@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 
 class SelectDropDown<T> extends StatefulWidget {
-    final String label;
+    final String? label;
     final List<T> options;
     final T? selectedValue;
     final Function(T) onSelected;
     final String Function(T)? stringify;
     final IconData? actionIcon;
     final void Function(T)? action;
+    final bool initiallyExpanded;
     
     const SelectDropDown({
         super.key,
-        required this.label,
+        this.label,
         required this.options,
         required this.selectedValue,
         required this.onSelected,
         this.stringify,
         this.actionIcon,
-        this.action
+        this.action,
+        this.initiallyExpanded = false
     });
     
     @override
@@ -50,19 +52,23 @@ class _SelectDropDownState<T> extends State<SelectDropDown<T>> {
     Widget build(BuildContext context) {
         return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
-                Text(super.widget.label,
-                    style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold
-                    )
-                ),
-                const SizedBox(height: 10),
+                if(super.widget.label != null) ...[
+                    Text(super.widget.label!,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold
+                        )
+                    ),
+                    const SizedBox(height: 10),
+                ],
                 Container(
                     decoration: BoxDecoration(
                         border: Border.all()
                     ),
                     child: ExpansionTile(
+                        initiallyExpanded: super.widget.initiallyExpanded,
                         controller: this._controller,
                         title: this._buildElement(this._selectedValue),
                         children: <Widget>[
