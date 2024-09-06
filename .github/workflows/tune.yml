@@ -18,7 +18,6 @@ jobs:
           echo ${{ steps.get_cache.outputs.cache }}
           echo "Lg==" >> "$GITHUB_OUTPUT"
       - name: Set cache
-        id: cache
         run: |
           curl -s -X PATCH \
             -H "Accept: application/vnd.github+json" \
