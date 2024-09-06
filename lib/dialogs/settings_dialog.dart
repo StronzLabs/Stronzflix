@@ -124,7 +124,10 @@ class SettingsDialog extends StatelessWidget {
                                 )
                             ),
                             initialValue: Settings.pickSource,
-                            onChanged: (value) => Settings.pickSource = value
+                            onChanged: (value) {
+                                Settings.pickSource = value;
+                                Settings.instance.serialize();
+                            } 
                         ),
                         const Divider(),
                         this._buildLegalClause(context)
