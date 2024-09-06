@@ -1,0 +1,38 @@
+name: Tune
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+jobs:
+  get_cache:
+    name: Get cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get cache from REST API
+        id: cache
+        run: |
+          curl -s https://api.github.com/repos/StronzLabs/Stronzflix/properties/values | jq -r '.[] | select(.property_name == "Cache") | .value' | base64 -d | sed 's/|/ /g' >> "$GITHUB_OUTPUT"
+  tune:
+    name: Tune
+    runs-on: ubuntu-latest
+    needs: get_cache
+    steps:
+      - name: Tune
+        id: tune
+        run: |
+          echo ${{ steps.get_cache.outputs.cache }}
+          echo "Lg==" >> "$GITHUB_OUTPUT"
+  set_cache:
+    name: Set cache
+    runs-on: ubuntu-latest
+    needs: tune
+    steps:
+      - name: Set cache to REST API
+        id: cache
+        run: |
+          curl -s -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/StronzLabs/Stronzflix/properties/values/Cache \
+            -d "{\"property_name\":\"Cache\",\"value\":\"${{ steps.tune.outputs.cache }}\"}"
