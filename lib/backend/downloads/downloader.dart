@@ -115,7 +115,11 @@ class HLSDownloader extends Downloader {
             return;
         }
 
-        await FFmpegWrapper.run('-i "${audioTs.path}" -i "${videoTs.path}" -c copy "${outputDir.path}/${watchableID}.mp4"');
+        try {
+            await FFmpegWrapper.run('-i "${audioTs.path}" -i "${videoTs.path}" -c copy "${outputDir.path}/${watchableID}.mp4"');
+        } catch(_) {
+            downloadState.setError();
+        }
     }
 
     @override
