@@ -64,7 +64,7 @@ mixin Watchable implements Playable {
         if (watchable is Film)
             return "";
         else if (watchable is Episode)
-            return "${watchable.season.series.seasons.indexOf(watchable.season)}x${watchable.season.episodes.indexOf(watchable)}";
+            return "${watchable.season.seasonNo}x${watchable.episodeNo}";
         
         throw Exception("Invalid watchable type");
     }
@@ -87,10 +87,11 @@ mixin Watchable implements Playable {
         if (title is Film)
             return title;
         else if (title is Series) {
-            int seriesNo = int.parse(info.split("x")[0]);
+            int seasonNo = int.parse(info.split("x")[0]);
             int episodeNo = int.parse(info.split("x")[1]);
 
-            return title.seasons[seriesNo].episodes[episodeNo];
+            return title.seasons.firstWhere((season) => season.seasonNo == seasonNo)
+                .episodes.firstWhere((episode) => episode.episodeNo == episodeNo);
         }
         
         throw Exception("Invalid title type");
