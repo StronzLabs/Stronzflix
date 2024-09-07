@@ -89,6 +89,7 @@ class LocalSite extends Site {
             Season season = Season(
                 series: series,
                 name: seasonMetadata["name"],
+                seasonNo: seasonMetadata["seasonNo"],
                 episodes: []
             );
 

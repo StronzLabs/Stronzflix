@@ -120,7 +120,8 @@ class StreamingCommunity extends Site {
         for(var seasonObject in title["seasons"]) {
             Season season = Season(
                 series: series,
-                name: seasonObject["name"] ?? "Stagione ${seasonObject["number"]}",
+                name: seasonObject["name"],
+                seasonNo: seasonObject["number"],
                 episodes: []
             );
 

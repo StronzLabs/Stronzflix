@@ -86,14 +86,15 @@ class AnimeSaturn extends Site {
             Season season = Season(
                 series: series,
                 name: "Lista Episodi",
-                episodes: []
+                episodes: [],
+                seasonNo: 1
             );
 
             season.episodes.addAll(this.getEpisodes(season, episodes, cover));
             series.seasons.add(season);
         }
         else
-            for(Element element in segments) {
+            for(final (index, element) in segments.indexed) {
                 String name = element.text.trim();
                 String episodesTag = element.attributes["href"]!;
                 Element episodes = document.querySelector(episodesTag)!;
@@ -101,7 +102,8 @@ class AnimeSaturn extends Site {
                 Season season = Season(
                     series: series,
                     name: name,
-                    episodes: []
+                    episodes: [],
+                    seasonNo: index + 1
                 );
 
                 season.episodes.addAll(this.getEpisodes(season, episodes, cover));

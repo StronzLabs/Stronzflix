@@ -68,24 +68,21 @@ class DownloadManager {
         File metadataFile = File('${outputDirectory.path}/metadata.json');
         Map<String, dynamic> metadata = jsonDecode(metadataFile.readAsStringSync());
         metadata["seasons"] ??= [];
-        if(metadata["seasons"].where((e) => e["name"] == episode.season.name).isEmpty) {
+        if(metadata["seasons"].where((e) => e["seasonNo"] == episode.season.seasonNo).isEmpty) {
             metadata["seasons"].add({
                 "name": episode.season.name,
+                "seasonNo": episode.season.seasonNo,
                 "episodes": []
             });
         }
 
-        if(metadata["seasons"].firstWhere((e) => e["name"] == episode.season.name)["episodes"].where((e) => e["name"] == episode.name).isEmpty)
-            metadata["seasons"].firstWhere((e) => e["name"] == episode.season.name)["episodes"].add(<String, dynamic>{
-                "name": episode.name
+        if(metadata["seasons"].firstWhere((e) => e["seasonNo"] == episode.season.seasonNo)["episodes"].where((e) => e["episodeNo"] == episode.episodeNo).isEmpty)
+            metadata["seasons"].firstWhere((e) => e["seasonNo"] == episode.season.seasonNo)["episodes"].add(<String, dynamic>{
+                "name": episode.name,
+                "episodeNo": episode.episodeNo,
+                "cover": coverID,
+                "url": DownloadManager.calcWatchableId(episode)
             });
-    
-        Map<String, dynamic> episodeObject = metadata["seasons"].firstWhere(
-            (e) => e["name"] == episode.season.name
-        )["episodes"].firstWhere((e) => e["name"] == episode.name);
-        episodeObject["cover"] = coverID;
-        episodeObject["url"] = DownloadManager.calcWatchableId(episode);
-        episodeObject["episodeNo"] = episode.episodeNo;
 
         metadataFile.writeAsStringSync(jsonEncode(metadata));
         return true;        
