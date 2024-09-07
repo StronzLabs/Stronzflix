@@ -209,7 +209,7 @@ class _TitlePageState extends State<TitlePage> {
                         for (Season season in series.seasons)
                             DropdownMenuItem(
                                 value: season,
-                                child: Text(season.name)
+                                child: Text(season.name ?? "Stagione ${season.seasonNo}")
                             )
                     ],
                     onChanged: series.seasons.length == 1 ? null

@@ -184,7 +184,7 @@ class Season {
     final List<Episode> episodes;
 
     const Season({
-        required this.name,
+        this.name,
         required this.series,
         required this.episodes,
         required this.seasonNo
