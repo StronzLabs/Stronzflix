@@ -121,6 +121,11 @@ class KeepWatching extends LocalStorage {
         return null;
     }
 
+    static bool isWatched(TitleMetadata metadata) {
+        String id = metadata.site.name + metadata.uri.toString();
+        return KeepWatching.instance._keepWatching.containsKey(id);
+    }
+
     static int? getDuration(Watchable watchable) {
         TitleMetadata data = watchable.metadata;
         String info = Watchable.genInfo(watchable);
@@ -138,10 +143,11 @@ class KeepWatching extends LocalStorage {
         KeepWatching.instance.serialize();
     }
 
-    static void remove(TitleMetadata metadata) {
+    static void remove(TitleMetadata metadata, {String? info}) {
         String id = metadata.site.name + metadata.uri.toString();
+        if (info != null && KeepWatching.instance._keepWatching[id]?.info != info)
+            return;
         KeepWatching.instance._keepWatching.remove(id);
-
         KeepWatching.instance.serialize();
     }
 }
