@@ -143,7 +143,7 @@ class Episode with Watchable {
     final Uri uri;
 
     @override
-    String get title => "${this.season.series.name} - ${this.name}";
+    String get title => "${this.season.series.name} S${this.season.seasonNo}:E${this.episodeNo} - ${this.name}";
 
     @override
     TitleMetadata get metadata => season.series.metadata;
