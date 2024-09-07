@@ -61,7 +61,7 @@ class DownloadManager {
         if(!await DownloadManager._downloadTitleMetadata(outputDirectory, series))
             return false;
 
-        String coverID = _calcId("${episode.name}-cover");
+        String coverID = _calcId("${episode.title}-cover");
         File coverFile = File('${outputDirectory.path}/${coverID}.jpg');
         await coverFile.writeAsBytes(await HTTP.getRaw(episode.cover));
 
@@ -158,23 +158,24 @@ class DownloadManager {
         Directory directory = Directory('${(await downloadDirectory).path}${titleID}');
         Map<String, dynamic> metadata = jsonDecode(File('${directory.path}/metadata.json').readAsStringSync());
 
-        metadata["seasons"].firstWhere((e) => e["name"] == episode.season.name)["episodes"].removeWhere((e) => e["name"] == episode.name);
-        if(metadata["seasons"].firstWhere((e) => e["name"] == episode.season.name)["episodes"].isEmpty)
-            metadata["seasons"].removeWhere((e) => e["name"] == episode.season.name);
+        metadata["seasons"].firstWhere(
+            (e) => e["seasonNo"] == episode.season.seasonNo
+        )["episodes"].removeWhere((e) => e["episodeNo"] == episode.episodeNo);
+        
+        if(metadata["seasons"].firstWhere((e) => e["seasonNo"] == episode.season.seasonNo)["episodes"].isEmpty)
+            metadata["seasons"].removeWhere((e) => e["seasonNo"] == episode.season.seasonNo);
         if(metadata["seasons"].isEmpty)
             directory.deleteSync(recursive: true);
         else {
             File metadataFile = File('${directory.path}/metadata.json');
             metadataFile.writeAsStringSync(jsonEncode(metadata));
-            File coverFile = File('${directory.path}/${_calcId("${episode.name}-cover")}.jpg');
+            File coverFile = File('${directory.path}/${_calcId("${episode.title}-cover")}.jpg');
             coverFile.deleteSync();
             File episodeFile = File('${directory.path}/${watchableID}.mp4');
             episodeFile.deleteSync();
         }
 
-        final Watchable? inKeepWatching = await KeepWatching.getWatchable(episode.metadata);
-        if (inKeepWatching?.uri == episode.uri)
-            KeepWatching.remove(episode.metadata);
+        KeepWatching.remove(episode.metadata, info: Watchable.genInfo(episode));
     }
 
     static Future<void> deleteSingle(Watchable watchable) async {
