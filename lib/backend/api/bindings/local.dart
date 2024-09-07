@@ -96,8 +96,8 @@ class LocalSite extends Site {
             for(Map<String, dynamic> episodeMetadata in seasonMetadata["episodes"]) {
                 season.episodes.add(Episode(
                     name: episodeMetadata["name"],
-                    cover: Uri.parse("${metadata.uri}/${episodeMetadata["cover"]}.jpg"),
-                    uri: Uri.parse("${metadata.uri}/${episodeMetadata["url"]}.mp4"),
+                    cover: Uri.parse("${metadata.uri}${episodeMetadata["cover"]}.jpg"),
+                    uri: Uri.parse("${metadata.uri}${episodeMetadata["url"]}.mp4"),
                     episodeNo: episodeMetadata["episodeNo"],
                     season: season
                 ));
