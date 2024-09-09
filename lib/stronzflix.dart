@@ -66,7 +66,7 @@ class Stronzflix extends StatelessWidget {
                 pressedElevation: 0.0,
             ),
             overlayColor: Colors.transparent,
-        ),
+        )
     );
 
     @override
