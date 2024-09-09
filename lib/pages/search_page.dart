@@ -62,7 +62,9 @@ class SearchPage extends SearchDelegate {
 
         return TitleCardGrid(
             values: this._memorizer.runOnce(() => Settings.site.search(super.query)),
-            buildAction: (metadata) => SaveTitleButton(title: metadata),
+            buildAction: Settings.site.isLocal
+                ? null
+                : (metadata) => SaveTitleButton(title: metadata),
             emptyWidget: this._buildNoResults(context),
         );
     }
