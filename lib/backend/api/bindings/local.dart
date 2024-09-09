@@ -128,6 +128,9 @@ class LocalSite extends Site {
             )
         ];
     }
+
+    @override
+    Future<Uri> getFavicon() => Future.value(Uri.parse(""));
 }
 
 class LocalPlayer extends Player {
