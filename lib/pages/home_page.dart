@@ -15,6 +15,7 @@ import 'package:stronzflix/components/downloads_drawer.dart';
 import 'package:stronzflix/components/save_title_button.dart';
 import 'package:stronzflix/components/title_card_grid.dart';
 import 'package:stronzflix/components/title_card_row.dart';
+import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/loading_dialog.dart';
 import 'package:stronzflix/dialogs/settings_dialog.dart';
 import 'package:stronzflix/dialogs/sink_dialog.dart';
@@ -133,9 +134,14 @@ class _HomePageState extends State<HomePage> {
             this._buildSection(context,
                 label: "Novità",
                 values: Settings.site.latests(),
-                buildAction: !Settings.site.isLocal
-                    ? (metadata) => SaveTitleButton(title: metadata)
-                    : null,
+                buildAction: Settings.site.isLocal
+                    ? (metadata) => IconButton(
+                        onPressed: () => this._delete(context, metadata),
+                        icon: const Icon(Icons.delete_outline,
+                            size: 28,
+                        )
+                    )
+                    : (metadata) => SaveTitleButton(title: metadata)
             ),
             this._buildSection(context,
                 label: "Salvati",
@@ -205,5 +211,17 @@ class _HomePageState extends State<HomePage> {
             bottomNavigationBar: this._isBigScreen ? null : this._buildBottomNavigationBar(context),
             body: this._buildBody(context),
         );
+    }
+
+    void _delete(BuildContext context, TitleMetadata metadata) async {
+        bool delete = await ConfirmationDialog.ask(context,
+            "Elimina ${metadata.name}",
+            "Sei sicuro di voler eliminare ${metadata.name}?",
+            action: "Elimina"
+        );
+        if (delete) {
+            await DownloadManager.delete(await Settings.site.getTitle(metadata));
+            super.setState(() {});
+        }
     }
 }
