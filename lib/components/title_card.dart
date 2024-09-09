@@ -39,6 +39,8 @@ class _TitleCardState extends State<TitleCard> {
     }
 
     Widget _buildFavicon(BuildContext context) {
+        if(this._title.site.isLocal)
+            return const SizedBox.shrink();
         return IconButton(
             onPressed: null,
             icon: ResourceImage(
