@@ -1,29 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/media.dart';
-import 'package:stronzflix/components/result_card.dart';
+import 'package:stronzflix/components/title_card.dart';
 
-class ResultCardRow extends StatefulWidget {
+class TitleCardRow extends StatefulWidget {
 
     final String title;
-    final Future<Iterable<TitleMetadata?>> values;
-    final void Function(String uuid, TitleMetadata metadata) onTap;
-    final IconData? actionIcon;
-    final void Function(TitleMetadata)? action;
+    final Future<Iterable<TitleMetadata>> values;
+    final Widget Function(TitleMetadata)? buildAction;
 
-    const ResultCardRow({
+    const TitleCardRow({
         super.key,
         required this.title,
         required this.values,
-        required this.onTap,
-        this.action,
-        this.actionIcon,
+        this.buildAction
     });
 
     @override
-    State<ResultCardRow> createState() => _ResultCardRowState();
+    State<TitleCardRow> createState() => _TitleCardRowState();
 }
 
-class _ResultCardRowState extends State<ResultCardRow> {
+class _TitleCardRowState extends State<TitleCardRow> {
 
     bool _arrowVisibility = false;
     final ScrollController _scrollController = ScrollController();
@@ -39,7 +35,7 @@ class _ResultCardRowState extends State<ResultCardRow> {
                         Shadow(
                             color: Colors.black,
                             offset: Offset(1, 1),
-                            blurRadius: 1
+                            blurRadius: 2
                         )
                     ],
                 ),
@@ -57,21 +53,16 @@ class _ResultCardRowState extends State<ResultCardRow> {
             scrollDirection: Axis.horizontal,
             controller: this._scrollController,
             child: Row(
-                children: (data).map((metadata) {
-                    return SizedBox(
-                        height: MediaQuery.of(context).size.height / 3,
-                        child: AspectRatio(
-                            aspectRatio: 9 / 14,
-                            child: ResultCard(
-                                imageUrl: metadata?.poster,
-                                text: metadata?.name ?? "",
-                                onTap: metadata == null ? null : (uuid) => super.widget.onTap.call(uuid, metadata),
-                                action: metadata == null || super.widget.action == null ? null : () => super.widget.action!.call(metadata),
-                                actionIcon: super.widget.actionIcon,
+                children: [
+                    for (TitleMetadata? metadata in [for (TitleMetadata? metadata in data) metadata])
+                        SizedBox(
+                            width: 350,
+                            child: TitleCard(
+                                title: metadata,
+                                buildAction: super.widget.buildAction,
                             )
                         )
-                    );
-                }).toList(),
+                ]
             ),
         );
     }
@@ -100,7 +91,7 @@ class _ResultCardRowState extends State<ResultCardRow> {
                             Stack(
                                 alignment: AlignmentDirectional.centerStart,
                                 children: [
-                                    this._buildScrollView(context, snapshot.data ?? List.filled(50, null)),
+                                    this._buildScrollView(context, snapshot.data as Iterable<TitleMetadata?>? ?? List.filled(50, null)),
                                     if (this._arrowVisibility && this._scrollController.hasClients && this._scrollController.offset > 0)
                                         this._buildArrowIcon(true),
                                     if (this._arrowVisibility && this._scrollController.hasClients && this._scrollController.offset < this._scrollController.position.maxScrollExtent)
