@@ -146,12 +146,12 @@ class _HomePageState extends State<HomePage> {
                             size: 28,
                         )
                     )
-                    : (metadata) => SaveTitleButton(title: metadata),
+                    : (metadata) => SaveTitleButton(title: metadata, onChanged: (_) => super.setState(() {})),
             ),
             this._buildSection(context,
                 label: "Salvati",
                 values: Future.value(SavedTitles.getAll()),
-                buildAction: (metadata) => SaveTitleButton(title: metadata),
+                buildAction: (metadata) => SaveTitleButton(title: metadata, onChanged: (_) => super.setState(() {})),
                 emptyText: "Non hai salvato nessun titolo"
             )
         ];

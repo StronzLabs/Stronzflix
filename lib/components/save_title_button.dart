@@ -4,10 +4,12 @@ import 'package:stronzflix/backend/storage/saved_titles.dart';
 
 class SaveTitleButton extends StatefulWidget {
     final TitleMetadata title;
+    final void Function(bool saved)? onChanged;
 
     const SaveTitleButton({
         super.key,
         required this.title,
+        this.onChanged,
     });
 
     @override
@@ -28,6 +30,7 @@ class _SaveTitleButtonState extends State<SaveTitleButton> {
                     SavedTitles.remove(super.widget.title);
                 else
                     SavedTitles.add(super.widget.title);
+                super.widget.onChanged?.call(SavedTitles.isSaved(super.widget.title));
             })
         );
     }
