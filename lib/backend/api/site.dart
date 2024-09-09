@@ -4,6 +4,7 @@ import 'package:stronzflix/utils/initializable.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/tune.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
+import 'package:sutils/utils/simple_http.dart';
 
 abstract class Site extends Initializable {
 
@@ -13,6 +14,9 @@ abstract class Site extends Initializable {
 
     late final Tuner tuner;
 
+    late Uri _favicon;
+    Uri get favicon => this._favicon;
+
     Site(this.name, this.domain) : super((self) => Site._registry[name] = self as Site) {
         this.tuner = Tuner(this.tunerValidator);
     }
@@ -21,6 +25,8 @@ abstract class Site extends Initializable {
     @mustCallSuper
     Future<void> construct() async{
         await super.construct();
+
+        this._favicon = await this.getFavicon();
 
         if(this.isLocal) {
             super.reportProgress(1.0);
@@ -54,6 +60,17 @@ abstract class Site extends Initializable {
             else
                 yield res;
         }
+    }
+
+    Future<Uri> getFavicon() async {
+        String body = await HTTP.get(this.url);
+        RegExpMatch match = RegExp(r'<link rel="icon".*href="(?<favicon>[^"]+)"').firstMatch(body)!;
+        String url = match.namedGroup("favicon")!;
+        if(url.startsWith("//"))
+            url = "https:$url";
+        else if(url.startsWith("/"))
+            url = "${this.url}$url";
+        return Uri.parse(url);
     }
 
     bool get isLocal => this is LocalSite;
