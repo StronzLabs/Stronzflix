@@ -105,6 +105,7 @@ class _HomePageState extends State<HomePage> {
         required String label,
         required Future<Iterable<TitleMetadata>> values,
         Widget Function(TitleMetadata)? buildAction,
+        String? emptyText
     }) {
         if(this._isBigScreen)
             return TitleCardRow(
@@ -115,7 +116,10 @@ class _HomePageState extends State<HomePage> {
         else
             return TitleCardGrid(
                 values: values,
-                buildAction: buildAction
+                buildAction: buildAction,
+                emptyWidget: emptyText == null
+                    ? null
+                    : Center(child: Text(emptyText))
             );
     }
 
@@ -129,7 +133,8 @@ class _HomePageState extends State<HomePage> {
                     icon: const Icon(Icons.delete_outline,
                         size: 28,
                     )
-                )
+                ),
+                emptyText: "Non hai ancora guardato nulla"
             ),
             this._buildSection(context,
                 label: "Novità",
@@ -141,12 +146,13 @@ class _HomePageState extends State<HomePage> {
                             size: 28,
                         )
                     )
-                    : (metadata) => SaveTitleButton(title: metadata)
+                    : (metadata) => SaveTitleButton(title: metadata),
             ),
             this._buildSection(context,
                 label: "Salvati",
                 values: Future.value(SavedTitles.getAll()),
-                buildAction: (metadata) => SaveTitleButton(title: metadata)
+                buildAction: (metadata) => SaveTitleButton(title: metadata),
+                emptyText: "Non hai salvato nessun titolo"
             )
         ];
     }
