@@ -12,6 +12,7 @@ import 'package:stronzflix/components/cast_button.dart';
 import 'package:stronzflix/components/expandable_text.dart';
 import 'package:stronzflix/components/resource_image.dart';
 import 'package:stronzflix/components/result_card.dart';
+import 'package:stronzflix/components/save_title_button.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/download_dialog.dart';
 
@@ -105,10 +106,7 @@ class _TitlePageState extends State<TitlePage> {
                 const CastButton(),
                 if( this._metadata.site is! LocalSite) ...[
                     const SizedBox(width: 8),
-                    IconButton(
-                        icon: Icon(SavedTitles.isSaved(this._metadata) ? Icons.bookmark_remove : Icons.bookmark_add_outlined),
-                        onPressed: this._save,
-                    ),
+                    SaveTitleButton(title: this._metadata),
                     const SizedBox(width: 8)
                 ]
             ],
