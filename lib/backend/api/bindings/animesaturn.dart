@@ -7,7 +7,6 @@ import 'package:html/dom.dart';
 import 'package:sutils/sutils.dart';
 
 class AnimeSaturn extends Site {
-
     static Site instance = AnimeSaturn._();
     AnimeSaturn._():  super("AnimeSaturn", "www.animesaturn");
 

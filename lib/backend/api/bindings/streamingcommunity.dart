@@ -6,12 +6,11 @@ import 'package:stronzflix/backend/api/site.dart';
 import 'package:sutils/sutils.dart';
 
 class StreamingCommunity extends Site {
+    static Site instance = StreamingCommunity._();
+    StreamingCommunity._() : super("StreamingCommunity", "streamingcommunity");
 
     String get _cdn => super.url.replaceFirst("//", "//cdn.");
     final Map<String, String> _inhertia = {};
-
-    static Site instance = StreamingCommunity._();
-    StreamingCommunity._() : super("StreamingCommunity", "streamingcommunity");
 
     @override
     Future<void> construct() async {
