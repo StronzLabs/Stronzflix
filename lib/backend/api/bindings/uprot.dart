@@ -1,6 +1,7 @@
 import 'package:html/dom.dart';
 import 'package:stronzflix/backend/api/middleware.dart';
 import 'package:html/parser.dart' as html;
+import 'package:sutils/utils/simple_http.dart';
 
 class UProt extends Middleware {
     static Middleware instance = UProt._();
@@ -8,9 +9,13 @@ class UProt extends Middleware {
 
     @override
     Future<Uri> pass(Uri uri, String body) async {
+        if(!uri.path.contains("mse")) {
+            String id = uri.pathSegments.last;
+            uri = Uri.parse("${uri.scheme}://${uri.host}/mse/${id}");
+            body = await HTTP.get(uri);
+        }
         Document document = html.parse(body);
-        // if there is a captcha it will crash
-        String url = document.querySelector("#buttok")!.parent!.attributes["href"]!;
+        String url = document.querySelector(".button")!.parent!.attributes["href"]!;
         return Uri.parse(url);
     }
 
