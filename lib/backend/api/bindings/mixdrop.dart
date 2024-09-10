@@ -6,8 +6,7 @@ import 'package:sutils/sutils.dart';
 
 class MixDrop extends Player {
     static Player instance = MixDrop._();
-    MixDrop._()
-        : super("MixDrop");
+    MixDrop._() : super("MixDrop");
 
     @override
     Future<Uri> getSource(Uri uri) async {

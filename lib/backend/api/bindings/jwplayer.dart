@@ -5,8 +5,7 @@ import 'package:sutils/sutils.dart';
 
 class JWPlayer extends Player {
     static Player instance = JWPlayer._();
-    JWPlayer._()
-        : super("Streampeaker");
+    JWPlayer._() : super("JWPlayer");
 
     @override
     Future<Uri> getSource(Uri uri) async {

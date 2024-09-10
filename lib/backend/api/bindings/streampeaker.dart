@@ -5,8 +5,7 @@ import 'package:sutils/sutils.dart';
 
 class Streampeaker extends Player {
     static Player instance = Streampeaker._();
-    Streampeaker._()
-        : super("Streampeaker");
+    Streampeaker._() : super("Streampeaker");
 
     @override
     Future<Uri> getSource(Uri uri) async {
