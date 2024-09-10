@@ -38,6 +38,8 @@ dependencies:
     git: https://github.com/StronzLabs/StronzVideoPlayer.git
   sutils:
     git: https://github.com/StronzLabs/SUtils.git
+  js_unpack: ^1.0.4
+  auto_size_text: ^3.0.0
 
 dependency_overrides:
   uuid: ^4.4.0

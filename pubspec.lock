@@ -65,6 +65,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.21"
+  auto_size_text:
+    dependency: "direct main"
+    description:
+      name: auto_size_text
+      sha256: "3f5261cd3fb5f2a9ab4e2fc3fba84fd9fcaac8821f20a1d4e71f557521b22599"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   background_downloader:
     dependency: "direct main"
     description:
@@ -402,6 +410,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.7"
+  js_unpack:
+    dependency: "direct main"
+    description:
+      name: js_unpack
+      sha256: "5697ffebf995d3ddb27b58fafd0c87bc01251cb1cf1afb9f71685559e8578dd6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   leak_tracker:
     dependency: transitive
     description:
@@ -853,7 +869,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: ef83238f3846da40d2b8f700e731262f725c67a1
+      resolved-ref: "3a8fe93a6d930b694ceaee4f318c25746480b88b"
       url: "https://github.com/StronzLabs/StronzVideoPlayer.git"
     source: git
     version: "0.0.1"
@@ -862,7 +878,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "09ab1e19ef1c0fd2a3a90f5a89945cd3cdd522c5"
+      resolved-ref: a580e931b0ff71fb084b922942c1032b3bc4325a
       url: "https://github.com/StronzLabs/SUtils.git"
     source: git
     version: "0.0.1"
