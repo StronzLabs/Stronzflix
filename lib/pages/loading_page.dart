@@ -8,6 +8,7 @@ import 'package:stronz_video_player/stronz_video_player.dart';
 import 'package:stronzflix/backend/api/bindings/jwplayer.dart';
 import 'package:stronzflix/backend/api/bindings/animesaturn.dart';
 import 'package:stronzflix/backend/api/bindings/cb01.dart';
+import 'package:stronzflix/backend/api/bindings/maxstream.dart';
 import 'package:stronzflix/backend/api/bindings/mixdrop.dart';
 import 'package:stronzflix/backend/api/bindings/stayonline.dart';
 import 'package:stronzflix/backend/api/bindings/streampeaker.dart';
@@ -15,6 +16,7 @@ import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/bindings/streamingcommunity.dart';
 import 'package:stronzflix/backend/api/bindings/uprot.dart';
 import 'package:stronzflix/backend/api/bindings/vixxcloud.dart';
+import 'package:stronzflix/backend/api/bindings/vjsplayer.dart';
 import 'package:stronzflix/backend/cast.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
@@ -165,9 +167,11 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         await for (double percentage in this._load([
             LocalPlayer.instance.ensureInitialized(),
             JWPlayer.instance.ensureInitialized(),
+            VJSPlayer.instance.ensureInitialized(),
             Streampeaker.instance.ensureInitialized(),
             VixxCloud.instance.ensureInitialized(),
             MixDrop.instance.ensureInitialized(),
+            Maxstream.instance.ensureInitialized(),
             StayOnline.instance.ensureInitialized(),
             UProt.instance.ensureInitialized(),
         ]))

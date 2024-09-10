@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' show AlignmentGeometry, Alignment;
 import 'package:html/dom.dart';
+import 'package:stronzflix/backend/api/bindings/maxstream.dart';
 import 'package:stronzflix/backend/api/bindings/mixdrop.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/middleware.dart';
@@ -93,8 +94,11 @@ class CB01 extends Site {
                     player: MixDrop.instance,
                     uri: sourceUri
                 ));
-            else if(sourceUri.toString().contains("maxlinks"))
-                print("HEHEHE");
+            else if(sourceUri.toString().contains("maxstream"))
+                options.add(WatchOption(
+                    player: Maxstream.instance,
+                    uri: sourceUri
+                ));
         }
 
         return options.reversed.toList();
