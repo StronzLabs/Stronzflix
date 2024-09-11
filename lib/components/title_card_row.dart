@@ -63,7 +63,7 @@ class _TitleCardRowState extends State<TitleCardRow> {
                             )
                         )
                 ]
-            ),
+            )
         );
     }
 
