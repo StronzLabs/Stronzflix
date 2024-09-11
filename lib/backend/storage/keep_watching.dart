@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
 import 'package:sutils/sutils.dart';
@@ -55,14 +56,35 @@ class SerialMetadata {
     };
 }
 
+class _KeepWatchingMetadatas extends ValueNotifier<Iterable<SerialMetadata>> {
+    final Map<String, SerialMetadata> _data = {};
+
+    _KeepWatchingMetadatas() : super([]);
+
+    SerialMetadata operator [](String key) => this._data[key]!;
+
+    void operator []=(String key, SerialMetadata value) {
+        this._data[key] = value;
+        this.value = this._data.values;
+    }
+
+    void remove(String key) {
+        this._data.remove(key);
+        this.value = this._data.values;
+    }
+
+    bool contains(String key) => this._data.containsKey(key);
+}
+
 class KeepWatching extends LocalStorage {
     static final KeepWatching instance = KeepWatching._();
     KeepWatching._() : super("KeepWatching", {
         "KeepWatching": <String>[]
     });
 
-    final Map<String, SerialMetadata> _keepWatching = {};
-    static List<TitleMetadata> get metadata => KeepWatching.instance._keepWatching.values.map((data) => data.metadata).toList();
+    final _KeepWatchingMetadatas _keepWatching = _KeepWatchingMetadatas();
+    static ValueNotifier<Iterable<SerialMetadata>> get listener => KeepWatching.instance._keepWatching;
+    static List<TitleMetadata> get metadata => KeepWatching.instance._keepWatching.value.map((data) => data.metadata).toList();
 
     @override
     Future<void> unserialize() async {
@@ -92,10 +114,11 @@ class KeepWatching extends LocalStorage {
 
     @override
     Future<void> serialize() async {
-        List<String> list = [];
+        List<String> list = [
+            for (SerialMetadata data in this._keepWatching.value)
+                jsonEncode(data.serialize())
+        ];
 
-        for (SerialMetadata data in this._keepWatching.values)
-            list.add(jsonEncode(data.serialize()));
         super["KeepWatching"] = list;
 
         super.serialize();
@@ -103,10 +126,10 @@ class KeepWatching extends LocalStorage {
 
     static Future<Watchable?> getWatchable(TitleMetadata metadata) async{
         String id = metadata.site.name + metadata.uri.toString();
-        if(KeepWatching.instance._keepWatching.containsKey(id))
+        if(KeepWatching.isWatched(metadata))
             return Watchable.unserialize(
-                KeepWatching.instance._keepWatching[id]!.metadata,
-                KeepWatching.instance._keepWatching[id]!.info
+                KeepWatching.instance._keepWatching[id].metadata,
+                KeepWatching.instance._keepWatching[id].info
             );
         
         return null;
@@ -116,22 +139,22 @@ class KeepWatching extends LocalStorage {
         TitleMetadata data = watchable.metadata;
         String info = Watchable.genInfo(watchable);
         String id = data.site.name + data.uri.toString();
-        if (KeepWatching.instance._keepWatching.containsKey(id) && KeepWatching.instance._keepWatching[id]?.info == info)
-            return KeepWatching.instance._keepWatching[id]?.timestamp;
+        if (KeepWatching.isWatched(data) && KeepWatching.instance._keepWatching[id].info == info)
+            return KeepWatching.instance._keepWatching[id].timestamp;
         return null;
     }
 
     static bool isWatched(TitleMetadata metadata) {
         String id = metadata.site.name + metadata.uri.toString();
-        return KeepWatching.instance._keepWatching.containsKey(id);
+        return KeepWatching.instance._keepWatching.contains(id);
     }
 
     static int? getDuration(Watchable watchable) {
         TitleMetadata data = watchable.metadata;
         String info = Watchable.genInfo(watchable);
         String id = data.site.name + data.uri.toString();
-        if (KeepWatching.instance._keepWatching.containsKey(id) && KeepWatching.instance._keepWatching[id]?.info == info)
-            return KeepWatching.instance._keepWatching[id]?.duration;
+        if (KeepWatching.isWatched(data) && KeepWatching.instance._keepWatching[id].info == info)
+            return KeepWatching.instance._keepWatching[id].duration;
         return null;
     }
 
@@ -145,7 +168,7 @@ class KeepWatching extends LocalStorage {
 
     static void remove(TitleMetadata metadata, {String? info}) {
         String id = metadata.site.name + metadata.uri.toString();
-        if (info != null && KeepWatching.instance._keepWatching[id]?.info != info)
+        if (info != null && KeepWatching.isWatched(metadata) && KeepWatching.instance._keepWatching[id].info != info)
             return;
         KeepWatching.instance._keepWatching.remove(id);
         KeepWatching.instance.serialize();

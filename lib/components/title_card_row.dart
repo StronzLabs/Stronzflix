@@ -5,7 +5,7 @@ import 'package:stronzflix/components/title_card.dart';
 class TitleCardRow extends StatefulWidget {
 
     final String title;
-    final Future<Iterable<TitleMetadata>> values;
+    final Iterable<TitleMetadata> values;
     final Widget Function(TitleMetadata)? buildAction;
 
     const TitleCardRow({
@@ -69,39 +69,31 @@ class _TitleCardRowState extends State<TitleCardRow> {
 
     @override
     Widget build(BuildContext context) {
-        return FutureBuilder(
-            future: widget.values,
-            builder: (context, snapshot) {
-                if(snapshot.hasData && snapshot.data!.isEmpty)
-                    return const SizedBox.shrink();
-
-                return MouseRegion(
-                    onHover: (event) => super.setState(() => this._arrowVisibility = true),
-                    onExit: (event) => super.setState(() => this._arrowVisibility = false),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        return MouseRegion(
+            onHover: (event) => super.setState(() => this._arrowVisibility = true),
+            onExit: (event) => super.setState(() => this._arrowVisibility = false),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                    Text(
+                        widget.title,
+                        style: const TextStyle(
+                            fontSize: 30,
+                            overflow: TextOverflow.ellipsis,
+                        ),
+                    ),
+                    Stack(
+                        alignment: AlignmentDirectional.centerStart,
                         children: [
-                            Text(
-                                widget.title,
-                                style: const TextStyle(
-                                    fontSize: 30,
-                                    overflow: TextOverflow.ellipsis,
-                                ),
-                            ),
-                            Stack(
-                                alignment: AlignmentDirectional.centerStart,
-                                children: [
-                                    this._buildScrollView(context, snapshot.data as Iterable<TitleMetadata?>? ?? List.filled(50, null)),
-                                    if (this._arrowVisibility && this._scrollController.hasClients && this._scrollController.offset > 0)
-                                        this._buildArrowIcon(true),
-                                    if (this._arrowVisibility && this._scrollController.hasClients && this._scrollController.offset < this._scrollController.position.maxScrollExtent)
-                                        this._buildArrowIcon(false)
-                                ],
-                            ),
+                            this._buildScrollView(context, super.widget.values),
+                            if (this._arrowVisibility && this._scrollController.hasClients && this._scrollController.offset > 0)
+                                this._buildArrowIcon(true),
+                            if (this._arrowVisibility && this._scrollController.hasClients && this._scrollController.offset < this._scrollController.position.maxScrollExtent)
+                                this._buildArrowIcon(false)
                         ],
                     ),
-                );
-            }
+                ],
+            ),
         );
     }
 }

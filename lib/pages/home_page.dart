@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
 
     Widget _buildSection(BuildContext context, {
         required String label,
-        required Future<Iterable<TitleMetadata>> values,
+        required Iterable<TitleMetadata> values,
         Widget Function(TitleMetadata)? buildAction,
         String? emptyText
     }) {
@@ -114,62 +114,86 @@ class _HomePageState extends State<HomePage> {
                 values: values,
                 buildAction: buildAction
             );
-        else
-            return FutureBuilder(
-                future: values,
-                builder: (context, snapshot) {
-                    if(snapshot.connectionState != ConnectionState.done)
+
+        return CardGrid(
+            values: values,
+            buildCard: (metadata) => TitleCard(
+                buildAction: buildAction,
+                title: metadata,
+            ),
+            emptyWidget: emptyText == null
+                ? null
+                : Center(child: Text(emptyText))
+        );
+    }
+
+    Widget _buildFutureSection(BuildContext context, {
+        required String label,
+        required Future<Iterable<TitleMetadata>> values,
+        Widget Function(TitleMetadata)? buildAction,
+        String? emptyText
+    }) {
+        return FutureBuilder(
+            future: values,
+            builder: (context, snapshot) {
+                if(snapshot.connectionState != ConnectionState.done)
+                    if(this._isBigScreen)
+                        return const SizedBox.shrink();
+                    else 
                         return const Center(child: CircularProgressIndicator());
 
-                    return CardGrid(
-                        values: snapshot.data!,
-                        buildCard: (metadata) => TitleCard(
-                            buildAction: buildAction,
-                            title: metadata,
-                        ),
-                        emptyWidget: emptyText == null
-                            ? null
-                            : Center(child: Text(emptyText))
-                    );      
-                }
-            );
+                return this._buildSection(context,
+                    label: label,
+                    values: snapshot.data as Iterable<TitleMetadata>,
+                    buildAction: buildAction,
+                    emptyText: emptyText
+                );
+            }
+        );
     }
 
     List<Widget> _buildSections(BuildContext context) {
-        return [
-            this._buildSection(context,
+        Widget keepWatching = ValueListenableBuilder(
+            valueListenable: KeepWatching.listener,
+            builder: (context, keepWatching, _) => this._buildSection(context,
                 label: "Continua a guardare",
-                values: Future.value(KeepWatching.metadata),
+                values: KeepWatching.metadata,
                 buildAction: (metadata) => IconButton(
-                    onPressed: () => super.setState(() => KeepWatching.remove(metadata)),
+                    onPressed: () => KeepWatching.remove(metadata),
                     icon: const Icon(Icons.close,
                         size: 28,
                     )
                 ),
                 emptyText: "Non hai ancora guardato nulla"
-            ),
-            this._buildSection(context,
-                label: "Novità",
-                values: Settings.site.latests(),
-                buildAction: Settings.site.isLocal
-                    ? (metadata) => IconButton(
-                        onPressed: () => this._delete(context, metadata),
-                        icon: const Icon(Icons.delete_outline,
-                            size: 28,
-                        )
-                    )
-                    : (metadata) => SaveTitleButton(title: metadata),
-            ),
-            ValueListenableBuilder(
-                valueListenable: SavedTitles.listener,
-                builder: (context, savedTitles, _) => this._buildSection(context,
-                    label: "Salvati",
-                    values: Future.value(savedTitles),
-                    buildAction: (metadata) => SaveTitleButton(title: metadata),
-                    emptyText: "Non hai salvato nessun titolo"
-                )
             )
-        ];
+        );
+
+        Widget saved = ValueListenableBuilder(
+            valueListenable: SavedTitles.listener,
+            builder: (context, savedTitles, _) => this._buildSection(context,
+                label: "Salvati",
+                values: savedTitles,
+                buildAction: (metadata) => SaveTitleButton(title: metadata),
+                emptyText: "Non hai salvato nessun titolo"
+            )
+        );
+
+        Widget news = this._buildFutureSection(context,
+            label: "Novità",
+            values: Settings.site.latests(),
+            buildAction: Settings.site.isLocal
+                ? (metadata) => IconButton(
+                    onPressed: () => this._delete(context, metadata),
+                    icon: const Icon(Icons.delete_outline,
+                        size: 28,
+                    )
+                )
+                : (metadata) => SaveTitleButton(title: metadata),
+        );
+
+        return this._isBigScreen
+            ? [ keepWatching, saved, news ]
+            : [ keepWatching, news, saved ];
     }
 
     Widget _buildBottomNavigationBar(BuildContext context) {
@@ -177,7 +201,7 @@ class _HomePageState extends State<HomePage> {
             destinations: const [
                 NavigationDestination(
                     icon: Icon(Icons.fast_forward),
-                    label: "Continua",
+                    label: "Riprendi",
                 ),
                 NavigationDestination(
                     icon: Icon(Icons.newspaper_outlined),
