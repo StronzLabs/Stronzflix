@@ -37,7 +37,7 @@ class _DownloadIconState extends State<DownloadIcon> with SingleTickerProviderSt
 
     @override
     Widget build(BuildContext context) {
-        Widget icon = const Icon(Icons.download);
+        Widget icon = const Icon(Icons.file_download_outlined);
         if(!this.widget.isDownloading)
             return icon;
 

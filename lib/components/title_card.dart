@@ -116,7 +116,7 @@ class _TitleCardState extends State<TitleCard> {
         return AspectRatio(
             aspectRatio: 16 / 9, 
             child: Card(
-                    child: InkWell(
+                child: InkWell(
                     focusNode: FocusNode(
                         skipTraversal: false,
                         descendantsAreTraversable: false,
@@ -136,10 +136,7 @@ class _TitleCardState extends State<TitleCard> {
                                     ),
                                     const SizedBox(width: 16),
                                     Flexible(
-                                        child: Focus(
-                                            // skipTraversal: true
-                                            child: this._buildSection(context)
-                                        )
+                                        child: this._buildSection(context)
                                     )
                                 ]
                             )

@@ -6,12 +6,11 @@ import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/media.dart' as sf show Title;
 import 'package:stronzflix/backend/downloads/download_manager.dart';
-import 'package:stronzflix/backend/storage/keep_watching.dart';
-import 'package:stronzflix/backend/storage/saved_titles.dart';
+import 'package:stronzflix/components/card_grid.dart';
 import 'package:stronzflix/components/cast_button.dart';
+import 'package:stronzflix/components/episode_card.dart';
 import 'package:stronzflix/components/expandable_text.dart';
 import 'package:stronzflix/components/resource_image.dart';
-import 'package:stronzflix/components/result_card.dart';
 import 'package:stronzflix/components/save_title_button.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/download_dialog.dart';
@@ -229,36 +228,12 @@ class _TitlePageState extends State<TitlePage> {
     }
 
     Widget _buildEpisodes(BuildContext context) {
-        return GridView.extent(
+        return CardGrid(
             physics: const NeverScrollableScrollPhysics(),
+            values: this._selectedSeason.episodes,
+            aspectRatio: 3 / 2,
             shrinkWrap: true,
-            childAspectRatio: 3 / 2,
-            maxCrossAxisExtent: 400,
-            children: this._selectedSeason.episodes.map((Episode episode) {
-                int? duration = KeepWatching.getDuration(episode);
-                int? timestamp = KeepWatching.getTimestamp(episode);
-                double? progress = duration != null && timestamp != null
-                    ? timestamp / duration
-                    : null;
-                return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ResultCard(
-                        onTap: (_) => this._play(episode),
-                        action: this.title.site.isLocal
-                            ? () => this._delete(episode)
-                            : this.title.site.allowsDownload
-                                ? () => this._download(episode)
-                                : null,
-                        actionIcon: this.title.site.isLocal
-                            ? Icons.delete
-                            : Icons.download,
-                        imageUrl: episode.cover,
-                        text: episode.name,
-                        progress: progress,
-                        footer: episode.episodeNo.toString(),
-                    )
-                );
-            }).toList()
+            buildCard: (episode) => EpisodeCard(episode: episode)
         );
     }
 
@@ -351,15 +326,6 @@ class _TitlePageState extends State<TitlePage> {
     void _play(Watchable watchable) {
         Navigator.pushNamed(context, '/player', arguments: watchable)
         .then((value) => super.setState(() {}));
-    }
-
-    void _save() {
-        super.setState(() {
-            if(SavedTitles.isSaved(this._metadata))
-                SavedTitles.remove(this._metadata);
-            else
-                SavedTitles.add(this._metadata);
-        });
     }
 
     void _download(Watchable watchable) async {

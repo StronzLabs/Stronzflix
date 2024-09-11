@@ -13,7 +13,8 @@ import 'package:stronzflix/components/cast_button.dart';
 import 'package:stronzflix/components/download_icon.dart';
 import 'package:stronzflix/components/downloads_drawer.dart';
 import 'package:stronzflix/components/save_title_button.dart';
-import 'package:stronzflix/components/title_card_grid.dart';
+import 'package:stronzflix/components/title_card.dart';
+import 'package:stronzflix/components/card_grid.dart';
 import 'package:stronzflix/components/title_card_row.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/loading_dialog.dart';
@@ -114,12 +115,23 @@ class _HomePageState extends State<HomePage> {
                 buildAction: buildAction
             );
         else
-            return TitleCardGrid(
-                values: values,
-                buildAction: buildAction,
-                emptyWidget: emptyText == null
-                    ? null
-                    : Center(child: Text(emptyText))
+            return FutureBuilder(
+                future: values,
+                builder: (context, snapshot) {
+                    if(snapshot.connectionState != ConnectionState.done)
+                        return const Center(child: CircularProgressIndicator());
+
+                    return CardGrid(
+                        values: snapshot.data!,
+                        buildCard: (metadata) => TitleCard(
+                            buildAction: buildAction,
+                            title: metadata,
+                        ),
+                        emptyWidget: emptyText == null
+                            ? null
+                            : Center(child: Text(emptyText))
+                    );      
+                }
             );
     }
 
@@ -130,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                 values: Future.value(KeepWatching.metadata),
                 buildAction: (metadata) => IconButton(
                     onPressed: () => super.setState(() => KeepWatching.remove(metadata)),
-                    icon: const Icon(Icons.delete_outline,
+                    icon: const Icon(Icons.close,
                         size: 28,
                     )
                 ),
