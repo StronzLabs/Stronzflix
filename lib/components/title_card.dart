@@ -116,7 +116,11 @@ class _TitleCardState extends State<TitleCard> {
         return AspectRatio(
             aspectRatio: 16 / 9, 
             child: Card(
-                child: InkWell(
+                    child: InkWell(
+                    focusNode: FocusNode(
+                        skipTraversal: false,
+                        descendantsAreTraversable: false,
+                    ),
                     onTap: () => this._open(context),
                     child: Padding(
                         padding: const EdgeInsets.all(16.0),
@@ -132,7 +136,10 @@ class _TitleCardState extends State<TitleCard> {
                                     ),
                                     const SizedBox(width: 16),
                                     Flexible(
-                                        child: this._buildSection(context)
+                                        child: Focus(
+                                            // skipTraversal: true
+                                            child: this._buildSection(context)
+                                        )
                                     )
                                 ]
                             )
