@@ -52,22 +52,27 @@ class _TitleCardState extends State<TitleCard> {
     }
 
     Widget _buildActions(BuildContext context) {
-        return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-                if(KeepWatching.isWatched(this._title))  
-                    this._buildButton(context, 
-                        icon: Icons.fast_forward,
-                        action: () => this._keepWatching(context)
-                    )
-                else
-                    this._buildButton(context,
-                        icon: Icons.play_arrow,
-                        action: () => this._play(context)
-                    ),
-                this._buildFavicon(context)
-            ],
+        return ValueListenableBuilder(
+            valueListenable: KeepWatching.listener,
+            builder: (context, _, __) {
+                return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                        if(KeepWatching.isWatched(this._title))  
+                            this._buildButton(context, 
+                                icon: Icons.fast_forward,
+                                action: () => this._keepWatching(context)
+                            )
+                        else
+                            this._buildButton(context,
+                                icon: Icons.play_arrow,
+                                action: () => this._play(context)
+                            ),
+                        this._buildFavicon(context)
+                    ],
+                );
+            }
         );
     }
 
