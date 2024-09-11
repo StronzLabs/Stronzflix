@@ -146,13 +146,16 @@ class _HomePageState extends State<HomePage> {
                             size: 28,
                         )
                     )
-                    : (metadata) => SaveTitleButton(title: metadata, onChanged: (_) => super.setState(() {})),
+                    : (metadata) => SaveTitleButton(title: metadata),
             ),
-            this._buildSection(context,
-                label: "Salvati",
-                values: Future.value(SavedTitles.getAll()),
-                buildAction: (metadata) => SaveTitleButton(title: metadata, onChanged: (_) => super.setState(() {})),
-                emptyText: "Non hai salvato nessun titolo"
+            ValueListenableBuilder(
+                valueListenable: SavedTitles.listener,
+                builder: (context, savedTitles, _) => this._buildSection(context,
+                    label: "Salvati",
+                    values: Future.value(savedTitles),
+                    buildAction: (metadata) => SaveTitleButton(title: metadata),
+                    emptyText: "Non hai salvato nessun titolo"
+                )
             )
         ];
     }

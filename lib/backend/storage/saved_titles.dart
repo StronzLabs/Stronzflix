@@ -1,8 +1,29 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
 import 'package:sutils/sutils.dart';
+
+class _SavedMetadatas extends ValueNotifier<Iterable<TitleMetadata>> {
+    final Map<String, TitleMetadata> _data = {};
+
+    _SavedMetadatas() : super([]);
+
+    TitleMetadata operator [](String key) => this._data[key]!;
+
+    void operator []=(String key, TitleMetadata value) {
+        this._data[key] = value;
+        this.value = this._data.values;
+    }
+
+    void remove(String key) {
+        this._data.remove(key);
+        this.value = this._data.values;
+    }
+
+    bool contains(String key) => this._data.containsKey(key);
+}
 
 class SavedTitles extends LocalStorage {
     static final SavedTitles instance = SavedTitles._();
@@ -10,7 +31,9 @@ class SavedTitles extends LocalStorage {
         "SavedTitles": <String>[]
     });
 
-    final Map<String, TitleMetadata> _savedTitles = {};
+    final _SavedMetadatas _savedTitles = _SavedMetadatas();
+    static ValueNotifier<Iterable<TitleMetadata>> get listener => SavedTitles.instance._savedTitles;
+    static Iterable<TitleMetadata> get all => SavedTitles.instance._savedTitles.value;
 
     @override
     Future<void> unserialize() async {
@@ -38,7 +61,7 @@ class SavedTitles extends LocalStorage {
     Future<void> serialize() async {
         List<String> list = [];
 
-        for (TitleMetadata metadata in this._savedTitles.values) {
+        for (TitleMetadata metadata in this._savedTitles.value) {
             String serializedMetadata = jsonEncode({
                 "name": metadata.name,
                 "uri": metadata.uri.toString(),
@@ -51,10 +74,6 @@ class SavedTitles extends LocalStorage {
         super["SavedTitles"] = list;
 
         super.serialize();
-    }
-
-    static List<TitleMetadata> getAll() {
-        return SavedTitles.instance._savedTitles.values.toList();
     }
 
     static void add(TitleMetadata metadata) {
@@ -71,6 +90,6 @@ class SavedTitles extends LocalStorage {
 
     static bool isSaved(TitleMetadata metadata) {
         String id = metadata.site.name + metadata.uri.toString();
-        return SavedTitles.instance._savedTitles.containsKey(id);
+        return SavedTitles.instance._savedTitles.contains(id);
     }
 }

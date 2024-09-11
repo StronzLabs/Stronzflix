@@ -4,12 +4,10 @@ import 'package:stronzflix/backend/storage/saved_titles.dart';
 
 class SaveTitleButton extends StatefulWidget {
     final TitleMetadata title;
-    final void Function(bool saved)? onChanged;
 
     const SaveTitleButton({
         super.key,
-        required this.title,
-        this.onChanged,
+        required this.title
     });
 
     @override
@@ -19,19 +17,21 @@ class SaveTitleButton extends StatefulWidget {
 class _SaveTitleButtonState extends State<SaveTitleButton> {
     @override
     Widget build(BuildContext context) {
-        return IconButton(
-            icon: Icon(SavedTitles.isSaved(super.widget.title)
-                ? Icons.bookmark_remove
-                : Icons.bookmark_add_outlined,
-                size: 28,
-            ),
-            onPressed: () => super.setState(() {
-                if(SavedTitles.isSaved(super.widget.title))
-                    SavedTitles.remove(super.widget.title);
-                else
-                    SavedTitles.add(super.widget.title);
-                super.widget.onChanged?.call(SavedTitles.isSaved(super.widget.title));
-            })
+        return ValueListenableBuilder(
+            valueListenable: SavedTitles.listener,
+            builder: (context, _, __) => IconButton(
+                icon: Icon(SavedTitles.isSaved(super.widget.title)
+                    ? Icons.bookmark_remove
+                    : Icons.bookmark_add_outlined,
+                    size: 28,
+                ),
+                onPressed: () {
+                    if(SavedTitles.isSaved(super.widget.title))
+                        SavedTitles.remove(super.widget.title);
+                    else
+                        SavedTitles.add(super.widget.title);
+                }
+            )
         );
     }
 }
