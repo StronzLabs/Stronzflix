@@ -25,7 +25,7 @@ class Stronzflix extends StatelessWidget {
         colorScheme: ColorScheme.dark(
             brightness: Brightness.dark,
             primary: Colors.orange,
-            secondary: Colors.orangeAccent,
+            secondary: Colors.grey,
             surface: const Color(0xff121212),
             surfaceTint: Colors.transparent,
             surfaceContainerHigh: (Colors.grey[900])!,
@@ -44,9 +44,6 @@ class Stronzflix extends StatelessWidget {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20))
             )
-        ),
-        progressIndicatorTheme: const ProgressIndicatorThemeData(
-            linearTrackColor: Colors.grey,
         ),
         expansionTileTheme: const ExpansionTileThemeData(
             shape: Border()
