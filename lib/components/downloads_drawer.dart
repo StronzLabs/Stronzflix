@@ -79,53 +79,53 @@ class _DownloadsDrawerState extends State<DownloadsDrawer> {
     Widget build(BuildContext context) {
         return SafeArea(
             child: Drawer(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero
-            ),
-            child: ValueListenableBuilder(
-                valueListenable: DownloadManager.downloads,
-                builder: (context, value, _) {
-                    return Column(
-                        children: [
-                            Container(
-                                color: Colors.orange,
-                                height: 56,
-                                child: const Center(
-                                    child: Text(
-                                    'Download in corso',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero
+                ),
+                child: ValueListenableBuilder(
+                    valueListenable: DownloadManager.downloads,
+                    builder: (context, value, _) {
+                        return Column(
+                            children: [
+                                Container(
+                                    color: Colors.orange,
+                                    height: 56,
+                                    child: const Center(
+                                        child: Text(
+                                        'Download in corso',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20
+                                        ),
+                                    ),
                                     ),
                                 ),
-                                ),
-                            ),
-                            const SizedBox(height: 10),
-                            Flexible(
-                                child: ListView(
-                                    padding: EdgeInsets.zero,
-                                    children: [
-                                        if (value.isNotEmpty)
-                                            ...[ for(DownloadState download in value) _buildDownloadTile(context, download) ]
-                                        else
-                                            const Center(
-                                                child: Text(
-                                                    'Nessun download in corso',
-                                                    style: TextStyle(
-                                                        color: Colors.grey,
-                                                        fontSize: 20
+                                const SizedBox(height: 10),
+                                Flexible(
+                                    child: ListView(
+                                        padding: EdgeInsets.zero,
+                                        children: [
+                                            if (value.isNotEmpty)
+                                                ...[ for(DownloadState download in value) _buildDownloadTile(context, download) ]
+                                            else
+                                                const Center(
+                                                    child: Text(
+                                                        'Nessun download in corso',
+                                                        style: TextStyle(
+                                                            color: Colors.grey,
+                                                            fontSize: 20
+                                                        ),
                                                     ),
-                                                ),
-                                            )
-                                    ],
+                                                )
+                                        ],
+                                    )
                                 )
-                            )
-                        ],
-                    );
-                }
-            ),
-        )
+                            ],
+                        );
+                    }
+                ),
+            )
         );
     }
 }
