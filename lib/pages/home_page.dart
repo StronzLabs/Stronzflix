@@ -60,7 +60,6 @@ class _HomePageState extends State<HomePage> {
 
     PreferredSizeWidget _buildAppBar(BuildContext context) {
         return AppBar(
-            centerTitle: true,
             title: const Text("Stronzflix"),
             leading: Builder(
                 builder: (context) => IconButton(
