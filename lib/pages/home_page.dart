@@ -91,7 +91,8 @@ class _HomePageState extends State<HomePage> {
                     icon: const Icon(Icons.search),
                     onPressed: () => showSearch(
                         context: context,
-                        delegate: SearchPage()
+                        delegate: SearchPage(),
+                        maintainState: true
                     ).then((_) {
                         if(super.mounted)
                             super.setState(() {});
