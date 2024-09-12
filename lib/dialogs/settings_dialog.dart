@@ -29,7 +29,7 @@ class SettingsDialog extends StatelessWidget {
                     TextSpan(
                         text: "GitHub",
                         style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: Theme.of(context).colorScheme.primary,
                             decoration: TextDecoration.underline
                         ),
                         recognizer: TapGestureRecognizer()..onTap = () => this._launchURL("https://github.com/StronzLabs/Stronzflix")
@@ -40,7 +40,7 @@ class SettingsDialog extends StatelessWidget {
                     TextSpan(
                         text: "sito web",
                         style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: Theme.of(context).colorScheme.primary,
                             decoration: TextDecoration.underline
                         ),
                         recognizer: TapGestureRecognizer()..onTap = () => this._launchURL("https://StronzLabs.github.io/Stronzflix/")

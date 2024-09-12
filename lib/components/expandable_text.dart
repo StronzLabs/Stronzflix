@@ -34,7 +34,7 @@ class _ExpandableTextState extends State<ExpandableText> {
 
     TextSpan _buildLink(BuildContext context, TextStyle effectiveTextStyle) {
         String linkText = (this._expanded ? super.widget.expandedLabel : super.widget.collapsedLabel ) ?? '';
-        Color linkColor = Theme.of(context).colorScheme.secondary;
+        Color linkColor = Theme.of(context).colorScheme.primary;
         TextStyle linkTextStyle = effectiveTextStyle.merge(super.widget.style).copyWith(color: linkColor);
 
         return TextSpan(
