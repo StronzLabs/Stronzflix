@@ -22,14 +22,14 @@ class Stronzflix extends StatelessWidget {
         drawerTheme: DrawerThemeData(
             backgroundColor: (Colors.grey[900])!
         ),
-        colorScheme: const ColorScheme.dark(
+        colorScheme: ColorScheme.dark(
             brightness: Brightness.dark,
             primary: Colors.orange,
             secondary: Colors.orangeAccent,
-            surface: Color(0xff121212),
-            surfaceTint: Colors.transparent
+            surface: const Color(0xff121212),
+            surfaceTint: Colors.transparent,
+            surfaceContainerHigh: (Colors.grey[900])!,
         ),
-        dialogBackgroundColor: (Colors.grey[900])!,
         cardTheme: const CardTheme(
             clipBehavior: Clip.hardEdge,
         ),
