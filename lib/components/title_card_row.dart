@@ -33,7 +33,6 @@ class _TitleCardRowState extends State<TitleCardRow> {
                 icon: Icon(left ? Icons.arrow_back_ios_new : Icons.arrow_forward_ios,
                     shadows: const [
                         Shadow(
-                            color: Colors.black,
                             offset: Offset(1, 1),
                             blurRadius: 2
                         )

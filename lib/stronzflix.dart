@@ -28,6 +28,7 @@ class Stronzflix extends StatelessWidget {
             surface: const Color(0xff121212),
             surfaceTint: Colors.transparent,
             surfaceContainerHigh: (Colors.grey[900])!,
+            error: Colors.red
         ),
         appBarTheme: const AppBarTheme(
             centerTitle: true

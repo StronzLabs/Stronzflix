@@ -47,11 +47,11 @@ class SettingsDialog extends StatelessWidget {
                     ),const TextSpan(
                         text: ".\n"
                     ),
-                    const TextSpan(
+                    TextSpan(
                         text: "\nGli sviluppatori di questa applicazione non ospitano né distribuiscono nessuno dei contenuti visualizzabili tramite la stessa né hanno alcuna affiliazione con i fornitori di contenuti.",
                         style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey
+                            color: Theme.of(context).colorScheme.secondary
                         )
                     )
                 ]

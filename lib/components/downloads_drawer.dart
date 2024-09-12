@@ -38,9 +38,9 @@ class _DownloadsDrawerState extends State<DownloadsDrawer> {
                                 children: [
                                     Text(download.hasError ? "Errore" : "${(progress * 100).toStringAsFixed(0)}%",
                                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                            color: download.hasError ? Colors.red : null
+                                            color: download.hasError ? Theme.of(context).colorScheme.error : null
                                         ) ?? TextStyle(
-                                            color: download.hasError ? Colors.red : null
+                                            color: download.hasError ? Theme.of(context).colorScheme.error : null
                                         )
                                     ),
                                     const Spacer(),
@@ -52,7 +52,6 @@ class _DownloadsDrawerState extends State<DownloadsDrawer> {
                                                 else
                                                     download.pause();
                                             },
-                                            // overlayColor: MaterialStateProperty.all(Colors.transparent),
                                             borderRadius: const BorderRadius.all(Radius.circular(20)),
                                             child: Icon(download.isPaused ? Icons.play_arrow : Icons.pause,
                                                 size: 30
@@ -60,7 +59,6 @@ class _DownloadsDrawerState extends State<DownloadsDrawer> {
                                         ),
                                     InkWell(
                                         onTap: () => download.cancel(),
-                                        // overlayColor: MaterialStateProperty.all(Colors.transparent),
                                         borderRadius: const BorderRadius.all(Radius.circular(20)),
                                         child: const Icon(Icons.delete_forever,
                                             size: 25
@@ -88,14 +86,13 @@ class _DownloadsDrawerState extends State<DownloadsDrawer> {
                         return Column(
                             children: [
                                 Container(
-                                    color: Colors.orange,
+                                    color: Theme.of(context).colorScheme.primary,
                                     height: 56,
                                     child: const Center(
                                         child: Text(
                                         'Download in corso',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                            color: Colors.white,
                                             fontSize: 20
                                         ),
                                     ),
@@ -109,11 +106,11 @@ class _DownloadsDrawerState extends State<DownloadsDrawer> {
                                             if (value.isNotEmpty)
                                                 ...[ for(DownloadState download in value) _buildDownloadTile(context, download) ]
                                             else
-                                                const Center(
+                                                Center(
                                                     child: Text(
                                                         'Nessun download in corso',
                                                         style: TextStyle(
-                                                            color: Colors.grey,
+                                                            color: Theme.of(context).colorScheme.secondary,
                                                             fontSize: 20
                                                         ),
                                                     ),

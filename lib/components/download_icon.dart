@@ -50,7 +50,7 @@ class _DownloadIconState extends State<DownloadIcon> with SingleTickerProviderSt
                         end: Alignment.bottomCenter,
                         colors: [
                             Theme.of(context).colorScheme.primary,
-                            Colors.white,
+                            Theme.of(context).iconTheme.color!
                         ],
                         stops: [this._animation.value, this._animation.value],
                     ).createShader(bounds),
