@@ -30,9 +30,6 @@ class Stronzflix extends StatelessWidget {
             surfaceTint: Colors.transparent,
             surfaceContainerHigh: (Colors.grey[900])!,
         ),
-        cardTheme: const CardTheme(
-            clipBehavior: Clip.hardEdge,
-        ),
         appBarTheme: const AppBarTheme(
             centerTitle: true
         ),
