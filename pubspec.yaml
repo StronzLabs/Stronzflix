@@ -12,10 +12,7 @@ dependencies:
       sdk: flutter
   async: ^2.11.0
   background_downloader: ^8.5.3
-  cast: 
-    git:
-      url: https://github.com/johnvuko/flutter_cast.git
-      ref: master
+  cast: ^2.1.0
   connectivity_plus: ^6.0.3
   crypto: ^3.0.3
   ffmpeg_kit_flutter: ^6.0.3
@@ -43,12 +40,6 @@ dependencies:
 
 dependency_overrides:
   uuid: ^4.4.0
-  bonsoir: ^5.1.10
-  bonsoir_windows:
-    git:
-      url: https://github.com/Skyost/Bonsoir.git
-      path: ./packages/bonsoir_windows
-      ref: master
 
 dev_dependencies:
   flutter_test:
