@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
-import 'package:stronzflix/components/linear_track_shape.dart';
 import 'package:stronzflix/pages/home_page.dart';
 import 'package:stronzflix/pages/loading_page.dart';
 import 'package:stronzflix/pages/player_page.dart';
@@ -47,19 +46,6 @@ class Stronzflix extends StatelessWidget {
         ),
         expansionTileTheme: const ExpansionTileThemeData(
             shape: Border()
-        ),
-        sliderTheme: const SliderThemeData(
-            trackShape: LinearTrackShape(),
-            trackHeight: 1.2,
-            inactiveTrackColor: Color(0x3DFFFFFF),
-            activeTrackColor: Colors.white,
-            thumbColor: Colors.white,
-            thumbShape: RoundSliderThumbShape(
-                enabledThumbRadius: 12.0 / 2,
-                elevation: 0.0,
-                pressedElevation: 0.0,
-            ),
-            overlayColor: Colors.transparent,
         )
     );
 
