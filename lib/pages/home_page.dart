@@ -52,7 +52,10 @@ class _HomePageState extends State<HomePage> {
                         Navigator.of(super.context).pushNamed('/player-sink', arguments: watchable);
                 });
         });
-        DownloadManager.downloads.addListener(this._refetchLatests);
+        if(Settings.site.isLocal)
+            DownloadManager.downloads.addListener(this._refetchLatests);
+        else
+            DownloadManager.downloads.removeListener(this._refetchLatests);
     }
 
     @override
