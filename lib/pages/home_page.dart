@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage> {
             builder: (context, snapshot) {
                 if(snapshot.connectionState != ConnectionState.done)
                     if(this._isBigScreen)
-                        return const SizedBox.shrink();
+                        return TitleCardRow.shimmer(title: label);
                     else 
                         return const Center(child: CircularProgressIndicator());
 

@@ -7,13 +7,20 @@ class TitleCardRow extends StatefulWidget {
     final String title;
     final Iterable<TitleMetadata> values;
     final Widget Function(TitleMetadata)? buildAction;
+    final bool shimmer;
 
     const TitleCardRow({
         super.key,
         required this.title,
         required this.values,
-        this.buildAction
+        this.buildAction,
+        this.shimmer = false
     });
+
+    const TitleCardRow.shimmer({
+        super.key,
+        required this.title,
+    }) : shimmer = true, values = const [], buildAction = null;
 
     @override
     State<TitleCardRow> createState() => _TitleCardRowState();
@@ -53,14 +60,21 @@ class _TitleCardRowState extends State<TitleCardRow> {
             controller: this._scrollController,
             child: Row(
                 children: [
-                    for (TitleMetadata? metadata in [for (TitleMetadata? metadata in data) metadata])
-                        SizedBox(
-                            width: 350,
-                            child: TitleCard(
-                                title: metadata,
-                                buildAction: super.widget.buildAction,
-                            )
+                    if (super.widget.shimmer)
+                        for (int i = 0; i < 10; i++)
+                            const SizedBox(
+                                width: 350,
+                                child: TitleCard(title: null)
                         )
+                    else
+                        for (TitleMetadata? metadata in [for (TitleMetadata? metadata in data) metadata])
+                            SizedBox(
+                                width: 350,
+                                child: TitleCard(
+                                    title: metadata,
+                                    buildAction: super.widget.buildAction,
+                                )
+                            )
                 ]
             )
         );
@@ -68,7 +82,7 @@ class _TitleCardRowState extends State<TitleCardRow> {
 
     @override
     Widget build(BuildContext context) {
-        if (super.widget.values.isEmpty)
+        if (super.widget.values.isEmpty && ! super.widget.shimmer)
             return const SizedBox.shrink();
 
         return MouseRegion(
