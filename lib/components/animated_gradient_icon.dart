@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 
-class DownloadIcon extends StatefulWidget {
-    final bool isDownloading;
+class AnimatedGradientIcon extends StatefulWidget {
+    final IconData icon;
+    final bool animated;
     
-    const DownloadIcon({
+    const AnimatedGradientIcon({
         super.key,
-        this.isDownloading = false,
+        required this.icon,
+        this.animated = true,
     });
 
     @override
-    State<DownloadIcon> createState() => _DownloadIconState();
+    State<AnimatedGradientIcon> createState() => _AnimatedGradientIconState();
 }
 
-class _DownloadIconState extends State<DownloadIcon> with SingleTickerProviderStateMixin {
+class _AnimatedGradientIconState extends State<AnimatedGradientIcon> with SingleTickerProviderStateMixin {
     late final AnimationController _animationController = AnimationController(
         vsync: this,
         duration: const Duration(milliseconds: 750),
@@ -37,8 +39,8 @@ class _DownloadIconState extends State<DownloadIcon> with SingleTickerProviderSt
 
     @override
     Widget build(BuildContext context) {
-        Widget icon = const Icon(Icons.file_download_outlined);
-        if(!this.widget.isDownloading)
+        Widget icon = Icon(super.widget.icon);
+        if(!super.widget.animated)
             return icon;
 
         return AnimatedBuilder(

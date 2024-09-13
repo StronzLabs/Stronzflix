@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
@@ -10,7 +11,7 @@ import 'package:stronzflix/backend/peer/peer_manager.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/components/cast_button.dart';
-import 'package:stronzflix/components/download_icon.dart';
+import 'package:stronzflix/components/downloads_button.dart';
 import 'package:stronzflix/components/downloads_drawer.dart';
 import 'package:stronzflix/components/save_title_button.dart';
 import 'package:stronzflix/components/title_card.dart';
@@ -36,6 +37,7 @@ class _HomePageState extends State<HomePage> {
     int _currentSection = 0;
     bool get _isBigScreen => MediaQuery.of(super.context).size.width >= 600;
     bool get _hasPeerConnection => EPlatform.isDesktop && Settings.online;
+    AsyncMemoizer<List<TitleMetadata>> _newsMemoizer = AsyncMemoizer();
 
     @override
     void initState() {
@@ -50,6 +52,7 @@ class _HomePageState extends State<HomePage> {
                         Navigator.of(super.context).pushNamed('/player-sink', arguments: watchable);
                 });
         });
+        DownloadManager.downloads.addListener(this._refetchLatests);
     }
 
     @override
@@ -61,17 +64,7 @@ class _HomePageState extends State<HomePage> {
     PreferredSizeWidget _buildAppBar(BuildContext context) {
         return AppBar(
             title: const Text("Stronzflix"),
-            leading: Builder(
-                builder: (context) => IconButton(
-                    icon: ValueListenableBuilder(
-                        valueListenable: DownloadManager.downloads,
-                        builder: (context, downloads, child) => DownloadIcon(
-                            isDownloading: downloads.isNotEmpty
-                        )
-                    ),
-                    onPressed: () => Scaffold.of(context).openDrawer()
-                )
-            ),
+            leading: const DownloadsButton(),
             actions: [
                 const CastButton(),
                 const SizedBox(width: 8),
@@ -80,10 +73,7 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () => showDialog(
                         context: context,
                         builder: (context) => const SettingsDialog()
-                    ).then((_) {
-                        if(super.mounted)
-                            super.setState(() {});
-                    })
+                    ).then((_) => this._refetchLatests())
                 ),
                 const SizedBox(width: 8),
                 IconButton(
@@ -92,10 +82,7 @@ class _HomePageState extends State<HomePage> {
                         context: context,
                         delegate: SearchPage(),
                         maintainState: true
-                    ).then((_) {
-                        if(super.mounted)
-                            super.setState(() {});
-                    })
+                    )
                 ),
                 const SizedBox(width: 8)
             ]
@@ -142,11 +129,14 @@ class _HomePageState extends State<HomePage> {
                     else 
                         return const Center(child: CircularProgressIndicator());
 
-                return this._buildSection(context,
-                    label: label,
-                    values: snapshot.data as Iterable<TitleMetadata>,
-                    buildAction: buildAction,
-                    emptyText: emptyText
+                return RefreshIndicator(
+                    onRefresh: () async => this._refetchLatests(), 
+                    child: this._buildSection(context,
+                        label: label,
+                        values: snapshot.data as Iterable<TitleMetadata>,
+                        buildAction: buildAction,
+                        emptyText: emptyText
+                    ),
                 );
             }
         );
@@ -180,7 +170,7 @@ class _HomePageState extends State<HomePage> {
 
         Widget news = this._buildFutureSection(context,
             label: "Novità",
-            values: Settings.site.latests(),
+            values: this._newsMemoizer.runOnce(Settings.site.latests),
             buildAction: Settings.site.isLocal
                 ? (metadata) => IconButton(
                     onPressed: () => this._delete(context, metadata),
@@ -268,5 +258,10 @@ class _HomePageState extends State<HomePage> {
             await DownloadManager.delete(await Settings.site.getTitle(metadata));
             super.setState(() {});
         }
+    }
+
+    void _refetchLatests() {
+        if(super.mounted)
+            super.setState(() => this._newsMemoizer = AsyncMemoizer());
     }
 }
