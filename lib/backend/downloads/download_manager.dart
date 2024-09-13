@@ -139,7 +139,7 @@ class DownloadManager {
         if(!downloadState.hasError && !downloadState.isCanceled)
             await DownloadManager._downloadMetadata(outputDir, options.watchable);
         
-        downloader.cleanTmpDownload(downloadState);
+        await downloader.cleanTmpDownload(downloadState);
         if(!downloadState.hasError || downloadState.isCanceled)
             DownloadManager.removeDownload(downloadState);
     }
