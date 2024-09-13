@@ -6,6 +6,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart' show ValueNotifier;
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/downloader.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
@@ -136,8 +137,10 @@ class DownloadManager {
         Downloader downloader = options.url == null ? Downloader.hls : Downloader.direct;
         await downloader.download(options, downloadState, outputDir, watchableID);
 
-        if(!downloadState.hasError && !downloadState.isCanceled)
+        if(!downloadState.hasError && !downloadState.isCanceled) {
             await DownloadManager._downloadMetadata(outputDir, options.watchable);
+            LocalSite.notify();
+        }
         
         await downloader.cleanTmpDownload(downloadState);
         if(!downloadState.hasError || downloadState.isCanceled)
@@ -180,10 +183,12 @@ class DownloadManager {
 
     static Future<void> deleteSingle(Watchable watchable) async {
         if(watchable is Film)
-            return _deleteFilm(watchable);
+            await _deleteFilm(watchable);
         if(watchable is Episode)
-            return _deleteEpisode(watchable);
-        throw Exception("Unknown watchable type");
+            await _deleteEpisode(watchable);
+        else
+            throw Exception("Unknown watchable type");
+        LocalSite.notify();
     }
 
     static Future<void> delete(Title title) async {
@@ -199,5 +204,6 @@ class DownloadManager {
         }
         
         KeepWatching.remove(title.metadata);
+        LocalSite.notify();
     }
 }

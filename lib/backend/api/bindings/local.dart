@@ -1,14 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart' show ChangeNotifier;
 import 'package:stronzflix/backend/api/player.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
 
-class LocalSite extends Site {
-    static Site instance = LocalSite._();
+class LocalSite extends Site with ChangeNotifier {
+    static LocalSite instance = LocalSite._();
     LocalSite._() : super("Scaricati", "", -1);
+
+    static void notify() => LocalSite.instance.notifyListeners();
 
     @override
     bool tunerValidator(String homePage) => true;

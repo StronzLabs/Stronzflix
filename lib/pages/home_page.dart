@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
+import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
@@ -52,10 +53,6 @@ class _HomePageState extends State<HomePage> {
                         Navigator.of(super.context).pushNamed('/player-sink', arguments: watchable);
                 });
         });
-        if(Settings.site.isLocal)
-            DownloadManager.downloads.addListener(this._refetchLatests);
-        else
-            DownloadManager.downloads.removeListener(this._refetchLatests);
     }
 
     @override
@@ -171,7 +168,7 @@ class _HomePageState extends State<HomePage> {
             )
         );
 
-        Widget news = this._buildFutureSection(context,
+        Widget buildNews(BuildContext context) => this._buildFutureSection(context,
             label: "Novità",
             values: this._newsMemoizer.runOnce(Settings.site.latests),
             buildAction: Settings.site.isLocal
@@ -183,6 +180,18 @@ class _HomePageState extends State<HomePage> {
                 )
                 : (metadata) => SaveTitleButton(title: metadata),
         );
+
+        Widget news;
+        if(Settings.site.isLocal)
+            news = ListenableBuilder(
+                listenable: LocalSite.instance,
+                builder: (context, _) {
+                    this._newsMemoizer = AsyncMemoizer();
+                    return buildNews(context);
+                }
+            );
+        else
+            news = buildNews(context);
 
         return this._isBigScreen
             ? [ keepWatching, saved, news ]
