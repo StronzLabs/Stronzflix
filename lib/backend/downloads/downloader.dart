@@ -107,8 +107,8 @@ class HLSDownloader extends Downloader {
                 }),
         ]).onError((error, stackTrace) => [false]);
 
-        videoSink.close();
-        audioSink.close();
+        await videoSink.close();
+        await audioSink.close();
 
         if (results.any((e) => !e)) {
             downloadState.setError();
