@@ -17,16 +17,14 @@ abstract class Site extends Initializable {
     late Uri _favicon;
     Uri get favicon => this._favicon;
 
-    Site(this.name, this.domain) : super((self) => Site._registry[name] = self as Site) {
-        this.tuner = Tuner(this.tunerValidator);
+    Site(this.name, this.domain, int cacheId) : super((self) => Site._registry[name] = self as Site) {
+        this.tuner = Tuner(this.tunerValidator, cacheId);
     }
 
     @override
     @mustCallSuper
     Future<void> construct() async{
         await super.construct();
-
-        this._favicon = await this.getFavicon();
 
         if(this.isLocal) {
             super.reportProgress(1.0);
@@ -45,6 +43,8 @@ abstract class Site extends Initializable {
                     throw Exception("Failed to find domain for ${this.name}");
             }
         }
+
+        this._favicon = await this.getFavicon();
     }
 
     Stream<double?> tune() async* {

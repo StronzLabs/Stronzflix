@@ -8,7 +8,7 @@ import 'package:stronzflix/backend/api/site.dart';
 
 class LocalSite extends Site {
     static Site instance = LocalSite._();
-    LocalSite._() : super("Scaricati", "");
+    LocalSite._() : super("Scaricati", "", -1);
 
     @override
     bool tunerValidator(String homePage) => true;

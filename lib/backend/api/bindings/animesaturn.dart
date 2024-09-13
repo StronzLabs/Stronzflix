@@ -8,7 +8,7 @@ import 'package:sutils/sutils.dart';
 
 class AnimeSaturn extends Site {
     static Site instance = AnimeSaturn._();
-    AnimeSaturn._():  super("AnimeSaturn", "www.animesaturn");
+    AnimeSaturn._():  super("AnimeSaturn", "www.animesaturn", 1);
 
     @override
     bool tunerValidator(String homePage) {

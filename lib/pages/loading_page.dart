@@ -17,6 +17,7 @@ import 'package:stronzflix/backend/api/bindings/streamingcommunity.dart';
 import 'package:stronzflix/backend/api/bindings/uprot.dart';
 import 'package:stronzflix/backend/api/bindings/vixxcloud.dart';
 import 'package:stronzflix/backend/api/bindings/vjsplayer.dart';
+import 'package:stronzflix/backend/api/tune.dart';
 import 'package:stronzflix/backend/cast.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
@@ -154,6 +155,8 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
                 return;
             super.setState(() => this._showAdditionalInfo = true);
         });
+
+        await Tuner.prepareCache();
 
         await for (double percentage in this._dynamicLoad([
             StreamingCommunity.instance.progress,

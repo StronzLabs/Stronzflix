@@ -1,11 +1,22 @@
+import 'dart:convert';
+
 import 'package:sutils/sutils.dart';
 
 class Tuner {
 
     static const Duration timeout = Duration(milliseconds: 2500);
+    static late final List<String> cache;
 
     final bool Function(String) validator;
-    const Tuner(this.validator);
+    final int cacheId;
+    const Tuner(this.validator, this.cacheId);
+
+    static Future<void> prepareCache() async {
+        Map<String, dynamic> release = jsonDecode(await HTTP.get('https://api.github.com/repos/StronzLabs/StronzTuner/releases/tags/cache'));
+        String body = String.fromCharCodes(base64Decode(release["body"]));
+        List<String> cache = body.split("|");
+        Tuner.cache = cache;
+    }
     
     Future<bool> validateDomain(String domain) async {
         domain = domain.startsWith('https://') ? domain : 'https://${domain}';
@@ -21,6 +32,7 @@ class Tuner {
         String response = await HTTP.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt");
         List<String> domains = response.split("\n").where((String line) => !line.startsWith("#")).toList();
         domains.shuffle();
+        domains.insert(0, Tuner.cache[this.cacheId]);
         return domains;
     }
 

@@ -7,7 +7,7 @@ import 'package:sutils/sutils.dart';
 
 class StreamingCommunity extends Site {
     static Site instance = StreamingCommunity._();
-    StreamingCommunity._() : super("StreamingCommunity", "streamingcommunity");
+    StreamingCommunity._() : super("StreamingCommunity", "streamingcommunity", 0);
 
     String get _cdn => super.url.replaceFirst("//", "//cdn.");
     final Map<String, String> _inhertia = {};

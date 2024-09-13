@@ -10,7 +10,7 @@ import 'package:html/parser.dart' as html;
 
 class CB01 extends Site {
     static Site instance = CB01._();
-    CB01._():  super("CB01", "cb01");
+    CB01._():  super("CB01", "cb01", 2);
 
     @override
     AlignmentGeometry get cropPolicy => Alignment.centerRight;
