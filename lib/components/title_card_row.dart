@@ -68,6 +68,9 @@ class _TitleCardRowState extends State<TitleCardRow> {
 
     @override
     Widget build(BuildContext context) {
+        if (super.widget.values.isEmpty)
+            return const SizedBox.shrink();
+
         return MouseRegion(
             onHover: (event) => super.setState(() => this._arrowVisibility = true),
             onExit: (event) => super.setState(() => this._arrowVisibility = false),
