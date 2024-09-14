@@ -124,7 +124,7 @@ class HLSDownloader extends Downloader {
 
     @override
     Future<void> cleanTmpDownload(DownloadState download) async {
-        String titleID = DownloadManager.calcTitleId(download.options.watchable);
+        String titleID = DownloadManager.calcTitleId(download.options.watchable.metadata);
         String watchableID = DownloadManager.calcWatchableId(download.options.watchable);
         Directory directory = Directory('${(await DownloadManager.downloadDirectory).path}${titleID}');
         File videoTs = File('${directory.path}/${watchableID}-video.ts');
@@ -176,7 +176,7 @@ class DirectDownloader extends Downloader {
         if(!download.hasError && !download.isCanceled)
             return;
 
-        String titleID = DownloadManager.calcTitleId(download.options.watchable);
+        String titleID = DownloadManager.calcTitleId(download.options.watchable.metadata);
         String watchableID = DownloadManager.calcWatchableId(download.options.watchable);
         Directory directory = Directory('${(await DownloadManager.downloadDirectory).path}${titleID}');
         File videoFile = File('${directory.path}/${watchableID}.mp4');

@@ -59,7 +59,7 @@ class DownloadManager {
 
     static Future<bool> _downloadEpisodeMetadata(Directory outputDirectory, Episode episode) async {
         String coverID = DownloadManager._calcId("${episode.title}-cover");
-        File coverFile = File('${outputDirectory.path}\${coverID}.jpg');
+        File coverFile = File('${outputDirectory.path}/${coverID}.jpg');
         await coverFile.writeAsBytes(await HTTP.getRaw(episode.cover));
         
         File metadataFile = await DownloadManager._downloadTitleMetadata(outputDirectory, episode.season.series);
@@ -111,14 +111,11 @@ class DownloadManager {
     }
 
     static String _calcId(String str) => md5.convert(utf8.encode(str)).toString();
-    static String calcTitleId(Watchable watchable) =>
-        watchable is Film ? DownloadManager._calcId(watchable.name) :
-        watchable is Episode ? DownloadManager._calcId(watchable.season.series.name) :
-        throw Exception("Unknown watchable type");
+    static String calcTitleId(TitleMetadata metadata) => DownloadManager._calcId(metadata.name);
     static String calcWatchableId(Watchable watchable) => DownloadManager._calcId(watchable.title);
 
     static Future<void> download(DownloadOptions options) async {
-        String titleID = DownloadManager.calcTitleId(options.watchable);
+        String titleID = DownloadManager.calcTitleId(options.watchable.metadata);
         String watchableID = DownloadManager.calcWatchableId(options.watchable);
         Directory outputDir = Directory('${(await downloadDirectory).path}${titleID}');
         outputDir.createSync(recursive: true);
@@ -143,7 +140,7 @@ class DownloadManager {
     }
 
     static Future<void> _deleteFilm(Film film) async {
-        String titleID = DownloadManager.calcTitleId(film);
+        String titleID = DownloadManager.calcTitleId(film.metadata);
         Directory directory = Directory('${(await downloadDirectory).path}${titleID}');
         directory.deleteSync(recursive: true);
 
@@ -151,7 +148,7 @@ class DownloadManager {
     }
 
     static Future<void> _deleteEpisode(Episode episode) async {
-        String titleID = DownloadManager.calcTitleId(episode);
+        String titleID = DownloadManager.calcTitleId(episode.metadata);
         String watchableID = DownloadManager.calcWatchableId(episode);
         Directory directory = Directory('${(await downloadDirectory).path}${titleID}');
         Map<String, dynamic> metadata = jsonDecode(File('${directory.path}/metadata.json').readAsStringSync());
@@ -186,8 +183,8 @@ class DownloadManager {
         LocalSite.notify();
     }
 
-    static Future<void> delete(Title title) async {
-        String titleID = _calcId(title.name);
+    static Future<void> delete(TitleMetadata metadata) async {
+        String titleID = DownloadManager.calcTitleId(metadata);
         Directory directory = Directory('${(await downloadDirectory).path}${titleID}');
         try {
             directory.deleteSync(recursive: true);
@@ -198,7 +195,7 @@ class DownloadManager {
                 } catch (_) {}
         }
         
-        KeepWatching.remove(title.metadata);
+        KeepWatching.remove(metadata);
         LocalSite.notify();
     }
 }
