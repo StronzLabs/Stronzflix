@@ -325,7 +325,7 @@ class _TitlePageState extends State<TitlePage> {
 
     void _play(Watchable watchable) {
         Navigator.pushNamed(context, '/player', arguments: watchable)
-        .then((value) => super.setState(() {}));
+            .then((value) => super.setState(() {}));
     }
 
     void _download(Watchable watchable) async {
