@@ -1,7 +1,9 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
+import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
+import 'package:stronzflix/components/delete_title_button.dart';
 import 'package:stronzflix/components/save_title_button.dart';
 import 'package:stronzflix/components/title_card.dart';
 import 'package:stronzflix/components/card_grid.dart';
@@ -61,7 +63,7 @@ class SearchPage extends SearchDelegate {
             this._memorizer = AsyncMemoizer<List<TitleMetadata>>();
         }
 
-        return FutureBuilder(
+        Widget buildGrid(BuildContext context) => FutureBuilder(
             future: this._memorizer.runOnce(() => Settings.site.search(super.query)),
             builder: (context, snapshot) {
                 if(snapshot.connectionState != ConnectionState.done)
@@ -72,13 +74,24 @@ class SearchPage extends SearchDelegate {
                     buildCard: (metadata) => TitleCard(
                         title: metadata,
                         buildAction: Settings.site.isLocal
-                            ? null
+                            ? (metadata) => DeleteTitleButton(title: metadata)
                             : (metadata) => SaveTitleButton(title: metadata)
                     ),
                     emptyWidget: this._buildNoResults(context),
                 );
             }
         );
+
+        if(Settings.site.isLocal)
+            return ListenableBuilder(
+                listenable: LocalSite.instance,
+                builder: (context, _) {
+                    this._memorizer = AsyncMemoizer<List<TitleMetadata>>();
+                    return buildGrid(context);
+                }
+            );
+        
+        return buildGrid(context);
     }
 
     @override
