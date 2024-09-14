@@ -27,7 +27,7 @@ class DeleteTitleButton extends StatelessWidget {
                         action: "Elimina"
                     );
                     if (delete)
-                        await DownloadManager.delete(this.title);
+                        await DownloadManager.deleteTitle(this.title);
                 }
             )
         );

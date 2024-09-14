@@ -139,51 +139,45 @@ class DownloadManager {
             DownloadManager.removeDownload(downloadState);
     }
 
-    static Future<void> _deleteFilm(Film film) async {
-        String titleID = DownloadManager.calcTitleId(film.metadata);
-        Directory directory = Directory('${(await downloadDirectory).path}${titleID}');
-        directory.deleteSync(recursive: true);
-
-        KeepWatching.remove(film.metadata);
-    }
-
     static Future<void> _deleteEpisode(Episode episode) async {
         String titleID = DownloadManager.calcTitleId(episode.metadata);
         String watchableID = DownloadManager.calcWatchableId(episode);
+
         Directory directory = Directory('${(await downloadDirectory).path}${titleID}');
         Map<String, dynamic> metadata = jsonDecode(File('${directory.path}/metadata.json').readAsStringSync());
 
-        metadata["seasons"].firstWhere(
-            (e) => e["seasonNo"] == episode.season.seasonNo
-        )["episodes"].removeWhere((e) => e["episodeNo"] == episode.episodeNo);
+        Map<String, dynamic> seasonData = metadata["seasons"]
+            .firstWhere((e) => e["seasonNo"] == episode.season.seasonNo);
+
+        seasonData["episodes"].removeWhere((e) => e["episodeNo"] == episode.episodeNo);
         
-        if(metadata["seasons"].firstWhere((e) => e["seasonNo"] == episode.season.seasonNo)["episodes"].isEmpty)
+        if(seasonData["episodes"].isEmpty)
             metadata["seasons"].removeWhere((e) => e["seasonNo"] == episode.season.seasonNo);
-        if(metadata["seasons"].isEmpty)
-            directory.deleteSync(recursive: true);
-        else {
-            File metadataFile = File('${directory.path}/metadata.json');
-            metadataFile.writeAsStringSync(jsonEncode(metadata));
-            File coverFile = File('${directory.path}/${_calcId("${episode.title}-cover")}.jpg');
-            coverFile.deleteSync();
-            File episodeFile = File('${directory.path}/${watchableID}.mp4');
-            episodeFile.deleteSync();
-        }
+
+        File metadataFile = File('${directory.path}/metadata.json');
+        metadataFile.writeAsStringSync(jsonEncode(metadata));
+        File coverFile = File('${directory.path}/${DownloadManager._calcId("${episode.title}-cover")}.jpg');
+        coverFile.deleteSync();
+        File episodeFile = File('${directory.path}/${watchableID}.mp4');
+        episodeFile.deleteSync();
 
         KeepWatching.remove(episode.metadata, info: Watchable.genInfo(episode));
+
+        if(metadata["seasons"].isEmpty)
+            await DownloadManager.deleteTitle(episode.metadata);
     }
 
     static Future<void> deleteSingle(Watchable watchable) async {
         if(watchable is Film)
-            await _deleteFilm(watchable);
+            await DownloadManager.deleteTitle(watchable.metadata);
         if(watchable is Episode)
-            await _deleteEpisode(watchable);
+            await DownloadManager._deleteEpisode(watchable);
         else
             throw Exception("Unknown watchable type");
         LocalSite.notify();
     }
 
-    static Future<void> delete(TitleMetadata metadata) async {
+    static Future<void> deleteTitle(TitleMetadata metadata) async {
         String titleID = DownloadManager.calcTitleId(metadata);
         Directory directory = Directory('${(await downloadDirectory).path}${titleID}');
         try {
