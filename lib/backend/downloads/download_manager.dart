@@ -37,10 +37,10 @@ class DownloadManager {
         downloads.value = downloads.value.where((e) => e != download).toList();
     }
 
-    static Future<bool> _downloadTitleMetadata(Directory outputDirectory, Title title) async{
+    static Future<File> _downloadTitleMetadata(Directory outputDirectory, Title title) async{
         File metadataFile = File('${outputDirectory.path}/metadata.json');
         if(metadataFile.existsSync())
-            return true;
+            return metadataFile;
 
         File bannerFile = File('${outputDirectory.path}/banner.jpg');
         await bannerFile.writeAsBytes(await HTTP.getRaw(title.banner));
@@ -54,60 +54,60 @@ class DownloadManager {
         };
 
         metadataFile.writeAsStringSync(jsonEncode(metadata));
-        return true;
+        return metadataFile;
     }
 
     static Future<bool> _downloadEpisodeMetadata(Directory outputDirectory, Episode episode) async {
-        Series series = episode.season.series;
-        if(!await DownloadManager._downloadTitleMetadata(outputDirectory, series))
-            return false;
-
-        String coverID = _calcId("${episode.title}-cover");
-        File coverFile = File('${outputDirectory.path}/${coverID}.jpg');
+        String coverID = DownloadManager._calcId("${episode.title}-cover");
+        File coverFile = File('${outputDirectory.path}\${coverID}.jpg');
         await coverFile.writeAsBytes(await HTTP.getRaw(episode.cover));
-
-        File metadataFile = File('${outputDirectory.path}/metadata.json');
+        
+        File metadataFile = await DownloadManager._downloadTitleMetadata(outputDirectory, episode.season.series);
         Map<String, dynamic> metadata = jsonDecode(metadataFile.readAsStringSync());
         metadata["seasons"] ??= [];
-        if(metadata["seasons"].where((e) => e["seasonNo"] == episode.season.seasonNo).isEmpty) {
-            metadata["seasons"].add({
+        
+        Map<String, dynamic>? seasonData = metadata["seasons"]
+            .firstWhere((e) => e["seasonNo"] == episode.season.seasonNo, orElse: () => null);
+        if(seasonData == null) {
+            seasonData = {
                 "name": episode.season.name,
                 "seasonNo": episode.season.seasonNo,
                 "episodes": []
-            });
+            };
+            metadata["seasons"].add(seasonData);
         }
 
-        if(metadata["seasons"].firstWhere((e) => e["seasonNo"] == episode.season.seasonNo)["episodes"].where((e) => e["episodeNo"] == episode.episodeNo).isEmpty)
-            metadata["seasons"].firstWhere((e) => e["seasonNo"] == episode.season.seasonNo)["episodes"].add(<String, dynamic>{
+        Map<String, dynamic>? episodeData = seasonData["episodes"]
+            .firstWhere((e) => e["episodeNo"] == episode.episodeNo, orElse: () => null);
+        if(episodeData == null) {
+            episodeData = {
                 "name": episode.name,
                 "episodeNo": episode.episodeNo,
                 "cover": coverID,
                 "url": DownloadManager.calcWatchableId(episode)
-            });
+            };
+            seasonData["episodes"].add(episodeData);
+        }
 
         metadataFile.writeAsStringSync(jsonEncode(metadata));
         return true;        
     }
 
-    static Future<bool> _downloadFilmMetadata(Directory outputDirectory, Film film) async {
-        if(!await _downloadTitleMetadata(outputDirectory, film))
-            return false;
+    static Future<void> _downloadFilmMetadata(Directory outputDirectory, Film film) async {
+        File metadataFile = await _downloadTitleMetadata(outputDirectory, film);
 
-        File metadataFile = File('${outputDirectory.path}/metadata.json');
         Map<String, dynamic> metadata = jsonDecode(metadataFile.readAsStringSync());
-
         metadata["url"] = DownloadManager.calcWatchableId(film);
-
         metadataFile.writeAsStringSync(jsonEncode(metadata));
-        return true;
     }
 
-    static Future<bool> _downloadMetadata(Directory outputDirectory, Watchable watchable) async {
+    static Future<void> _downloadMetadata(Directory outputDirectory, Watchable watchable) async {
         if(watchable is Episode)
-            return _downloadEpisodeMetadata(outputDirectory, watchable);
-        if(watchable is Film)
-            return _downloadFilmMetadata(outputDirectory, watchable);
-        return false;
+            await DownloadManager._downloadEpisodeMetadata(outputDirectory, watchable);
+        else if(watchable is Film)
+            await DownloadManager._downloadFilmMetadata(outputDirectory, watchable);
+        else
+            throw Exception("Unknown watchable type");
     }
 
     static String _calcId(String str) => md5.convert(utf8.encode(str)).toString();
@@ -116,11 +116,6 @@ class DownloadManager {
         watchable is Episode ? DownloadManager._calcId(watchable.season.series.name) :
         throw Exception("Unknown watchable type");
     static String calcWatchableId(Watchable watchable) => DownloadManager._calcId(watchable.title);
-
-    static String _downloadName(Watchable watchable) =>
-        watchable is Film ? watchable.name :
-        watchable is Episode ? "${watchable.season.series.name} - ${watchable.name}" :
-        throw Exception("Unknown watchable type");
 
     static Future<void> download(DownloadOptions options) async {
         String titleID = DownloadManager.calcTitleId(options.watchable);
@@ -131,7 +126,7 @@ class DownloadManager {
         if(Directory(outputDir.path).listSync().any((e) => e.path.contains(watchableID)))
             return;
 
-        DownloadState downloadState = DownloadState(DownloadManager._downloadName(options.watchable), options);
+        DownloadState downloadState = DownloadState(options.watchable.title, options);
         downloads.value.add(downloadState);
 
         Downloader downloader = options.url == null ? Downloader.hls : Downloader.direct;
