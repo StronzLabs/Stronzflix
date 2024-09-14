@@ -5,20 +5,19 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
-import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
 import 'package:stronzflix/backend/peer/peer_manager.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/components/cast_button.dart';
+import 'package:stronzflix/components/delete_title_button.dart';
 import 'package:stronzflix/components/downloads_button.dart';
 import 'package:stronzflix/components/downloads_drawer.dart';
 import 'package:stronzflix/components/save_title_button.dart';
 import 'package:stronzflix/components/title_card.dart';
 import 'package:stronzflix/components/card_grid.dart';
 import 'package:stronzflix/components/title_card_row.dart';
-import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/loading_dialog.dart';
 import 'package:stronzflix/dialogs/settings_dialog.dart';
 import 'package:stronzflix/dialogs/sink_dialog.dart';
@@ -172,12 +171,7 @@ class _HomePageState extends State<HomePage> {
             label: "Novità",
             values: this._newsMemoizer.runOnce(Settings.site.latests),
             buildAction: Settings.site.isLocal
-                ? (metadata) => IconButton(
-                    onPressed: () => this._delete(context, metadata),
-                    icon: const Icon(Icons.delete_outline,
-                        size: 28,
-                    )
-                )
+                ? (metadata) => DeleteTitleButton(title: metadata)
                 : (metadata) => SaveTitleButton(title: metadata),
         );
 
@@ -258,18 +252,6 @@ class _HomePageState extends State<HomePage> {
             bottomNavigationBar: this._isBigScreen ? null : this._buildBottomNavigationBar(context),
             body: this._buildBody(context),
         );
-    }
-
-    void _delete(BuildContext context, TitleMetadata metadata) async {
-        bool delete = await ConfirmationDialog.ask(context,
-            "Elimina ${metadata.name}",
-            "Sei sicuro di voler eliminare ${metadata.name}?",
-            action: "Elimina"
-        );
-        if (delete) {
-            await DownloadManager.delete(await Settings.site.getTitle(metadata));
-            super.setState(() {});
-        }
     }
 
     void _refetchLatests() {
