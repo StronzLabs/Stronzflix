@@ -7,7 +7,7 @@ import 'package:stronzflix/components/resource_image.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/download_dialog.dart';
 
-class EpisodeCard extends StatefulWidget {
+class EpisodeCard extends StatelessWidget {
     final Episode episode;
 
     const EpisodeCard({
@@ -15,15 +15,9 @@ class EpisodeCard extends StatefulWidget {
         required this.episode    
     });
 
-    @override
-    State<StatefulWidget> createState() => _EpisodeCardState();
-}
-
-class _EpisodeCardState extends State<EpisodeCard> {
-
     Widget _buildCover(BuildContext context) {
-        int? duration = KeepWatching.getDuration(super.widget.episode);
-        int? timestamp = KeepWatching.getTimestamp(super.widget.episode);
+        int? duration = KeepWatching.getDuration(this.episode);
+        int? timestamp = KeepWatching.getTimestamp(this.episode);
         double? progress = duration != null && timestamp != null
             ? timestamp / duration
             : null;
@@ -33,7 +27,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
                 fit: StackFit.expand,
                 children: [
                     ResourceImage(
-                        uri: super.widget.episode.cover,
+                        uri: this.episode.cover,
                         fit: BoxFit.fitWidth, 
                     ),
                     if(progress != null)
@@ -52,7 +46,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
                             ),
                             child: BorderText(
                                 builder: (style) => TextSpan(
-                                    text: super.widget.episode.episodeNo.toString(),
+                                    text: this.episode.episodeNo.toString(),
                                     style: style?.copyWith(
                                         fontSize: 32,
                                     ) ?? const TextStyle(
@@ -71,7 +65,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
         return Row(
             children: [
                 Expanded(
-                    child: Text(super.widget.episode.name,
+                    child: Text(this.episode.name,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                             fontSize: 16,
@@ -84,8 +78,8 @@ class _EpisodeCardState extends State<EpisodeCard> {
                     padding: const EdgeInsets.all(3.0),
                     constraints: const BoxConstraints(),
                     iconSize: 26,
-                    onPressed: this._action,
-                    icon: Icon(super.widget.episode.site.isLocal
+                    onPressed:  () => this._action(context),
+                    icon: Icon(this.episode.site.isLocal
                         ? Icons.delete_outline
                         : Icons.file_download_outlined
                     )
@@ -100,7 +94,6 @@ class _EpisodeCardState extends State<EpisodeCard> {
             aspectRatio: 3 / 2,
             child: Card(
                 child: InkWell(
-                    onLongPress: this._action,
                     focusNode: FocusNode(
                         skipTraversal: false,
                         descendantsAreTraversable: false,
@@ -123,21 +116,21 @@ class _EpisodeCardState extends State<EpisodeCard> {
     }
 
     void _play(BuildContext context) {
-        Navigator.pushNamed(context, '/player', arguments: super.widget.episode);
+        Navigator.pushNamed(context, '/player', arguments: this.episode);
     }
 
-    void _action() {
-        if(super.widget.episode.site.isLocal)
-            this._delete(super.widget.episode);
+    void _action(BuildContext context) {
+        if(this.episode.site.isLocal)
+            this._delete(context, this.episode);
         else    
-            this._download(super.widget.episode);
+            this._download(context, this.episode);
     }
 
-    Future<void> _download(Watchable watchable) async {
+    Future<void> _download(BuildContext context, Watchable watchable) async {
         await DownloadDialog.open(context, watchable);
     }
 
-    Future<void> _delete(Watchable watchable) async {
+    Future<void> _delete(BuildContext context, Watchable watchable) async {
         bool delete = await ConfirmationDialog.ask(context,
             "Elimina ${watchable.title}",
             "Sei sicuro di voler eliminare ${watchable.title}?",
@@ -145,12 +138,10 @@ class _EpisodeCardState extends State<EpisodeCard> {
         );
         if (delete) {
             await DownloadManager.deleteSingle(watchable);
-            if(!super.mounted)
-                return;
             
-            Season season = super.widget.episode.season;
+            Season season = this.episode.season;
             Series series = season.series;
-            if(series.seasons.length == 1 && season.episodes.length == 1)
+            if(series.seasons.length == 1 && season.episodes.length == 1 && context.mounted)
                 Navigator.of(context).pop();
         }
     }
