@@ -136,13 +136,7 @@ class EpisodeCard extends StatelessWidget {
             "Sei sicuro di voler eliminare ${watchable.title}?",
             action: "Elimina"
         );
-        if (delete) {
+        if (delete)
             await DownloadManager.deleteSingle(watchable);
-            
-            Season season = this.episode.season;
-            Series series = season.series;
-            if(series.seasons.length == 1 && season.episodes.length == 1 && context.mounted)
-                Navigator.of(context).pop();
-        }
     }
 }
