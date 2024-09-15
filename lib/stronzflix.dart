@@ -47,6 +47,9 @@ class Stronzflix extends StatelessWidget {
         ),
         expansionTileTheme: const ExpansionTileThemeData(
             shape: Border()
+        ),
+        cardTheme: const CardTheme(
+            clipBehavior: Clip.antiAlias,
         )
     );
 
