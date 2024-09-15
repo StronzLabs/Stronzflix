@@ -29,7 +29,6 @@ abstract class Middleware extends Initializable {
             try {
                 uri = await middleware.pass(uri, middlewareBody);
             } catch(_) {
-                print("Nop");
                 break;
             }
         }
