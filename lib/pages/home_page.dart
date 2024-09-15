@@ -52,11 +52,14 @@ class _HomePageState extends State<HomePage> {
                         Navigator.of(super.context).pushNamed('/player-sink', arguments: watchable);
                 });
         });
+
+        LocalSite.instance.addListener(this._refetchLocal);
     }
 
     @override
     void dispose() {
         this._peerMessagesSubscription?.cancel();
+        LocalSite.instance.removeListener(this._refetchLocal);
         super.dispose();
     }
 
@@ -167,25 +170,13 @@ class _HomePageState extends State<HomePage> {
             )
         );
 
-        Widget buildNews(BuildContext context) => this._buildFutureSection(context,
+        Widget news = this._buildFutureSection(context,
             label: "Novità",
             values: this._newsMemoizer.runOnce(Settings.site.latests),
             buildAction: Settings.site.isLocal
                 ? (metadata) => DeleteTitleButton(title: metadata)
                 : (metadata) => SaveTitleButton(title: metadata),
         );
-
-        Widget news;
-        if(Settings.site.isLocal)
-            news = ListenableBuilder(
-                listenable: LocalSite.instance,
-                builder: (context, _) {
-                    this._newsMemoizer = AsyncMemoizer();
-                    return buildNews(context);
-                }
-            );
-        else
-            news = buildNews(context);
 
         return this._isBigScreen
             ? [ keepWatching, saved, news ]
@@ -254,8 +245,16 @@ class _HomePageState extends State<HomePage> {
         );
     }
 
+    void _refetchLocal() {
+        if(!Settings.site.isLocal)
+            return;
+
+        this._refetchLatests();
+    }
+
     void _refetchLatests() {
+        this._newsMemoizer = AsyncMemoizer();
         if(super.mounted)
-            super.setState(() => this._newsMemoizer = AsyncMemoizer());
+            super.setState(() {});
     }
 }
