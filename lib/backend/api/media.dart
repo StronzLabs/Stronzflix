@@ -24,13 +24,15 @@ class TitleMetadata {
 class WatchOption {
     final Player player;
     final Uri uri;
+    final String displayName;
 
     Future<Uri> get source => this.player.getSource(this.uri);
 
-    const WatchOption({
+    WatchOption({
         required this.player,
-        required this.uri
-    });
+        required this.uri,
+        String? displayName
+    }) : this.displayName = displayName ?? player.name;
 }
 
 mixin Watchable implements Playable {

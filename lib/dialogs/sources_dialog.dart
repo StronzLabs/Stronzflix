@@ -19,7 +19,7 @@ class SourcesDialog extends StatelessWidget {
                 options: this.options,
                 selectedValue: null,
                 onSelected: (selection) => Navigator.of(context).pop(selection),
-                stringify: (option) => option.player.name,
+                stringify: (option) => option.displayName,
                 initiallyExpanded: true,
             )
         );

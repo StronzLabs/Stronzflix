@@ -92,12 +92,14 @@ class CB01 extends Site {
             if(sourceUri.toString().contains("mixdrop"))
                 options.add(WatchOption(
                     player: MixDrop.instance,
-                    uri: sourceUri
+                    uri: sourceUri,
+                    displayName: "${MixDrop.instance.name} ${scope.contains("HD") ? "HD" : ""}"
                 ));
             else if(sourceUri.toString().contains("maxstream"))
                 options.add(WatchOption(
                     player: Maxstream.instance,
-                    uri: sourceUri
+                    uri: sourceUri,
+                    displayName: "${Maxstream.instance.name} ${scope.contains("HD") ? "HD" : ""}"
                 ));
         }
 
