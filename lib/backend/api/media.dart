@@ -44,14 +44,16 @@ mixin Watchable implements Playable {
     Future<Uri> get source async {
         List<WatchOption> options = await this.site.getOptions(this);
 
-        if(Settings.pickSource && options.length > 1)
-            return await showDialog(
+        if(Settings.pickSource && options.length > 1) {
+            WatchOption opt = await showDialog(
                 context: Stronzflix.navigatorKey.currentContext!,
                 barrierDismissible: false,
                 builder: (context) => SourcesDialog(
                     options: options,
                 )
             );
+            return await opt.source;
+        }
 
         for(WatchOption opt in options) {
             try {
