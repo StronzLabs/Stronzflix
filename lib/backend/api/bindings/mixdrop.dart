@@ -19,7 +19,7 @@ class MixDrop extends Player {
             if(!iframeUrl.contains("mixdrop"))
                 iframeUrl = "${uri.scheme}://${uri.host}${iframeUrl}";
             else
-                iframeUrl = "https:${iframeUrl}";
+                iframeUrl = "${uri.scheme}:${iframeUrl}";
         }
         Document iframeDocument = html.parse(await HTTP.get(Uri.parse(iframeUrl)));
         Element script = iframeDocument.getElementsByTagName("script")
@@ -31,8 +31,8 @@ class MixDrop extends Player {
             .firstWhere((element) => element.contains("wurl"))
             .split('="')[1];
         url = url.substring(0, url.length - 1);
-        if (!url.startsWith("https://"))
-            url = "https:${url}";
+        if (!url.startsWith("${uri.scheme}://"))
+            url = "${uri.scheme}:${url}";
         
         return Uri.parse(url);
     }
