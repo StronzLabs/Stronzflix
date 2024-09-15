@@ -10,7 +10,7 @@ class StayOnline extends Middleware {
     @override
     Future<Uri> pass(Uri uri, String body) async {
         String id = uri.pathSegments[1];
-        String jsonString = await HTTP.post("https://${uri.host}/ajax/linkView.php", body: {
+        String jsonString = await HTTP.post("https://${uri.host}/ajax/linkEmbedView.php", body: {
             "id": id
         });
         Map<String, dynamic> json = jsonDecode(jsonString);
