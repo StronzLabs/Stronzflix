@@ -79,14 +79,14 @@ class CB01 extends Site {
         List<WatchOption> options = [];
         late String scope;
         for(Element element in tables) {
-            if(element.querySelector("a") == null) {
+            if(element.querySelector("span") == null) {
                 scope = element.text.trim();
                 continue;
             }
             if(scope != "Streaming:" && scope != "Streaming HD:")
                 continue;
             
-            Uri sourceUri = Uri.parse(element.querySelector("a")!.attributes["href"]!);
+            Uri sourceUri = Uri.parse(element.querySelector("span")!.attributes["onclick"]!.split("open('")[1].split("', ")[0]);
             sourceUri = await Middleware.resolve(sourceUri);
             
             if(sourceUri.toString().contains("mixdrop"))
