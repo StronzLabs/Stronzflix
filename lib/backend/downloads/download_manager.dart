@@ -141,7 +141,6 @@ class DownloadManager {
 
     static Future<void> _deleteEpisode(Episode episode) async {
         String titleID = DownloadManager.calcTitleId(episode.metadata);
-        String watchableID = DownloadManager.calcWatchableId(episode);
 
         Directory directory = Directory('${(await downloadDirectory).path}${titleID}');
         Map<String, dynamic> metadata = jsonDecode(File('${directory.path}/metadata.json').readAsStringSync());
@@ -156,9 +155,9 @@ class DownloadManager {
 
         File metadataFile = File('${directory.path}/metadata.json');
         metadataFile.writeAsStringSync(jsonEncode(metadata));
-        File coverFile = File('${directory.path}/${DownloadManager._calcId("${episode.title}-cover")}.jpg');
+        File coverFile = File.fromUri(episode.cover);
         coverFile.deleteSync();
-        File episodeFile = File('${directory.path}/${watchableID}.mp4');
+        File episodeFile = File.fromUri(episode.uri);
         episodeFile.deleteSync();
 
         KeepWatching.remove(episode.metadata, info: Watchable.genInfo(episode));
