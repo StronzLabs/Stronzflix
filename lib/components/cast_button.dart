@@ -1,6 +1,7 @@
 import 'package:cast/device.dart';
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/cast.dart';
+import 'package:stronzflix/components/animated_gradient_icon.dart';
 import 'package:sutils/sutils.dart';
 
 class CastButton extends StatefulWidget {
@@ -88,10 +89,14 @@ class _CastButtonState extends State<CastButton> with StreamListener {
             onCanceled: this.widget.onClosed,
             tooltip: '',
             iconSize: 28,
-            enabled: !this._connecting,
-            icon: this._connected
-                ? const Icon(Icons.cast_connected)
-                : const Icon(Icons.cast),
+            enabled: !this._connecting && !this._discovering,
+            icon: AnimatedGradientIcon(
+                icon: this._connected ? Icons.cast_connected : Icons.cast,
+                begin: Alignment.bottomLeft,
+                tint: Colors.grey,
+                radius: 0.6,
+                animated: this._discovering || this._connecting,
+            ),
             position: PopupMenuPosition.under,
             itemBuilder: (context) => options,
             onSelected: (value) async {
