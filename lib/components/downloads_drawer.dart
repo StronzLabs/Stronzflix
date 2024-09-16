@@ -93,7 +93,9 @@ class _DownloadsDrawerState extends State<DownloadsDrawer> {
                                         'Download in corso',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                            fontSize: 20
+                                            fontSize: 20,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold
                                         ),
                                     ),
                                     ),
