@@ -1,10 +1,9 @@
 import 'dart:ui';
 
 import 'package:async/async.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Title;
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
-import 'package:stronzflix/backend/api/media.dart' as sf show Title;
 import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/components/card_grid.dart';
 import 'package:stronzflix/components/cast_button.dart';
@@ -24,8 +23,8 @@ class TitlePage extends StatefulWidget {
 
 class _TitlePageState extends State<TitlePage> {
 
-    sf.Title? _title;
-    sf.Title get title => this._title!;
+    Title? _title;
+    Title get title => this._title!;
     late TitleMetadata _metadata;
     late String _heroUuid;
     late Season _selectedSeason;
@@ -330,7 +329,7 @@ class _TitlePageState extends State<TitlePage> {
     }
 
     Future<void> _fetchTitle() async {
-        sf.Title title = await this._metadata.site.getTitle(this._metadata);
+        Title title = await this._metadata.site.getTitle(this._metadata);
         this._title = title;
         if(title is Series)
             this._selectedSeason = title.seasons.first;
@@ -341,7 +340,7 @@ class _TitlePageState extends State<TitlePage> {
             return;
 
         try {
-            sf.Title updatedTitle = await LocalSite.instance.getTitle(this._metadata);
+            Title updatedTitle = await LocalSite.instance.getTitle(this._metadata);
             
             if(updatedTitle is Series) {
                 this._selectedSeason = updatedTitle.seasons.firstWhere(
