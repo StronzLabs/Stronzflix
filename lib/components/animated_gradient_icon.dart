@@ -3,11 +3,19 @@ import 'package:flutter/material.dart';
 class AnimatedGradientIcon extends StatefulWidget {
     final IconData icon;
     final bool animated;
-    
+    final AlignmentGeometry begin;
+    final AlignmentGeometry end;
+    final Color? tint;
+    final double? radius;
+
     const AnimatedGradientIcon({
         super.key,
         required this.icon,
         this.animated = true,
+        this.begin = Alignment.topCenter,
+        this.end = Alignment.bottomCenter,
+        this.tint,
+        this.radius,
     });
 
     @override
@@ -18,6 +26,7 @@ class _AnimatedGradientIconState extends State<AnimatedGradientIcon> with Single
     late final AnimationController _animationController = AnimationController(
         vsync: this,
         duration: const Duration(milliseconds: 750),
+        reverseDuration: const Duration(milliseconds: 750),
     );
     late final Animation _animation = Tween(
         begin: 0.0,
@@ -27,7 +36,7 @@ class _AnimatedGradientIconState extends State<AnimatedGradientIcon> with Single
     @override
     void initState() {
         super.initState();
-        this._animationController.repeat();
+        this._animationController.repeat(reverse: true);
     }
 
     @override
@@ -43,18 +52,28 @@ class _AnimatedGradientIconState extends State<AnimatedGradientIcon> with Single
         if(!super.widget.animated)
             return icon;
 
+        List<Color> colors = [
+            super.widget.tint ?? Theme.of(context).colorScheme.primary,
+            Theme.of(context).iconTheme.color!
+        ];
+
         return AnimatedBuilder(
             animation: this._animationController,
             builder: (context, child) {
                 return ShaderMask(
-                    shaderCallback: (bounds) => LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                            Theme.of(context).colorScheme.primary,
-                            Theme.of(context).iconTheme.color!
-                        ],
-                        stops: [this._animation.value, this._animation.value],
+                    shaderCallback: (bounds) => (super.widget.radius != null
+                        ? RadialGradient(
+                            center: super.widget.begin,
+                            colors: colors,
+                            stops: [ this._animation.value, this._animation.value ],
+                            radius: super.widget.radius!,
+                        )
+                        : LinearGradient(
+                            begin: super.widget.begin,
+                            end: super.widget.end,
+                            colors: colors,
+                            stops: [ this._animation.value, this._animation.value ],
+                        )
                     ).createShader(bounds),
                     child: icon,
                 );
