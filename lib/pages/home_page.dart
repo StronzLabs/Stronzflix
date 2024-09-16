@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
     PreferredSizeWidget _buildAppBar(BuildContext context) {
         return AppBar(
             title: const Text("Stronzflix"),
-            leading: const DownloadsButton(),
+            leading: const Center(child: DownloadsButton()),
             actions: [
                 const CastButton(),
                 const SizedBox(width: 8),
