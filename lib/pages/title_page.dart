@@ -29,8 +29,21 @@ class _TitlePageState extends State<TitlePage> {
     late TitleMetadata _metadata;
     late String _heroUuid;
     late Season _selectedSeason;
+    bool _discarding = false;
     
     AsyncMemoizer _memoizer = AsyncMemoizer();
+
+    @override
+    void initState() {
+        super.initState();
+        LocalSite.instance.addListener(this._refetchLocal);
+    }
+
+    @override
+    void dispose() {
+        LocalSite.instance.removeListener(this._refetchLocal);
+        super.dispose();
+    }
 
     @override
     void didChangeDependencies() {
@@ -321,6 +334,31 @@ class _TitlePageState extends State<TitlePage> {
         this._title = title;
         if(title is Series)
             this._selectedSeason = title.seasons.first;
+    }
+
+    Future<void> _refetchLocal() async {
+        if(!(this._title?.site.isLocal ?? false))
+            return;
+
+        try {
+            sf.Title updatedTitle = await LocalSite.instance.getTitle(this._metadata);
+            
+            if(updatedTitle is Series) {
+                this._selectedSeason = updatedTitle.seasons.firstWhere(
+                    (season) => season.seasonNo == this._selectedSeason.seasonNo,
+                    orElse: () => updatedTitle.seasons.first);
+            }
+ 
+            if(super.mounted)
+                super.setState(() {
+                    this._title = updatedTitle;
+                });
+        } catch (e) {
+            if(super.mounted && !this._discarding) {
+                this._discarding = true;
+                Navigator.of(super.context).pop();
+            }
+        }
     }
 
     void _play(Watchable watchable) {
