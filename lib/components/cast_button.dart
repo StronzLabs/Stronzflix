@@ -95,6 +95,7 @@ class _CastButtonState extends State<CastButton> with StreamListener {
                 begin: Alignment.bottomLeft,
                 tint: Colors.grey,
                 radius: 0.6,
+                reverse: true,
                 animated: this._discovering || this._connecting,
             ),
             position: PopupMenuPosition.under,

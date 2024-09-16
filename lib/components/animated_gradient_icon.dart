@@ -7,6 +7,7 @@ class AnimatedGradientIcon extends StatefulWidget {
     final AlignmentGeometry end;
     final Color? tint;
     final double? radius;
+    final bool reverse;
 
     const AnimatedGradientIcon({
         super.key,
@@ -16,6 +17,7 @@ class AnimatedGradientIcon extends StatefulWidget {
         this.end = Alignment.bottomCenter,
         this.tint,
         this.radius,
+        this.reverse = false,
     });
 
     @override
@@ -36,7 +38,7 @@ class _AnimatedGradientIconState extends State<AnimatedGradientIcon> with Single
     @override
     void initState() {
         super.initState();
-        this._animationController.repeat(reverse: true);
+        this._animationController.repeat(reverse: super.widget.reverse);
     }
 
     @override
