@@ -23,6 +23,20 @@ class DownloadOptions {
     const DownloadOptions(this.watchable, {this.variant, this.audio, this.url});
 }
 
+class DownloadList extends ValueNotifier<List<DownloadState>> {
+    DownloadList() : super([]);
+
+    void add(DownloadState download) {
+        this.value.add(download);
+        this.notifyListeners();
+    }
+
+    void remove(DownloadState download) {
+        this.value.remove(download);
+        this.notifyListeners();
+    }
+}
+
 class DownloadManager {
     const DownloadManager._();
 
@@ -31,11 +45,7 @@ class DownloadManager {
         return Directory('${outputDir.path}/Stronzflix/downloads/');
     }
 
-    static ValueNotifier<List<DownloadState>> downloads = ValueNotifier([]);
-
-    static void removeDownload(DownloadState download) async {
-        downloads.value = downloads.value.where((e) => e != download).toList();
-    }
+    static final DownloadList downloads = DownloadList();
 
     static Future<File> _downloadTitleMetadata(Directory outputDirectory, Title title) async{
         File metadataFile = File('${outputDirectory.path}/metadata.json');
@@ -124,7 +134,7 @@ class DownloadManager {
             return;
 
         DownloadState downloadState = DownloadState(options.watchable.title, options);
-        downloads.value.add(downloadState);
+        downloads.add(downloadState);
 
         Downloader downloader = options.url == null ? Downloader.hls : Downloader.direct;
         await downloader.download(options, downloadState, outputDir, watchableID);
@@ -136,7 +146,7 @@ class DownloadManager {
         
         await downloader.cleanTmpDownload(downloadState);
         if(!downloadState.hasError || downloadState.isCanceled)
-            DownloadManager.removeDownload(downloadState);
+            DownloadManager.downloads.remove(downloadState);
     }
 
     static Future<void> _deleteEpisode(Episode episode) async {

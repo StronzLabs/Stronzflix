@@ -39,7 +39,7 @@ class DownloadState extends ValueNotifier<double> {
 
     void cancel() {
         this._canceled = true;
-        DownloadManager.removeDownload(this);
+        DownloadManager.downloads.remove(this);
         super.notifyListeners();
     }
 
