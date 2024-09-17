@@ -69,8 +69,8 @@ jobs:
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.24.1"
-          channel: "stable"
+          flutter-version: "3.26.0-0.1.pre"
+          channel: "beta"
           cache: false # windows cache is broken
           cache-key: "flutter-windows"
           cache-path: "${{ runner.tool_cache }}/flutter/windows"
@@ -172,8 +172,8 @@ jobs:
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.24.1"
-          channel: "stable"
+          flutter-version: "3.26.0-0.1.pre"
+          channel: "beta"
           cache: true
           cache-key: "flutter-macos"
           cache-path: "${{ runner.tool_cache }}/flutter/macos"
@@ -215,8 +215,8 @@ jobs:
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.24.1"
-          channel: "stable"
+          flutter-version: "3.26.0-0.1.pre"
+          channel: "beta"
           cache: true
           cache-key: "flutter-android"
           cache-path: "${{ runner.tool_cache }}/flutter/android"
