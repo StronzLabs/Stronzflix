@@ -123,8 +123,8 @@ jobs:
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.24.1"
-          channel: "stable"
+          flutter-version: "3.26.0-0.1.pre"
+          channel: "beta"
           cache: true
           cache-key: "flutter-linux"
           cache-path: "${{ runner.tool_cache }}/flutter/linux"
