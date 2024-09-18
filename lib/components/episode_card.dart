@@ -92,7 +92,7 @@ class EpisodeCard extends StatelessWidget {
                         builder: (context, snapshot) =>  this._buildActionIcon(
                             context,
                             snapshot.hasData && snapshot.data!
-                                ? Icons.file_download_done_outlined
+                                ? Icons.download_done_rounded
                                 : Icons.file_download_outlined,
                             enabled: snapshot.hasData && !snapshot.data!
                         )
