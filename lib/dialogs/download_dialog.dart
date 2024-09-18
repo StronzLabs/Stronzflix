@@ -72,6 +72,24 @@ class DownloadDialog extends StatefulWidget {
 
     static Future<void> open(BuildContext context, Watchable watchable) async {
 
+        if(await DownloadManager.alreadyDownloaded(watchable)) {
+            if (!context.mounted)
+                return;
+            await showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                    title: Text("${watchable.title} è già stato scaricato"),
+                    actions: [
+                        TextButton(
+                            child: const Text("Ok"),
+                            onPressed: () => Navigator.of(context).pop()
+                        )
+                    ],
+                )
+            );
+            return;
+        }
+
         Uri url =  await LoadingDialog.load(context, () async => await watchable.source);
         String mime = await HTTP.mime(url);
 

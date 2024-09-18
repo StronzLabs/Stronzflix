@@ -124,6 +124,13 @@ class DownloadManager {
     static String calcTitleId(TitleMetadata metadata) => DownloadManager._calcId(metadata.name);
     static String calcWatchableId(Watchable watchable) => DownloadManager._calcId(watchable.title);
 
+    static Future<bool> alreadyDownloaded(Watchable watchable) async {
+        String titleID = DownloadManager.calcTitleId(watchable.metadata);
+        String watchableID = DownloadManager.calcWatchableId(watchable);
+        Directory outputDir = Directory('${(await downloadDirectory).path}${titleID}');
+        return Future.value(Directory(outputDir.path).listSync().any((e) => e.path.contains(watchableID)));
+    }
+
     static Future<void> download(DownloadOptions options) async {
         String titleID = DownloadManager.calcTitleId(options.watchable.metadata);
         String watchableID = DownloadManager.calcWatchableId(options.watchable);
