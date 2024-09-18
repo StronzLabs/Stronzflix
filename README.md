@@ -23,5 +23,4 @@ The developers of this application neither host nor distribute any of the conten
 ---
 TODOs:
 - [ ] Better sink implementation
-- [ ] Optimize for AndroidTV / FireStick
-- [ ] Preview/Trailer
+- [ ] Optimize navigation for AndroidTV / FireStick
