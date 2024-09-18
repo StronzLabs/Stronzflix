@@ -61,6 +61,16 @@ class EpisodeCard extends StatelessWidget {
         );
     }
 
+    Widget _buildActionIcon(BuildContext context, IconData icon, {bool enabled = true}) {
+        return IconButton(
+            padding: const EdgeInsets.all(3.0),
+            constraints: const BoxConstraints(),
+            iconSize: 26,
+            onPressed: enabled ? () => this._action(context) : null,
+            icon: Icon(icon)
+        );
+    }
+
     Widget _buildTitle(BuildContext context) {
         return Row(
             children: [
@@ -74,16 +84,19 @@ class EpisodeCard extends StatelessWidget {
                         textAlign: TextAlign.left
                     )
                 ),
-                IconButton(
-                    padding: const EdgeInsets.all(3.0),
-                    constraints: const BoxConstraints(),
-                    iconSize: 26,
-                    onPressed:  () => this._action(context),
-                    icon: Icon(this.episode.site.isLocal
-                        ? Icons.delete_outline
-                        : Icons.file_download_outlined
+                if(this.episode.site.isLocal)
+                    this._buildActionIcon(context, Icons.delete_outline)
+                else
+                    FutureBuilder(
+                        future: DownloadManager.alreadyDownloaded(this.episode),
+                        builder: (context, snapshot) =>  this._buildActionIcon(
+                            context,
+                            snapshot.hasData && snapshot.data!
+                                ? Icons.file_download_done_outlined
+                                : Icons.file_download_outlined,
+                            enabled: snapshot.hasData && !snapshot.data!
+                        )
                     )
-                )
             ],
         );
     }
