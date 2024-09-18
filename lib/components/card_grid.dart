@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class CardGrid<T> extends StatelessWidget {
     final Iterable<T> values;
-    final Widget Function(T) buildCard;
+    final Widget Function(BuildContext, T) buildCard;
     final ScrollPhysics? physics;
     final double aspectRatio;
     final Widget? emptyWidget;
@@ -38,7 +38,7 @@ class CardGrid<T> extends StatelessWidget {
                 for (T result in this.values)
                     Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: this.buildCard(result)
+                        child: this.buildCard(context, result)
                     )
             ]
         );

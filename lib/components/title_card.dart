@@ -9,12 +9,12 @@ import 'package:uuid/uuid.dart';
 
 class TitleCard extends StatefulWidget {
     final TitleMetadata? title;
-    final Widget Function(TitleMetadata)? buildAction;
+    final Widget? action;
 
     const TitleCard({
         super.key,
         this.title,
-        this.buildAction
+        this.action
     });
 
     @override
@@ -94,8 +94,8 @@ class _TitleCardState extends State<TitleCard> {
                                     )
                                 )
                             ),
-                            if(super.widget.buildAction != null)
-                                super.widget.buildAction!.call(this._title)
+                            if(super.widget.action != null)
+                                super.widget.action!
                         ]
                     )
                 ),

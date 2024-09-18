@@ -71,11 +71,11 @@ class SearchPage extends SearchDelegate {
 
                 return CardGrid(
                     values: snapshot.data!,
-                    buildCard: (metadata) => TitleCard(
+                    buildCard: (context, metadata) => TitleCard(
                         title: metadata,
-                        buildAction: Settings.site.isLocal
-                            ? (metadata) => DeleteTitleButton(title: metadata)
-                            : (metadata) => SaveTitleButton(title: metadata)
+                        action: Settings.site.isLocal
+                            ? DeleteTitleButton(title: metadata)
+                            : SaveTitleButton(title: metadata)
                     ),
                     emptyWidget: this._buildNoResults(context),
                 );

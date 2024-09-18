@@ -245,7 +245,7 @@ class _TitlePageState extends State<TitlePage> {
             values: this._selectedSeason.episodes,
             aspectRatio: 3 / 2,
             shrinkWrap: true,
-            buildCard: (episode) => EpisodeCard(episode: episode)
+            buildCard: (context, episode) => EpisodeCard(episode: episode)
         );
     }
 

@@ -1,32 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:stronzflix/backend/api/media.dart';
-import 'package:stronzflix/components/title_card.dart';
 
-class TitleCardRow extends StatefulWidget {
+class CardRow<T> extends StatefulWidget {
 
     final String title;
-    final Iterable<TitleMetadata> values;
-    final Widget Function(TitleMetadata)? buildAction;
-    final bool shimmer;
+    final Iterable<T> values;
+    final Widget Function(BuildContext, T) buildCard;
 
-    const TitleCardRow({
+    const CardRow({
         super.key,
         required this.title,
         required this.values,
-        this.buildAction,
-        this.shimmer = false
+        required this.buildCard
     });
 
-    const TitleCardRow.shimmer({
-        super.key,
-        required this.title,
-    }) : shimmer = true, values = const [], buildAction = null;
-
     @override
-    State<TitleCardRow> createState() => _TitleCardRowState();
+    State<CardRow> createState() => _CardRowState<T>();
 }
 
-class _TitleCardRowState extends State<TitleCardRow> {
+class _CardRowState<T> extends State<CardRow<T>> {
 
     bool _arrowVisibility = false;
     final ScrollController _scrollController = ScrollController();
@@ -54,35 +45,25 @@ class _TitleCardRowState extends State<TitleCardRow> {
         );
     }
 
-    Widget _buildScrollView(BuildContext context, Iterable<TitleMetadata?> data) {
+    Widget _buildScrollView(BuildContext context, Iterable<T> data) {
         return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             controller: this._scrollController,
             child: Row(
                 children: [
-                    if (super.widget.shimmer)
-                        for (int i = 0; i < 10; i++)
-                            const SizedBox(
-                                width: 350,
-                                child: TitleCard(title: null)
-                        )
-                    else
-                        for (TitleMetadata? metadata in [for (TitleMetadata? metadata in data) metadata])
-                            SizedBox(
-                                width: 350,
-                                child: TitleCard(
-                                    title: metadata,
-                                    buildAction: super.widget.buildAction,
-                                )
-                            )
-                ]
+                for (T item in data)
+                    SizedBox(
+                        width: 350,
+                        child: super.widget.buildCard(context, item)
+                    )
+                ],
             )
         );
     }
 
     @override
     Widget build(BuildContext context) {
-        if (super.widget.values.isEmpty && ! super.widget.shimmer)
+        if (super.widget.values.isEmpty)
             return const SizedBox.shrink();
 
         return MouseRegion(
@@ -92,7 +73,7 @@ class _TitleCardRowState extends State<TitleCardRow> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                     Text(
-                        widget.title,
+                        super.widget.title,
                         style: const TextStyle(
                             fontSize: 30,
                             overflow: TextOverflow.ellipsis,

@@ -5,19 +5,20 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
+import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
 import 'package:stronzflix/backend/peer/peer_manager.dart';
 import 'package:stronzflix/backend/peer/peer_messenger.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
+import 'package:stronzflix/components/card_row.dart';
 import 'package:stronzflix/components/cast_button.dart';
 import 'package:stronzflix/components/delete_title_button.dart';
-import 'package:stronzflix/components/downloads_button.dart';
-import 'package:stronzflix/components/downloads_drawer.dart';
+import 'package:stronzflix/components/download_card.dart';
+import 'package:stronzflix/components/downloads_icon.dart';
 import 'package:stronzflix/components/save_title_button.dart';
 import 'package:stronzflix/components/title_card.dart';
 import 'package:stronzflix/components/card_grid.dart';
-import 'package:stronzflix/components/title_card_row.dart';
 import 'package:stronzflix/dialogs/loading_dialog.dart';
 import 'package:stronzflix/dialogs/settings_dialog.dart';
 import 'package:stronzflix/dialogs/sink_dialog.dart';
@@ -66,7 +67,6 @@ class _HomePageState extends State<HomePage> {
     PreferredSizeWidget _buildAppBar(BuildContext context) {
         return AppBar(
             title: const Text("Stronzflix"),
-            leading: const Center(child: DownloadsButton()),
             actions: [
                 const CastButton(),
                 const SizedBox(width: 8),
@@ -91,35 +91,32 @@ class _HomePageState extends State<HomePage> {
         );        
     }
 
-    Widget _buildSection(BuildContext context, {
+    Widget _buildSection<T>(BuildContext context, {
         required String label,
-        required Iterable<TitleMetadata> values,
-        Widget Function(TitleMetadata)? buildAction,
+        required Iterable<T> values,
+        required Widget Function(BuildContext, T) buildCard,
         String? emptyText
     }) {
         if(this._isBigScreen)
-            return TitleCardRow(
+            return CardRow(
                 title: label,
                 values: values,
-                buildAction: buildAction
+                buildCard: buildCard
             );
 
         return CardGrid(
             values: values,
-            buildCard: (metadata) => TitleCard(
-                buildAction: buildAction,
-                title: metadata,
-            ),
+            buildCard: buildCard,
             emptyWidget: emptyText == null
                 ? null
                 : Center(child: Text(emptyText))
         );
     }
 
-    Widget _buildFutureSection(BuildContext context, {
+    Widget _buildFutureSection<T>(BuildContext context, {
         required String label,
-        required Future<Iterable<TitleMetadata>> values,
-        Widget Function(TitleMetadata)? buildAction,
+        required Future<Iterable<T>> values,
+        required Widget Function(BuildContext, T?) buildCard,
         String? emptyText
     }) {
         return FutureBuilder(
@@ -127,7 +124,11 @@ class _HomePageState extends State<HomePage> {
             builder: (context, snapshot) {
                 if(snapshot.connectionState != ConnectionState.done)
                     if(this._isBigScreen)
-                        return TitleCardRow.shimmer(title: label);
+                        return CardRow(
+                            title: label,
+                            values: List<T?>.filled(10, null),
+                            buildCard: buildCard,
+                        );
                     else 
                         return const Center(child: CircularProgressIndicator());
 
@@ -135,8 +136,8 @@ class _HomePageState extends State<HomePage> {
                     onRefresh: () async => this._refetchLatests(), 
                     child: this._buildSection(context,
                         label: label,
-                        values: snapshot.data as Iterable<TitleMetadata>,
-                        buildAction: buildAction,
+                        values: snapshot.data as Iterable<T>,
+                        buildCard: buildCard,
                         emptyText: emptyText
                     ),
                 );
@@ -150,11 +151,14 @@ class _HomePageState extends State<HomePage> {
             builder: (context, keepWatching, _) => this._buildSection(context,
                 label: "Continua a guardare",
                 values: KeepWatching.metadata,
-                buildAction: (metadata) => IconButton(
-                    onPressed: () => KeepWatching.remove(metadata),
-                    icon: const Icon(Icons.close,
-                        size: 28,
-                    )
+                buildCard: (context, metadata) => TitleCard(
+                    action: IconButton(
+                        onPressed: () => KeepWatching.remove(metadata),
+                        icon: const Icon(Icons.close,
+                            size: 28,
+                        )
+                    ),
+                    title: metadata,
                 ),
                 emptyText: "Non hai ancora guardato nulla"
             )
@@ -165,7 +169,10 @@ class _HomePageState extends State<HomePage> {
             builder: (context, savedTitles, _) => this._buildSection(context,
                 label: "Salvati",
                 values: savedTitles,
-                buildAction: (metadata) => SaveTitleButton(title: metadata),
+                buildCard: (context, metadata) => TitleCard(
+                    action: SaveTitleButton(title: metadata),
+                    title: metadata,
+                ),
                 emptyText: "Non hai salvato nessun titolo"
             )
         );
@@ -173,14 +180,29 @@ class _HomePageState extends State<HomePage> {
         Widget news = this._buildFutureSection(context,
             label: "Novità",
             values: this._newsMemoizer.runOnce(Settings.site.latests),
-            buildAction: Settings.site.isLocal
-                ? (metadata) => DeleteTitleButton(title: metadata)
-                : (metadata) => SaveTitleButton(title: metadata),
+            buildCard: (context, metadata) => TitleCard(
+                action: Settings.site.isLocal
+                    ? DeleteTitleButton(title: metadata!)
+                    : SaveTitleButton(title: metadata!),
+                title: metadata,
+            ),
+        );
+    
+        Widget downloads = ValueListenableBuilder(
+            valueListenable: DownloadManager.downloads,
+            builder: (context, savedTitles, _) => this._buildSection(context,
+                label: "Download in corso",
+                values: savedTitles,
+                buildCard: (context, metadata) => DownloadCard(
+                    download: metadata,
+                ),
+                emptyText: "Nessun download in corso"
+            )
         );
 
         return this._isBigScreen
-            ? [ keepWatching, saved, news ]
-            : [ keepWatching, news, saved ];
+            ? [ keepWatching, saved, news, downloads ]
+            : [ keepWatching, news, saved, downloads ];
     }
 
     Widget _buildBottomNavigationBar(BuildContext context) {
@@ -197,6 +219,10 @@ class _HomePageState extends State<HomePage> {
                 NavigationDestination(
                     icon: Icon(Icons.bookmark_outline),
                     label: "Salvati",
+                ),
+                NavigationDestination(
+                    icon: DownloadsIcon(),
+                    label: "Download",
                 ),
             ],
             selectedIndex: this._currentSection,
@@ -238,7 +264,6 @@ class _HomePageState extends State<HomePage> {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: this._buildAppBar(context),
-            drawer: const DownloadsDrawer(),
             floatingActionButton: !this._hasPeerConnection ? null : this._buildSinkButton(context),
             bottomNavigationBar: this._isBigScreen ? null : this._buildBottomNavigationBar(context),
             body: this._buildBody(context),
