@@ -181,9 +181,9 @@ class _HomePageState extends State<HomePage> {
             label: "Novità",
             values: this._newsMemoizer.runOnce(Settings.site.latests),
             buildCard: (context, metadata) => TitleCard(
-                action: Settings.site.isLocal
-                    ? DeleteTitleButton(title: metadata!)
-                    : SaveTitleButton(title: metadata!),
+                action: metadata == null ? null : Settings.site.isLocal
+                    ? DeleteTitleButton(title: metadata)
+                    : SaveTitleButton(title: metadata),
                 title: metadata,
             ),
         );
