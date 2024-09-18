@@ -1,6 +1,5 @@
-import 'package:cast/device.dart';
 import 'package:flutter/material.dart';
-import 'package:stronzflix/backend/cast.dart';
+import 'package:stronzflix/backend/cast/cast.dart';
 import 'package:stronzflix/components/animated_gradient_icon.dart';
 import 'package:sutils/sutils.dart';
 
@@ -22,30 +21,6 @@ class CastButton extends StatefulWidget {
 
 class _CastButtonState extends State<CastButton> with StreamListener {
 
-    List<CastDevice> _devices = CastManager.devices;
-    bool _discovering = CastManager.discovering;
-    bool _connected = CastManager.connected;
-    bool _connecting = CastManager.connecting;
-
-    @override
-    void didChangeDependencies() {
-        super.didChangeDependencies();
-        super.updateSubscriptions([
-            CastManager.devicesStream.listen(
-                (event) => this.setState(() => this._devices = event)
-            ),
-            CastManager.discoveringStream.listen(
-                (event) => this.setState(() => this._discovering = event)
-            ),
-            CastManager.connectedStream.listen(
-                (event) => this.setState(() => this._connected = event)
-            ),
-            CastManager.connectingStream.listen(
-                (event) => this.setState(() => this._connecting = event)
-            )
-        ]);
-    }
-
     @override
     void setState(VoidCallback fn) {
         if(super.mounted)
@@ -63,63 +38,59 @@ class _CastButtonState extends State<CastButton> with StreamListener {
         if(EPlatform.isTV)
             return const SizedBox.shrink();
 
-        List<PopupMenuItem> options = this._connected
+        List<PopupMenuItem<Object>> buildOptions(context) => CastManager.connected
             ? [
                 const PopupMenuItem(
                     value: 0,
                     child: Text("Disconnetti"),
                 )
             ] : [
-                for(CastDevice device in this._devices)
+                for(CasterDevice device in CastManager.devices)
                     PopupMenuItem(
                         value: device,
-                        enabled: !this._discovering,
                         child: Text(device.name),
                     ),
-                PopupMenuItem(
+                const PopupMenuItem(
                     value: 0,
-                    child: this._discovering
-                        ? const Text("Ricerca in corso...")
-                        : const Text("Esegui ricerca"),
+                    child: Text("Esegui ricerca"),
                 )
             ];
 
-        return PopupMenuButton(
-            onOpened: this.widget.onOpened,
-            onCanceled: this.widget.onClosed,
-            tooltip: '',
-            iconSize: 28,
-            enabled: !this._connecting && !this._discovering,
-            icon: AnimatedGradientIcon(
-                icon: this._connected ? Icons.cast_connected : Icons.cast,
-                begin: Alignment.bottomLeft,
-                tint: Colors.grey,
-                radius: 0.6,
-                reverse: true,
-                animated: this._discovering || this._connecting,
-            ),
-            position: PopupMenuPosition.under,
-            itemBuilder: (context) => options,
-            onSelected: (value) async {
-                if(value == 0) {
-                    if(this._connected) {
-                        await CastManager.disconnect();
+        return ListenableBuilder(
+            listenable: CastManager.state,
+            builder: (context, _) => PopupMenuButton(
+                onOpened: this.widget.onOpened,
+                onCanceled: this.widget.onClosed,
+                tooltip: '',
+                iconSize: 28,
+                enabled: !CastManager.connecting && !CastManager.discovering,
+                icon: AnimatedGradientIcon(
+                    icon: CastManager.connected ? Icons.cast_connected : Icons.cast,
+                    begin: Alignment.bottomLeft,
+                    tint: Colors.grey,
+                    radius: 0.6,
+                    reverse: true,
+                    animated: CastManager.discovering || CastManager.connecting,
+                ),
+                position: PopupMenuPosition.under,
+                itemBuilder: buildOptions,
+                onSelected: (value) async {
+                    if(value is! CasterDevice) {
+                        if(CastManager.connected) {
+                            await CastManager.disconnect();
+                            return;
+                        }
+
+                        await CastManager.discovery();
                         return;
                     }
 
-                    if(this._discovering)
-                        return;
+                    if(await FullScreen.check())
+                        await FullScreen.set(false);
 
-                    this.setState(() => this._discovering = true);
-                    await CastManager.startDiscovery();
-                    return;
-                }
-
-                if(await FullScreen.check())
-                    await FullScreen.set(false);
-
-                CastManager.connect(value as CastDevice);
-            },
+                    CastManager.connect(value);
+                },
+            )
         );
     }
 }

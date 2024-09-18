@@ -18,7 +18,7 @@ import 'package:stronzflix/backend/api/bindings/uprot.dart';
 import 'package:stronzflix/backend/api/bindings/vixxcloud.dart';
 import 'package:stronzflix/backend/api/bindings/vjsplayer.dart';
 import 'package:stronzflix/backend/api/tune.dart';
-import 'package:stronzflix/backend/cast.dart';
+import 'package:stronzflix/backend/cast/cast.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
 import 'package:stronzflix/backend/peer/peer_manager.dart';
@@ -193,7 +193,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     }
 
     Future<void> _backgroundLoading() async {
-        CastManager.startDiscovery();
+        CastManager.discovery();
     }
 
     @override
