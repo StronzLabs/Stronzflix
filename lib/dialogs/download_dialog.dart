@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/api/media.dart';
+import 'package:stronzflix/components/resource_image.dart';
 import 'package:stronzflix/components/select_dropdown.dart';
 import 'package:stronzflix/dialogs/loading_dialog.dart';
 import 'package:stronzflix/utils/utils.dart';
@@ -13,12 +14,14 @@ class DownloadDialog extends StatefulWidget {
     final List<Variant> variants;
     final List<Rendition> audios;
     final String name;
+    final Uri cover;
 
     const DownloadDialog({
         super.key,
         this.variants = const [],
         this.audios = const [],
         required this.name,
+        required this.cover,
         required this.defaults,
     });
 
@@ -50,6 +53,7 @@ class DownloadDialog extends StatefulWidget {
                 variants: variants,
                 audios: audios,
                 name: watchable.title,
+                cover: watchable.thumbnail,
                 defaults:  DownloadOptions(watchable, variant: defaultVariant, audio: defaultAudio)
             )
         );
@@ -63,6 +67,7 @@ class DownloadDialog extends StatefulWidget {
             context: context,
             builder: (context) => DownloadDialog(
                 name: watchable.title,
+                cover: watchable.thumbnail,
                 defaults: DownloadOptions(watchable, url: url)
             )
         );
@@ -71,25 +76,6 @@ class DownloadDialog extends StatefulWidget {
     }
 
     static Future<void> open(BuildContext context, Watchable watchable) async {
-
-        if(await DownloadManager.alreadyDownloaded(watchable)) {
-            if (!context.mounted)
-                return;
-            await showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                    title: Text("${watchable.title} è già stato scaricato"),
-                    actions: [
-                        TextButton(
-                            child: const Text("Ok"),
-                            onPressed: () => Navigator.of(context).pop()
-                        )
-                    ],
-                )
-            );
-            return;
-        }
-
         Uri url =  await LoadingDialog.load(context, () async => await watchable.source);
         String mime = await HTTP.mime(url);
 
@@ -119,7 +105,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
     @override
     Widget build(BuildContext context) {
         return AlertDialog(
-            title: Text('Scarica ${widget.name}'),
+            title: const Text('Scarica media'),
             actions: [
                 TextButton(
                     child: const Text('Annulla'),
@@ -137,26 +123,56 @@ class _DownloadDialogState extends State<DownloadDialog> {
                     )
                 )
             ],
-            content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                    if (super.widget.variants.isNotEmpty)
-                        SelectDropDown(
-                            label: "Qualità",
-                            options: super.widget.variants,
-                            selectedValue: this._selectedVariant,
-                            onSelected: (e) => this._selectedVariant = e,
-                            stringify: (e) => "${deduceVariantResolution(e)}p",
+            content: SizedBox(
+                width: 500,
+                child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(super.widget.name,
+                                style: const TextStyle(
+                                    fontSize: 20
+                                ),
+                            ),
                         ),
-                    if (super.widget.audios.isNotEmpty)
-                        SelectDropDown(
-                            label: "Audio",
-                            options: super.widget.audios,
-                            selectedValue: this._selectedAudio,
-                            onSelected: (e) => this._selectedAudio = e,
-                            stringify: (e) => e.name!,
-                        )
-                ],
+                        const SizedBox.square(dimension: 8),
+                        Stack(
+                            fit: StackFit.passthrough,
+                            alignment: Alignment.center,
+                            children: [
+                                ResourceImage(
+                                    fit: BoxFit.fitWidth,
+                                    uri: super.widget.cover,
+                                ),
+                                Positioned.fill(
+                                    child: ColoredBox(color: Colors.black.withAlpha(150)),
+                                ),
+                                Icon(Icons.file_download_outlined,
+                                    size: 75,
+                                    color: Theme.of(context).colorScheme.primary
+                                )
+                            ],
+                        ),
+                        const SizedBox.square(dimension: 8),
+                        if (super.widget.variants.isNotEmpty)
+                            SelectDropDown(
+                                label: "Qualità",
+                                options: super.widget.variants,
+                                selectedValue: this._selectedVariant,
+                                onSelected: (e) => this._selectedVariant = e,
+                                stringify: (e) => "${deduceVariantResolution(e)}p",
+                            ),
+                        if (super.widget.audios.isNotEmpty)
+                            SelectDropDown(
+                                label: "Audio",
+                                options: super.widget.audios,
+                                selectedValue: this._selectedAudio,
+                                onSelected: (e) => this._selectedAudio = e,
+                                stringify: (e) => e.name!,
+                            )
+                    ],
+                ),
             ),
         );
     }
