@@ -128,6 +128,8 @@ class DownloadManager {
         String titleID = DownloadManager.calcTitleId(watchable.metadata);
         String watchableID = DownloadManager.calcWatchableId(watchable);
         Directory outputDir = Directory('${(await downloadDirectory).path}${titleID}');
+        if(!outputDir.existsSync())
+            return false;
         return Future.value(Directory(outputDir.path).listSync().any((e) => e.path.contains(watchableID)));
     }
 
