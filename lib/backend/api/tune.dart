@@ -12,10 +12,14 @@ class Tuner {
     const Tuner(this.validator, this.cacheId);
 
     static Future<void> prepareCache() async {
-        Map<String, dynamic> release = jsonDecode(await HTTP.get('https://api.github.com/repos/StronzLabs/StronzTuner/releases/tags/cache'));
-        String body = String.fromCharCodes(base64Decode(release["body"]));
-        List<String> cache = body.split("|");
-        Tuner.cache = cache;
+        try {
+            Map<String, dynamic> release = jsonDecode(await HTTP.get('https://api.github.com/repos/StronzLabs/StronzTuner/releases/tags/cache'));
+            String body = String.fromCharCodes(base64Decode(release["body"]));
+            List<String> cache = body.split("|");
+            Tuner.cache = cache;
+        } catch (_) {
+            Tuner.cache = [];
+        }
     }
     
     Future<bool> validateDomain(String domain) async {
