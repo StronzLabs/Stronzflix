@@ -95,13 +95,15 @@ class _HomePageState extends State<HomePage> {
         required String label,
         required Iterable<T> values,
         required Widget Function(BuildContext, T) buildCard,
-        String? emptyText
+        String? emptyText,
+        double cardAspectRatio = 16 / 9
     }) {
         if(this._isBigScreen)
             return CardRow(
                 title: label,
                 values: values,
-                buildCard: buildCard
+                buildCard: buildCard,
+                cardAspectRatio: cardAspectRatio,
             );
 
         return CardGrid(
@@ -109,7 +111,8 @@ class _HomePageState extends State<HomePage> {
             buildCard: buildCard,
             emptyWidget: emptyText == null
                 ? null
-                : Center(child: Text(emptyText))
+                : Center(child: Text(emptyText)),
+            aspectRatio: cardAspectRatio,
         );
     }
 
@@ -117,7 +120,8 @@ class _HomePageState extends State<HomePage> {
         required String label,
         required Future<Iterable<T>> values,
         required Widget Function(BuildContext, T?) buildCard,
-        String? emptyText
+        String? emptyText,
+        double cardAspectRatio = 16 / 9
     }) {
         return FutureBuilder(
             future: values,
@@ -128,17 +132,20 @@ class _HomePageState extends State<HomePage> {
                             title: label,
                             values: List<T?>.filled(10, null),
                             buildCard: buildCard,
+                            cardAspectRatio: cardAspectRatio,
                         );
                     else 
                         return const Center(child: CircularProgressIndicator());
 
-                return RefreshIndicator(
+                return 
+                RefreshIndicator(
                     onRefresh: () async => this._refetchLatests(), 
                     child: this._buildSection(context,
                         label: label,
                         values: snapshot.data as Iterable<T>,
                         buildCard: buildCard,
-                        emptyText: emptyText
+                        emptyText: emptyText,
+                        cardAspectRatio: cardAspectRatio
                     ),
                 );
             }
@@ -196,7 +203,8 @@ class _HomePageState extends State<HomePage> {
                 buildCard: (context, metadata) => DownloadCard(
                     download: metadata,
                 ),
-                emptyText: "Nessun download in corso"
+                emptyText: "Nessun download in corso",
+                cardAspectRatio: 16 / 5
             )
         );
 

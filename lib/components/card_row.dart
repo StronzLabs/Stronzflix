@@ -5,12 +5,14 @@ class CardRow<T> extends StatefulWidget {
     final String title;
     final Iterable<T> values;
     final Widget Function(BuildContext, T) buildCard;
+    final double cardAspectRatio;
 
     const CardRow({
         super.key,
         required this.title,
         required this.values,
-        required this.buildCard
+        required this.buildCard,
+        this.cardAspectRatio = 16 / 9,
     });
 
     @override
@@ -46,17 +48,15 @@ class _CardRowState<T> extends State<CardRow<T>> {
     }
 
     Widget _buildScrollView(BuildContext context, Iterable<T> data) {
-        return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            controller: this._scrollController,
-            child: Row(
-                children: [
-                for (T item in data)
-                    SizedBox(
-                        width: 350,
-                        child: super.widget.buildCard(context, item)
-                    )
-                ],
+        double width = 350;
+        double height = width / super.widget.cardAspectRatio;
+        return SizedBox(
+            height: height,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                controller: this._scrollController,
+                itemCount: data.length,
+                itemBuilder: (context, index) => super.widget.buildCard(context, data.elementAt(index))
             )
         );
     }
