@@ -21,8 +21,8 @@ class VersionChecker
     static Future<bool> shouldUpdate() async
     {
         try {
-            String currentVersion = await getCurrentVersion();
-            String lastVersion = await _getLastVersion();
+            String currentVersion = await VersionChecker.getCurrentVersion();
+            String lastVersion = await VersionChecker._getLastVersion();
             return currentVersion != lastVersion;
         } catch (_) {
             return false;
