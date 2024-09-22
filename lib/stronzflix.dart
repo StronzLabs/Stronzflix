@@ -18,9 +18,6 @@ class Stronzflix extends StatelessWidget {
     static ThemeData get theme => ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: (Colors.grey[900])!,
-        drawerTheme: DrawerThemeData(
-            backgroundColor: (Colors.grey[900])!
-        ),
         colorScheme: ColorScheme.dark(
             brightness: Brightness.dark,
             primary: Colors.orange,
@@ -30,6 +27,9 @@ class Stronzflix extends StatelessWidget {
             surfaceContainerHigh: (Colors.grey[900])!,
             error: Colors.red,
             secondaryContainer: Colors.orange
+        ),
+        progressIndicatorTheme: const ProgressIndicatorThemeData(
+            linearTrackColor: Colors.grey
         ),
         appBarTheme: const AppBarTheme(
             centerTitle: true
