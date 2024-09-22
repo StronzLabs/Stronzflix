@@ -20,6 +20,16 @@ class TitlePage extends StatefulWidget {
 
     @override
     State<TitlePage> createState() => _TitlePageState();
+
+    static Future<void> delete(BuildContext context, Watchable watchable) async {
+        bool delete = await ConfirmationDialog.ask(context,
+            "Elimina ${watchable.title}",
+            "Sei sicuro di voler eliminare ${watchable.title}?",
+            action: "Elimina"
+        );
+        if (delete)
+            await DownloadManager.deleteSingle(watchable);
+    }
 }
 
 class _TitlePageState extends State<TitlePage> {
@@ -31,7 +41,7 @@ class _TitlePageState extends State<TitlePage> {
     late Season _selectedSeason;
     bool _discarding = false;
     
-    AsyncMemoizer _memoizer = AsyncMemoizer();
+    final AsyncMemoizer _memoizer = AsyncMemoizer();
 
     @override
     void initState() {
@@ -167,13 +177,13 @@ class _TitlePageState extends State<TitlePage> {
     Widget _buildFilmActions(BuildContext context) {
         Widget buildActionIcon(BuildContext context, IconData icon, {
             double borderPercentage = 0.0,
-            void Function(BuildContext)? action
+            void Function()? action
         }) {
             return Stack(
                 alignment: Alignment.center,
                 children: [
                     OutlinedButton(
-                        onPressed: action == null ? null : () => action(context),
+                        onPressed: action,
                         style: OutlinedButton.styleFrom(
                             shape: const CircleBorder(),
                             padding: const EdgeInsets.all(10.0),
@@ -217,10 +227,12 @@ class _TitlePageState extends State<TitlePage> {
                         ? Icons.fast_forward
                         : Icons.play_arrow,
                         borderPercentage: progress ?? 0.0,
-                        action: this._play
+                        action: () => Navigator.pushNamed(context, '/player', arguments: this._metadata)
                     ),
                     if(this.title.site.isLocal)
-                        buildActionIcon(context, Icons.delete_outline, action: this._action)
+                        buildActionIcon(context, Icons.delete_outline,
+                            action: () => TitlePage.delete(context, this.title as Film)
+                        )
                     else if(this.title.site.allowsDownload)
                         FutureBuilder(
                             future: DownloadManager.alreadyDownloaded(this.title as Film),
@@ -230,7 +242,7 @@ class _TitlePageState extends State<TitlePage> {
                                     ? Icons.download_done_rounded
                                     : Icons.file_download_outlined,
                                 action: snapshot.hasData && !snapshot.data!
-                                    ? this._action
+                                    ? () => DownloadDialog.open(context, this.title as Film)
                                     : null,
                             )
                         )
@@ -399,30 +411,5 @@ class _TitlePageState extends State<TitlePage> {
                 Navigator.of(super.context).pop();
             }
         }
-    }
-
-    void _play(BuildContext context) {
-        Navigator.pushNamed(context, '/player', arguments: this.title as Film);
-    }
-
-    void _action(BuildContext context) {
-        if(this.title.site.isLocal)
-            this._delete(context, this.title as Film);
-        else    
-            this._download(context, this.title as Film);
-    }
-
-    Future<void> _download(BuildContext context, Watchable watchable) async {
-        await DownloadDialog.open(context, watchable);
-    }
-
-    Future<void> _delete(BuildContext context, Watchable watchable) async {
-        bool delete = await ConfirmationDialog.ask(context,
-            "Elimina ${watchable.title}",
-            "Sei sicuro di voler eliminare ${watchable.title}?",
-            action: "Elimina"
-        );
-        if (delete)
-            await DownloadManager.deleteSingle(watchable);
     }
 }
