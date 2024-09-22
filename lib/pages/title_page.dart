@@ -227,7 +227,7 @@ class _TitlePageState extends State<TitlePage> {
                         ? Icons.fast_forward
                         : Icons.play_arrow,
                         borderPercentage: progress ?? 0.0,
-                        action: () => Navigator.pushNamed(context, '/player', arguments: this._metadata)
+                        action: () => Navigator.pushNamed(context, '/player', arguments: this.title)
                     ),
                     if(this.title.site.isLocal)
                         buildActionIcon(context, Icons.delete_outline,
