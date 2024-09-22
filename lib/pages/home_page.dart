@@ -118,6 +118,7 @@ class _HomePageState extends State<HomePage> {
                 ? null
                 : Center(child: Text(emptyText)),
             aspectRatio: cardAspectRatio,
+            minCardHeight: 120,
         );
     }
 

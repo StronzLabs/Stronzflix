@@ -9,6 +9,7 @@ class CardGrid<T> extends StatelessWidget {
     final double aspectRatio;
     final Widget? emptyWidget;
     final bool shrinkWrap;
+    final double minCardHeight;
 
     const CardGrid({
         super.key,
@@ -17,7 +18,8 @@ class CardGrid<T> extends StatelessWidget {
         this.emptyWidget,
         this.aspectRatio = 16 / 9,
         this.physics,
-        this.shrinkWrap = false
+        this.shrinkWrap = false,
+        this.minCardHeight = 0
     });
     
     @override
@@ -29,9 +31,17 @@ class CardGrid<T> extends StatelessWidget {
         double screenWidth = MediaQuery.of(context).size.width;
         int crossAxisCount = max((screenWidth / minCardWidth).floor(), 1);
 
+        double aspectRatio = this.aspectRatio;
+        if(this.minCardHeight > 0) {
+            double cardHeight = screenWidth / crossAxisCount / aspectRatio;
+            if(cardHeight < this.minCardHeight) {
+                aspectRatio = screenWidth / crossAxisCount / this.minCardHeight;
+            }
+        }
+
         return GridView.count(
             crossAxisCount: crossAxisCount,
-            childAspectRatio: this.aspectRatio,
+            childAspectRatio: aspectRatio,
             physics: this.physics,
             shrinkWrap: this.shrinkWrap,
             children: [
