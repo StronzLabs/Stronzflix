@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide Title;
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
+import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/components/card_grid.dart';
 import 'package:stronzflix/components/cast_button.dart';
 import 'package:stronzflix/components/episode_card.dart';
@@ -164,37 +165,77 @@ class _TitlePageState extends State<TitlePage> {
     }
 
     Widget _buildFilmActions(BuildContext context) {
-        Widget buildButton(String label, IconData icon, void Function() onPressed) {
-            return ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(17.0),
-                    minimumSize: const Size(300, 0),
-                ),
-                onPressed: onPressed,
-                label: Text(label,
-                    style: const TextStyle(
-                        fontSize: 30
+        Widget buildActionIcon(BuildContext context, IconData icon, {
+            double borderPercentage = 0.0,
+            void Function(BuildContext)? action
+        }) {
+            return Stack(
+                alignment: Alignment.center,
+                children: [
+                    OutlinedButton(
+                        onPressed: action == null ? null : () => action(context),
+                        style: OutlinedButton.styleFrom(
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(10.0),
+                            minimumSize: const Size(60, 60),
+                            side: BorderSide(
+                                width: 2,
+                                color: Theme.of(context).disabledColor,
+                            )
+                        ),
+                        child: Icon(icon,
+                            size: 30
+                        )
+                    ),
+                    IgnorePointer(
+                        child: SizedBox(
+                        height: 50,
+                        width: 50,
+                        child: CircularProgressIndicator(
+                            value: borderPercentage,
+                            strokeWidth: 2.0,
+                        ),
+                    ),
                     )
-                ),
-                icon: Icon(icon,
-                    size: 40
-                )
+                ],
             );
         }
 
-        return OverflowBar(
-            spacing: 30.0,
-            overflowSpacing: 20.0,
-            overflowAlignment: OverflowBarAlignment.center,
-            children: [
-                buildButton("Guarda", Icons.play_arrow, () => this._play(this._title! as Film)),
-                if(this.title.site.allowsDownload) ...[
-                    buildButton("Scarica", Icons.download, () => this._download(this._title! as Film))
+        int? duration = KeepWatching.getDuration(this.title as Film);
+        int? timestamp = KeepWatching.getTimestamp(this.title as Film);
+        double? progress = duration != null && timestamp != null
+            ? timestamp / duration
+            : null;
+
+        return Align(
+            alignment: Alignment.center,
+            child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 20.0,
+                children: [
+                    buildActionIcon(context, progress != null
+                        ? Icons.fast_forward
+                        : Icons.play_arrow,
+                        borderPercentage: progress ?? 0.0,
+                        action: this._play
+                    ),
+                    if(this.title.site.isLocal)
+                        buildActionIcon(context, Icons.delete_outline, action: this._action)
+                    else if(this.title.site.allowsDownload)
+                        FutureBuilder(
+                            future: DownloadManager.alreadyDownloaded(this.title as Film),
+                            builder: (context, snapshot) => buildActionIcon(
+                                context,
+                                snapshot.hasData && snapshot.data!
+                                    ? Icons.download_done_rounded
+                                    : Icons.file_download_outlined,
+                                action: snapshot.hasData && !snapshot.data!
+                                    ? this._action
+                                    : null,
+                            )
+                        )
                 ]
-                else if(this.title.site is LocalSite) ...[
-                    buildButton("Elimina", Icons.delete, () => this._delete(this._title! as Film))
-                ]
-            ]
+            ),
         );
     }
 
@@ -360,32 +401,28 @@ class _TitlePageState extends State<TitlePage> {
         }
     }
 
-    void _play(Watchable watchable) {
-        Navigator.pushNamed(context, '/player', arguments: watchable)
-            .then((value) => super.setState(() {}));
+    void _play(BuildContext context) {
+        Navigator.pushNamed(context, '/player', arguments: this.title as Film);
     }
 
-    void _download(Watchable watchable) async {
-        DownloadDialog.open(context, watchable);
+    void _action(BuildContext context) {
+        if(this.title.site.isLocal)
+            this._delete(context, this.title as Film);
+        else    
+            this._download(context, this.title as Film);
     }
 
-    void _delete(Watchable watchable) async {
+    Future<void> _download(BuildContext context, Watchable watchable) async {
+        await DownloadDialog.open(context, watchable);
+    }
+
+    Future<void> _delete(BuildContext context, Watchable watchable) async {
         bool delete = await ConfirmationDialog.ask(context,
             "Elimina ${watchable.title}",
             "Sei sicuro di voler eliminare ${watchable.title}?",
             action: "Elimina"
         );
-        if (delete) {
+        if (delete)
             await DownloadManager.deleteSingle(watchable);
-            if(!super.mounted)
-                return;
-            if(this._title is Series)
-                if((this._title as Series).seasons.length == 1 && (this._title as Series).seasons[0].episodes.length == 1)
-                    Navigator.of(context).pop();
-                else
-                    this._memoizer = AsyncMemoizer();
-            else
-                Navigator.of(context).pop();
-        }
     }
 }
