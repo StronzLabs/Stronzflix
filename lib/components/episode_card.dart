@@ -86,10 +86,10 @@ class EpisodeCard extends StatelessWidget {
                 ),
                 if(this.episode.site.isLocal)
                     this._buildActionIcon(context, Icons.delete_outline)
-                else
+                else if(this.episode.site.allowsDownload)
                     FutureBuilder(
                         future: DownloadManager.alreadyDownloaded(this.episode),
-                        builder: (context, snapshot) =>  this._buildActionIcon(
+                        builder: (context, snapshot) => this._buildActionIcon(
                             context,
                             snapshot.hasData && snapshot.data!
                                 ? Icons.download_done_rounded
