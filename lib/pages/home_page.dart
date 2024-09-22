@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
@@ -67,6 +68,10 @@ class _HomePageState extends State<HomePage> {
     PreferredSizeWidget _buildAppBar(BuildContext context) {
         return AppBar(
             title: const Text("Stronzflix"),
+            leading: Padding(
+                padding: const EdgeInsets.all(8),
+                child: SvgPicture.asset("assets/logo.svg"),
+            ),
             actions: [
                 const CastButton(),
                 const SizedBox(width: 8),
