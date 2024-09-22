@@ -24,7 +24,7 @@ class SerialMetadata {
                 name: data["metadata"]["name"],
                 uri: Uri.parse(data["metadata"]["uri"]),
                 site: Site.get(data["metadata"]["site"])!,
-                poster: data["metadata"]["poster"]
+                poster: Uri.parse(data["metadata"]["poster"])
             ),
             info: data["info"],
             timestamp: data["timestamp"],
