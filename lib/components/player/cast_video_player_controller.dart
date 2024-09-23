@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:stronz_video_player/data/tracks.dart';
 import 'package:stronz_video_player/stronz_video_player.dart';
 import 'package:stronzflix/backend/cast/cast.dart';
 
 class CastVideoPlayerController extends StronzPlayerController {
+
+    CastVideoPlayerController(super.externalControllers);
 
     @override
     Future<void> initialize(Playable playable, {StronzControllerState? initialState}) async {
@@ -41,13 +42,11 @@ class CastVideoPlayerController extends StronzPlayerController {
 
     @override
     Future<void> pause() async {
-        await super.pause();
         await CastManager.pause();
     }
 
     @override
     Future<void> play() async {
-        await super.play();
         await CastManager.play();
     }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stronz_video_player/logic/controller/native_player_controller.dart';
 import 'package:stronz_video_player/stronz_video_player.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/cast/cast.dart';
@@ -85,7 +86,9 @@ class _PlayerPageState extends State<PlayerPage> with StreamListener {
                         videoBuilder: !CastManager.connected ? null : (context) => const SizedBox.expand(
                             child: CastVideoView()
                         ),
-                        controller: CastManager.connected ? CastVideoPlayerController() : null
+                        controller: CastManager.connected
+                            ? CastVideoPlayerController([MediaSessionExternalController()])
+                            : NativePlayerController([MediaSessionExternalController()]),
                     )
                 )
             )

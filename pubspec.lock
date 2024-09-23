@@ -676,10 +676,10 @@ packages:
     dependency: transitive
     description:
       name: puppeteer
-      sha256: "871140cbcc1bcbc6d8e4c2c6ca8fdeed5fae66dfef1efc4c271160a96e0823f9"
+      sha256: fc33b2a12731e0b9e16c40cd91ea2b6886bcc24037a435fceb59b786d4074f2b
       url: "https://pub.dev"
     source: hosted
-    version: "3.14.0"
+    version: "3.15.0"
   quiver:
     dependency: transitive
     description:
@@ -834,10 +834,10 @@ packages:
     dependency: transitive
     description:
       name: sqflite_common
-      sha256: "7b41b6c3507854a159e24ae90a8e3e9cc01eb26a477c118d6dca065b5f55453e"
+      sha256: "4058172e418eb7e7f2058dcb7657d451a8fc264afa0dea4dbd0f304a57131611"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.4+2"
+    version: "2.5.4+3"
   stack_trace:
     dependency: transitive
     description:
@@ -867,7 +867,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "3a8fe93a6d930b694ceaee4f318c25746480b88b"
+      resolved-ref: "3072db26677e434ab40a121a877a1500295cf20f"
       url: "https://github.com/StronzLabs/StronzVideoPlayer.git"
     source: git
     version: "0.0.1"
@@ -884,10 +884,10 @@ packages:
     dependency: transitive
     description:
       name: synchronized
-      sha256: a824e842b8a054f91a728b783c177c1e4731f6b124f9192468457a8913371255
+      sha256: "51b08572b9f091f8c3eb4d9d4be253f196ff0075d5ec9b10a884026d5b55d7bc"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.0"
+    version: "3.3.0+2"
   term_glyph:
     dependency: transitive
     description:
@@ -1124,10 +1124,10 @@ packages:
     dependency: "direct main"
     description:
       name: win32_registry
-      sha256: "723b7f851e5724c55409bb3d5a32b203b3afe8587eaf5dafb93a5fed8ecda0d6"
+      sha256: "21ec76dfc731550fd3e2ce7a33a9ea90b828fdf19a5c3bcf556fa992cfa99852"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.4"
+    version: "1.1.5"
   window_manager:
     dependency: transitive
     description:
