@@ -26,9 +26,15 @@ class _PlayerPageState extends State<PlayerPage> with StreamListener {
         super.didChangeDependencies();
         super.updateSubscriptions([
             PeerMessenger.messages.listen((message) {
-                if (message.type == MessageType.stopWatching)
-                    if(super.mounted && !this._exited)
-                        Navigator.of(super.context).pop();
+                switch(message.type) {
+                    case MessageType.stopWatching:
+                        if(super.mounted && !this._exited)
+                            Navigator.of(super.context).pop();
+                        break;
+
+                    default:
+                        break;
+                }
             })
         ]);
     }
@@ -49,34 +55,38 @@ class _PlayerPageState extends State<PlayerPage> with StreamListener {
     Widget build(BuildContext context) {
         Watchable watchable = ModalRoute.of(super.context)!.settings.arguments as Watchable;
 
-        return Scaffold(
-            backgroundColor: Colors.black,
-            body: ListenableBuilder(
-                listenable: CastManager.state,
-                builder: (context, _) => StronzVideoPlayer(
-                    playable: watchable,
-                    controllerState: StronzControllerState.autoPlay(
-                        position: Duration(
-                            seconds: KeepWatching.getTimestamp(watchable) ?? 0
-                        )
-                    ),
-                    onBeforeExit: (controller) {
-                        if(controller.duration.inSeconds != 0)
-                            KeepWatching.add(controller.playable as Watchable, controller.position.inSeconds, controller.duration.inSeconds);
-                        PeerMessenger.stopWatching();
-                        this._exited = true;
-                    },
-                    additionalControlsBuilder: (context, onMenuOpened, onMenuClosed) => [
-                        CastButton(
-                            onOpened: onMenuOpened,
-                            onClosed: onMenuClosed,
+        return PopScope(
+            onPopInvokedWithResult: (didPop, result) {
+                PeerMessenger.stopWatching();
+                this._exited = true;
+            },
+            child: Scaffold(
+                backgroundColor: Colors.black,
+                body: ListenableBuilder(
+                    listenable: CastManager.state,
+                    builder: (context, _) => StronzVideoPlayer(
+                        playable: watchable,
+                        controllerState: StronzControllerState.autoPlay(
+                            position: Duration(
+                                seconds: KeepWatching.getTimestamp(watchable) ?? 0
+                            )
                         ),
-                        const ChatButton(),
-                    ],
-                    videoBuilder: !CastManager.connected ? null : (context) => const SizedBox.expand(
-                        child: CastVideoView()
-                    ),
-                    controller: !CastManager.connected ? null : CastVideoPlayerController(),
+                        onBeforeExit: (controller) {
+                            if(controller.duration.inSeconds != 0)
+                                KeepWatching.add(controller.playable as Watchable, controller.position.inSeconds, controller.duration.inSeconds);
+                        },
+                        additionalControlsBuilder: (context, onMenuOpened, onMenuClosed) => [
+                            CastButton(
+                                onOpened: onMenuOpened,
+                                onClosed: onMenuClosed,
+                            ),
+                            const ChatButton(),
+                        ],
+                        videoBuilder: !CastManager.connected ? null : (context) => const SizedBox.expand(
+                            child: CastVideoView()
+                        ),
+                        controller: CastManager.connected ? CastVideoPlayerController() : null
+                    )
                 )
             )
         );
