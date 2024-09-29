@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stronz_video_player/logic/controller/media_session_external_controller.dart';
 import 'package:stronz_video_player/logic/controller/native_player_controller.dart';
 import 'package:stronz_video_player/stronz_video_player.dart';
 import 'package:stronzflix/backend/api/media.dart';
@@ -9,6 +10,7 @@ import 'package:stronzflix/components/cast_button.dart';
 import 'package:stronzflix/components/player/cast_video_player_controller.dart';
 import 'package:stronzflix/components/player/cast_video_view.dart';
 import 'package:stronzflix/components/player/chat_button.dart';
+import 'package:stronzflix/components/player/peer_external_controller.dart';
 import 'package:sutils/sutils.dart';
 
 class PlayerPage extends StatefulWidget {
@@ -87,8 +89,8 @@ class _PlayerPageState extends State<PlayerPage> with StreamListener {
                             child: CastVideoView()
                         ),
                         controller: CastManager.connected
-                            ? CastVideoPlayerController([MediaSessionExternalController()])
-                            : NativePlayerController([MediaSessionExternalController()]),
+                            ? CastVideoPlayerController([MediaSessionExternalController(), PeerExternalController()])
+                            : NativePlayerController([MediaSessionExternalController(), PeerExternalController()]),
                     )
                 )
             )
