@@ -89,13 +89,14 @@ class CB01 extends Site {
             Uri sourceUri = Uri.parse(element.querySelector("span")!.attributes["onclick"]!.split("open('")[1].split("', ")[0]);
             sourceUri = await Middleware.resolve(sourceUri);
             
-            if(sourceUri.toString().contains("mixdrop"))
-                options.add(WatchOption(
-                    player: MixDrop.instance,
-                    uri: sourceUri,
-                    displayName: "${MixDrop.instance.name} ${scope.contains("HD") ? "HD" : ""}"
-                ));
-            else if(sourceUri.toString().contains("maxstream"))
+            // if(sourceUri.toString().contains("mixdrop"))
+            //     options.add(WatchOption(
+            //         player: MixDrop.instance,
+            //         uri: sourceUri,
+            //         displayName: "${MixDrop.instance.name} ${scope.contains("HD") ? "HD" : ""}"
+            //     ));
+            // else 
+            if(sourceUri.toString().contains("maxstream"))
                 options.add(WatchOption(
                     player: Maxstream.instance,
                     uri: sourceUri,
