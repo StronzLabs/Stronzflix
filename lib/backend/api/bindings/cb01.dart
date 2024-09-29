@@ -17,7 +17,7 @@ class CB01 extends Site {
 
     @override
     bool tunerValidator(String homePage) {
-        return homePage.contains('<meta property="og:description" content="Vedi GRATIS +29.000 Film e Serie-TV in Streaming HD in Italiano senza limiti o registrazione. CB01 UFFICIALE (ORIGINALE) by CB01.UNO" />');
+        return RegExp(r'<meta property="og:description" content="Vedi GRATIS \+\d+\.\d+ Film e Serie-TV in Streaming HD in Italiano senza limiti o registrazione. CB01 UFFICIALE \(ORIGINALE\) by CB01.UNO" />').hasMatch(homePage);
     }
 
     Future<List<TitleMetadata>> _parsePage(String endpoint) async {
@@ -89,14 +89,13 @@ class CB01 extends Site {
             Uri sourceUri = Uri.parse(element.querySelector("span")!.attributes["onclick"]!.split("open('")[1].split("', ")[0]);
             sourceUri = await Middleware.resolve(sourceUri);
             
-            // if(sourceUri.toString().contains("mixdrop"))
-            //     options.add(WatchOption(
-            //         player: MixDrop.instance,
-            //         uri: sourceUri,
-            //         displayName: "${MixDrop.instance.name} ${scope.contains("HD") ? "HD" : ""}"
-            //     ));
-            // else 
-            if(sourceUri.toString().contains("maxstream"))
+            if(sourceUri.toString().contains("mixdrop"))
+                options.add(WatchOption(
+                    player: MixDrop.instance,
+                    uri: sourceUri,
+                    displayName: "${MixDrop.instance.name} ${scope.contains("HD") ? "HD" : ""}"
+                ));
+            else if(sourceUri.toString().contains("maxstream"))
                 options.add(WatchOption(
                     player: Maxstream.instance,
                     uri: sourceUri,
