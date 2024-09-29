@@ -78,15 +78,15 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     }
 
     Stream<double> _dynamicLoad(List<Stream<dynamic>> loadingPhase) async* {
-        StreamController<dynamic> loading = StreamController.broadcast();
+        StreamController<(int, double)> loading = StreamController.broadcast();
         int done = 0;
         List<StreamSubscription> subscriptions = loadingPhase.map((stream) {
             int index = loadingPhase.indexOf(stream);
             return stream.listen(
-                (percentage) => loading.add([ index, percentage ]),
-                onError: (error) => loading.addError(error),
+                (percentage) => loading.add(( index, percentage )),
+                onError: (error, stackTrace) => loading.addError(error, stackTrace),
                 onDone: () {
-                    loading.add([ index, 1.0 ]);
+                    loading.add(( index, 1.0 ));
                     if(++done == loadingPhase.length)
                         loading.close();
                 }
@@ -94,19 +94,12 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         }).toList();
         
         List<double> advance = List.filled(loadingPhase.length, 0.0);
-        await for (dynamic percentage in loading.stream) {
-            if (percentage is List) {
-                advance[percentage[0]] = percentage[1] / loadingPhase.length;
-                yield advance.reduce((a, b) => a + b);
-            }
-            else {
-                for (StreamSubscription<dynamic> subscription in subscriptions)
-                    subscription.cancel();
-                throw percentage;
-            }
+        await for ((int, double) percentage in loading.stream) {
+            advance[percentage.$1] = percentage.$2 / loadingPhase.length;
+            yield advance.reduce((a, b) => a + b);
         }
 
-        for (StreamSubscription<dynamic> subscription in subscriptions)
+        for (StreamSubscription subscription in subscriptions)
             subscription.cancel();
     }
 
@@ -213,7 +206,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
                 this._controller.forward(from: 0);
             },
             cancelOnError: true,
-            onError: (error) => super.setState(() => this._error = error.toString()),
+            onError: (error, stacktrace) => super.setState(() => this._error = error.message),
             onDone: () {
                 if(!this._update && super.mounted)
                     Navigator.of(super.context).pushReplacementNamed("/home");

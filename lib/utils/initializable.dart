@@ -12,15 +12,12 @@ abstract class Initializable {
             this._progress.add(1.0);
             this._progress.close();
         }).onError((error, stackTrace) {
-            this.reportProgressError(error);
-            throw error!;
+            this._progress.addError(error!, stackTrace);
         });
     }
 
     @protected
     void reportProgress(double progress) => this._progress.add(progress);
-    @protected
-    void reportProgressError(Object? error) => this._progress.add(error);
     Stream<dynamic> get progress => this._progress.stream;
 
     Future<void> construct() async {}
