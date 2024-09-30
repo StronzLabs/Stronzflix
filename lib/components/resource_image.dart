@@ -20,6 +20,9 @@ class ResourceImage extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
+        if(this.uri.toString().isEmpty)
+            return const SizedBox.shrink();
+
         return this.uri.scheme == "http" || this.uri.scheme == "https"
             ? Image.network(
                 this.uri.toString(),
