@@ -167,13 +167,15 @@ class Episode with Watchable {
     Watchable? get next {
         Season season = this.season;
         Series series = season.series;
-        int episodeNo = season.episodes.indexOf(this);
-        int seasonNo = series.seasons.indexOf(season);
 
-        if (episodeNo < season.episodes.length - 1)
-            return season.episodes[episodeNo + 1];
-        else if (seasonNo < series.seasons.length - 1)
-            return series.seasons[seasonNo + 1].episodes[0];
+        for(Episode episode in season.episodes)
+            if (episode.episodeNo > this.episodeNo)
+                return episode;
+
+       for(Season season in series.seasons)
+            if (season.seasonNo > this.season.seasonNo)
+                return season.episodes.first;
+
         return null;
     }
 
