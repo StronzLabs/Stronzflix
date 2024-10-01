@@ -8,6 +8,7 @@ class PeerExternalController extends StronzExternalController {
     StronzControllerState _remoteState = StronzControllerState();
     set _playing(bool value) => this._remoteState = this._remoteState.copyWith(playing: value);
     set _buffering(bool value) => this._remoteState = this._remoteState.copyWith(buffering: value);
+    bool _justSeeked = false;
 
     late StreamSubscription<Message>? _subscription;
 
@@ -32,18 +33,15 @@ class PeerExternalController extends StronzExternalController {
         }
     }
 
-    bool _justSeeked = false;
     @override
     Future<void> onEvent(StronzExternalControllerEvent event, {dynamic arg}) async {
-        if(this._justSeeked) {
-            this._justSeeked = false;
-            return;
-        }
-
         switch(event) {
             case StronzExternalControllerEvent.seekTo:
-                this._justSeeked = true;
-                await PeerMessenger.seek(arg.inSeconds);
+                if (!this._justSeeked) {
+                    this._justSeeked = true;
+                    await PeerMessenger.seek(arg.inSeconds);
+                }
+                this._justSeeked = false;
                 break;
             default:
                 break;
