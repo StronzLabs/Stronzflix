@@ -7,9 +7,10 @@ class PeerExternalController extends StronzExternalController {
 
     StronzControllerState _remoteState = StronzControllerState();
     set _playing(bool value) => this._remoteState = this._remoteState.copyWith(playing: value);
-    set _buffering(bool value) => this._remoteState = this._remoteState.copyWith(buffering: value);
-    bool _justSeeked = false;
-
+    bool get _playing => this._remoteState.playing ?? false;
+    set _position(Duration? value) => this._remoteState = this._remoteState.copyWith(position: value);
+    Duration? get _position => this._remoteState.position;
+    
     late StreamSubscription<Message>? _subscription;
 
     @override
@@ -22,26 +23,16 @@ class PeerExternalController extends StronzExternalController {
                     await PeerMessenger.pause();
             print("Sending: ${state.playing ?? false ? "Play" : "Pause"}");
         }
-
-        if(state.buffering != null && this._remoteState.buffering != state.buffering) {
-            this._buffering = state.buffering ?? false;
-            if(state.buffering == true)
-                await PeerMessenger.buffering();
-            else if(state.buffering == false)
-                await PeerMessenger.ready();
-            print("Sending: ${state.buffering ?? false ? "Buffering" : "Ready"}");
-        }
     }
 
     @override
     Future<void> onEvent(StronzExternalControllerEvent event, {dynamic arg}) async {
         switch(event) {
             case StronzExternalControllerEvent.seekTo:
-                if (!this._justSeeked) {
-                    this._justSeeked = true;
+                if ((arg.inSeconds - (this._remoteState.position?.inSeconds ?? 0)).abs() >= 2) {
                     await PeerMessenger.seek(arg.inSeconds);
+                    this._position = arg;
                 }
-                this._justSeeked = false;
                 break;
             default:
                 break;
@@ -62,7 +53,8 @@ class PeerExternalController extends StronzExternalController {
                     handler(StronzExternalControllerEvent.pause);
                     break;
                 case MessageType.seek:
-                    handler(StronzExternalControllerEvent.seekTo, arg: Duration(seconds: int.parse(message.data!)));
+                    this._position = Duration(seconds: int.parse(message.data!));
+                    handler(StronzExternalControllerEvent.seekTo, arg: this._position!);
                     break;
                 default:
                     break;
