@@ -42,16 +42,19 @@ class CastVideoPlayerController extends StronzPlayerController {
 
     @override
     Future<void> pause() async {
+        await super.pause();
         await CastManager.pause();
     }
 
     @override
     Future<void> play() async {
+        await super.play();
         await CastManager.play();
     }
 
     @override
     Future<void> seekTo(Duration position) async {
+        await super.seekTo(position);
         await CastManager.seekTo(position);
     }
 

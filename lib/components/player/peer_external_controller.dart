@@ -7,6 +7,7 @@ class PeerExternalController extends StronzExternalController {
 
     StronzControllerState _remoteState = StronzControllerState();
     set _playing(bool value) => this._remoteState = this._remoteState.copyWith(playing: value);
+    set _buffering(bool value) => this._remoteState = this._remoteState.copyWith(buffering: value);
 
     late StreamSubscription<Message>? _subscription;
 
@@ -18,12 +19,41 @@ class PeerExternalController extends StronzExternalController {
                 await PeerMessenger.play();
             else if(state.playing == false)
                     await PeerMessenger.pause();
+            print("Sending: ${state.playing ?? false ? "Play" : "Pause"}");
+        }
+
+        if(state.buffering != null && this._remoteState.buffering != state.buffering) {
+            this._buffering = state.buffering ?? false;
+            if(state.buffering == true)
+                await PeerMessenger.buffering();
+            else if(state.buffering == false)
+                await PeerMessenger.ready();
+            print("Sending: ${state.buffering ?? false ? "Buffering" : "Ready"}");
+        }
+    }
+
+    bool _justSeeked = false;
+    @override
+    Future<void> onEvent(StronzExternalControllerEvent event, {dynamic arg}) async {
+        if(this._justSeeked) {
+            this._justSeeked = false;
+            return;
+        }
+
+        switch(event) {
+            case StronzExternalControllerEvent.seekTo:
+                this._justSeeked = true;
+                await PeerMessenger.seek(arg.inSeconds);
+                break;
+            default:
+                break;
         }
     }
 
     @override
-    Future<void> initialize(Playable playable, void Function(StronzExternalControllerEvent) handler) async {
+    Future<void> initialize(Playable playable, Future<void> Function(StronzExternalControllerEvent event, {dynamic arg}) handler) async {
         this._subscription = PeerMessenger.messages.listen((message) {
+            print("Received message: ${message.type}");
             switch(message.type) {
                 case MessageType.play:
                     this._playing = true;
@@ -32,6 +62,9 @@ class PeerExternalController extends StronzExternalController {
                 case MessageType.pause:
                     this._playing = false;
                     handler(StronzExternalControllerEvent.pause);
+                    break;
+                case MessageType.seek:
+                    handler(StronzExternalControllerEvent.seekTo, arg: Duration(seconds: int.parse(message.data!)));
                     break;
                 default:
                     break;
