@@ -5,9 +5,11 @@ import 'package:stronzflix/backend/peer/peer_manager.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 
 enum MessageType {
-    chat("chat"),
     play("play"),
     pause("pause"),
+    buffering("buffering"),
+    ready("ready"),
+    chat("chat"),
     seek("seek"),
     startWatching("start_watching"),
     stopWatching("stop_watching");
@@ -20,9 +22,11 @@ enum MessageType {
 
     static MessageType fromString(String value) {
         return switch (value) {
-            "chat" => MessageType.chat,
             "play" => MessageType.play,
             "pause" => MessageType.pause,
+            "buffering" => MessageType.buffering,
+            "ready" => MessageType.ready,
+            "chat" => MessageType.chat,
             "seek" => MessageType.seek,
             "start_watching" => MessageType.startWatching,
             "stop_watching" => MessageType.stopWatching,
@@ -75,6 +79,12 @@ class PeerMessenger {
 
     static Future<void> pause()
         => PeerMessenger.sendMessage(MessageType.pause);
+
+    static Future<void> buffering()
+        => PeerMessenger.sendMessage(MessageType.buffering);
+
+    static Future<void> ready()
+        => PeerMessenger.sendMessage(MessageType.ready);
 
     static Future<void> seek(int position)
         => PeerMessenger.sendMessage(MessageType.seek, position.toString());
