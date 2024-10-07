@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:stronzflix/backend/cast/castv2.dart';
+import 'package:stronzflix/backend/cast/dlna.dart';
 
 abstract class CasterDevice {
     String get name;
@@ -93,6 +94,7 @@ class CastManager {
 
     static final List<CasterInterface> _interfaces = [
         CastV2(),
+        DLNA(),
     ];
 
     static CasterInterface? _activeInterface;
@@ -116,6 +118,9 @@ class CastManager {
         switch (device.runtimeType) {
             case CastV2Device:
                 CastManager._activeInterface = CastManager._interfaces.firstWhere((interface) => interface is CastV2);
+                break;
+            case DlnaDevice:
+                CastManager._activeInterface = CastManager._interfaces.firstWhere((interface) => interface is DLNA);
                 break;
             default:
                 throw UnimplementedError();

@@ -153,6 +153,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  castscreen:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "44f479840781ac7a7c4746523502994cbd3eb16c"
+      url: "https://github.com/Bonfra04/dart_castscreen.git"
+    source: git
+    version: "1.0.2"
   characters:
     dependency: transitive
     description:

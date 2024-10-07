@@ -37,6 +37,8 @@ dependencies:
     git: https://github.com/StronzLabs/SUtils.git
   js_unpack: ^1.0.4
   auto_size_text: ^3.0.0
+  castscreen:
+    git: https://github.com/Bonfra04/dart_castscreen.git
 
 dependency_overrides:
   uuid: ^4.4.0
