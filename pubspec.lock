@@ -362,7 +362,7 @@ packages:
     source: hosted
     version: "0.9.48+hotfix.1"
   fvp:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: fvp
       sha256: "040aa12beccd5bc60631259f27a481c4abc11a389aa4f57a47b643f58fe0b060"
