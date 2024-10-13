@@ -161,6 +161,24 @@ class _TitleCardState extends State<TitleCard> {
         .then((title) {
             if(!context.mounted)
                 return;
+            if(title.comingSoon != null) {
+                String date = title.comingSoon!.toIso8601String().substring(0, 10).split("-").reversed.join("/");
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                        title: const Text("Prossimamente"),
+                        content: Text("Data prevista di rilascio: ${date}"),
+                        actions: [
+                            TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: const Text("Chiudi")
+                            )
+                        ]
+                    )
+                );
+                return;
+            }
+                
             Watchable watchable =
                 title is Series ? title.seasons.first.episodes.first
                 : title is Film ? title
