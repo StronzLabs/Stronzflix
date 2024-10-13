@@ -89,6 +89,9 @@ class PeerMessenger {
     static Future<void> seek(int position)
         => PeerMessenger.sendMessage(MessageType.seek, position.toString());
 
+    static Future<void> buffer()
+        => PeerMessenger.sendMessage(MessageType.buffering);
+
     static Future<void> chat(String message) {
         PeerMessenger._chatHistory.add((true, message));
         return PeerMessenger.sendMessage(MessageType.chat, message);
