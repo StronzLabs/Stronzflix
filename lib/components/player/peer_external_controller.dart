@@ -26,7 +26,7 @@ class PeerExternalController extends StronzExternalController {
     }
 
     @override
-    Future<void> onEvent(StronzExternalControllerEvent event, {dynamic arg}) async {
+    Future<bool> onEvent(StronzExternalControllerEvent event, {dynamic arg}) async {
         switch(event) {
             case StronzExternalControllerEvent.seekTo:
                 if ((arg.inSeconds - (this._remoteState.position?.inSeconds ?? 0)).abs() >= 2) {
@@ -37,6 +37,7 @@ class PeerExternalController extends StronzExternalController {
             default:
                 break;
         }
+        return true;
     }
 
     @override
