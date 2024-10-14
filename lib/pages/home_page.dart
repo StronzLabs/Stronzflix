@@ -23,6 +23,7 @@ import 'package:stronzflix/components/card_grid.dart';
 import 'package:stronzflix/dialogs/loading_dialog.dart';
 import 'package:stronzflix/dialogs/settings_dialog.dart';
 import 'package:stronzflix/dialogs/sink_dialog.dart';
+import 'package:stronzflix/components/row_list_traversal_policy.dart';
 import 'package:stronzflix/pages/search_page.dart';
 import 'package:sutils/sutils.dart';
 
@@ -269,7 +270,10 @@ class _HomePageState extends State<HomePage> {
         return this._isBigScreen
             ? ListView(
                 padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
-                children: sections
+                children: sections.map((section) => FocusTraversalGroup(
+                    policy: RowListTraversalPolicy(),
+                    child: section,
+                )).toList()
             )
             : sections[this._currentSection];
     }
