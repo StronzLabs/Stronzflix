@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stronzflix/components/row_list_traversal_policy.dart';
 
 class CardRow<T> extends StatefulWidget {
 
@@ -66,31 +67,34 @@ class _CardRowState<T> extends State<CardRow<T>> {
         if (super.widget.values.isEmpty)
             return const SizedBox.shrink();
 
-        return MouseRegion(
-            onHover: (event) => super.setState(() => this._arrowVisibility = true),
-            onExit: (event) => super.setState(() => this._arrowVisibility = false),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                    Text(
-                        super.widget.title,
-                        style: const TextStyle(
-                            fontSize: 30,
-                            overflow: TextOverflow.ellipsis,
+        return FocusTraversalGroup(
+            policy: RowListTraversalPolicy(),
+            child: MouseRegion(
+                onHover: (event) => super.setState(() => this._arrowVisibility = true),
+                onExit: (event) => super.setState(() => this._arrowVisibility = false),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                        Text(
+                            super.widget.title,
+                            style: const TextStyle(
+                                fontSize: 30,
+                                overflow: TextOverflow.ellipsis,
+                            ),
                         ),
-                    ),
-                    Stack(
-                        alignment: AlignmentDirectional.centerStart,
-                        children: [
-                            this._buildScrollView(context, super.widget.values),
-                            if (this._arrowVisibility && this._scrollController.hasClients && this._scrollController.offset > 0)
-                                this._buildArrowIcon(true),
-                            if (this._arrowVisibility && this._scrollController.hasClients && this._scrollController.offset < this._scrollController.position.maxScrollExtent)
-                                this._buildArrowIcon(false)
-                        ],
-                    ),
-                ],
-            ),
+                        Stack(
+                            alignment: AlignmentDirectional.centerStart,
+                            children: [
+                                this._buildScrollView(context, super.widget.values),
+                                if (this._arrowVisibility && this._scrollController.hasClients && this._scrollController.offset > 0)
+                                    this._buildArrowIcon(true),
+                                if (this._arrowVisibility && this._scrollController.hasClients && this._scrollController.offset < this._scrollController.position.maxScrollExtent)
+                                    this._buildArrowIcon(false)
+                            ],
+                        ),
+                    ],
+                ),
+            )
         );
     }
 }
