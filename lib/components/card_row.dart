@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:stronzflix/components/row_list_traversal_policy.dart';
 
 class CardRow<T> extends StatefulWidget {
 
