@@ -314,10 +314,11 @@ packages:
   flutter_hls_parser:
     dependency: "direct main"
     description:
-      name: flutter_hls_parser
-      sha256: f4b7df4f927623aea5c72006232693e07fdd11438f600c08670d6a23c1aa85c8
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "032a45e497ec655d9147953e3dc9a3000b833a6c"
+      url: "https://github.com/Bonfra04/flutter_hls_parser.git"
+    source: git
     version: "2.0.1"
   flutter_lints:
     dependency: "direct dev"
@@ -900,7 +901,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: d3c6917ff5591e646668b10e2fd5a021ba45f2d3
+      resolved-ref: ffb01c8f491b00afa51face0d12ec7b703902c98
       url: "https://github.com/StronzLabs/StronzVideoPlayer.git"
     source: git
     version: "0.0.1"

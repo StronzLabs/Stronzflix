@@ -16,7 +16,8 @@ dependencies:
   connectivity_plus: ^6.0.3
   crypto: ^3.0.3
   ffmpeg_kit_flutter: ^6.0.3
-  flutter_hls_parser: ^2.0.1
+  flutter_hls_parser:
+    git: https://github.com/Bonfra04/flutter_hls_parser.git
   flutter_svg: ^2.0.10+1
   html: ^0.15.4
   html_unescape: ^2.0.0
