@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:stronzflix/backend/peer/peer_manager.dart';
+import 'package:stronzflix/backend/sink/sink_manager.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 
 enum MessageType {
@@ -42,16 +42,16 @@ class Message {
     const Message(this.type, this.data);
 }
 
-class PeerMessenger {
+class SinkMessenger {
 
     static final StreamController<Message> _messagesController = StreamController<Message>.broadcast();
-    static Stream<Message> get messages => PeerMessenger._messagesController.stream;
+    static Stream<Message> get messages => SinkMessenger._messagesController.stream;
 
     static List<(bool, String)> _chatHistory = [];
-    static List<(bool, String)> get chatHistory => List.unmodifiable(PeerMessenger._chatHistory);
+    static List<(bool, String)> get chatHistory => List.unmodifiable(SinkMessenger._chatHistory);
 
     static Future<void> sendMessage(MessageType type, [String? data]) {
-        return PeerManager.send(jsonEncode({
+        return SinkManager.sendMessage(jsonEncode({
             "type": type.toString(),
             "data": data
         }));
@@ -63,37 +63,37 @@ class PeerMessenger {
         String? data = json["data"];
 
         if(type == MessageType.chat)
-            PeerMessenger._chatHistory.add((false, data!));
+            SinkMessenger._chatHistory.add((false, data!));
 
-        PeerMessenger._messagesController.add(Message(type, data));
+        SinkMessenger._messagesController.add(Message(type, data));
     }
 
     static Future<void> startWatching(SerialMetadata metadata)
-        => PeerMessenger.sendMessage(MessageType.startWatching, jsonEncode(metadata.serialize()));
+        => SinkMessenger.sendMessage(MessageType.startWatching, jsonEncode(metadata.serialize()));
 
     static Future<void> stopWatching()
-        => PeerMessenger.sendMessage(MessageType.stopWatching);
+        => SinkMessenger.sendMessage(MessageType.stopWatching);
 
     static Future<void> play()
-        => PeerMessenger.sendMessage(MessageType.play);
+        => SinkMessenger.sendMessage(MessageType.play);
 
     static Future<void> pause()
-        => PeerMessenger.sendMessage(MessageType.pause);
+        => SinkMessenger.sendMessage(MessageType.pause);
 
     static Future<void> buffering()
-        => PeerMessenger.sendMessage(MessageType.buffering);
+        => SinkMessenger.sendMessage(MessageType.buffering);
 
     static Future<void> ready()
-        => PeerMessenger.sendMessage(MessageType.ready);
+        => SinkMessenger.sendMessage(MessageType.ready);
 
     static Future<void> seek(int position)
-        => PeerMessenger.sendMessage(MessageType.seek, position.toString());
+        => SinkMessenger.sendMessage(MessageType.seek, position.toString());
 
     static Future<void> buffer()
-        => PeerMessenger.sendMessage(MessageType.buffering);
+        => SinkMessenger.sendMessage(MessageType.buffering);
 
     static Future<void> chat(String message) {
-        PeerMessenger._chatHistory.add((true, message));
-        return PeerMessenger.sendMessage(MessageType.chat, message);
+        SinkMessenger._chatHistory.add((true, message));
+        return SinkMessenger.sendMessage(MessageType.chat, message);
     }
 }

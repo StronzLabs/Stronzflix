@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stronzflix/backend/peer/peer_manager.dart';
+import 'package:stronzflix/backend/sink/sink_manager.dart';
 import 'package:stronzflix/components/player/chat_drawer.dart';
 
 class ChatButton extends StatelessWidget {
@@ -39,7 +39,7 @@ class ChatButton extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
-        if(!PeerManager.connected)
+        if(!SinkManager.connected)
             return const SizedBox.shrink();
 
         return IconButton(

@@ -4,7 +4,7 @@ import 'package:stronz_video_player/logic/controller/native_player_controller.da
 import 'package:stronz_video_player/stronz_video_player.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/cast/cast.dart';
-import 'package:stronzflix/backend/peer/peer_messenger.dart';
+import 'package:stronzflix/backend/sink/sink_messenger.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/components/cast_button.dart';
 import 'package:stronzflix/components/player/cast_video_player_controller.dart';
@@ -28,7 +28,7 @@ class _PlayerPageState extends State<PlayerPage> with StreamListener {
     void didChangeDependencies() {
         super.didChangeDependencies();
         super.updateSubscriptions([
-            PeerMessenger.messages.listen((message) {
+            SinkMessenger.messages.listen((message) {
                 switch(message.type) {
                     case MessageType.stopWatching:
                         if(super.mounted && !this._exited)
@@ -60,7 +60,7 @@ class _PlayerPageState extends State<PlayerPage> with StreamListener {
 
         return PopScope(
             onPopInvokedWithResult: (didPop, result) {
-                PeerMessenger.stopWatching();
+                SinkMessenger.stopWatching();
                 this._exited = true;
             },
             child: Scaffold(

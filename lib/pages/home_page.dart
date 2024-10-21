@@ -7,10 +7,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
+import 'package:stronzflix/backend/sink/sink_manager.dart';
+import 'package:stronzflix/backend/sink/sink_messenger.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
-import 'package:stronzflix/backend/peer/peer_manager.dart';
-import 'package:stronzflix/backend/peer/peer_messenger.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/components/card_row.dart';
 import 'package:stronzflix/components/cast_button.dart';
@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
     @override
     void initState() {
         super.initState();
-        this._peerMessagesSubscription = PeerMessenger.messages.listen((message) {
+        this._peerMessagesSubscription = SinkMessenger.messages.listen((message) {
             if(message.type == MessageType.startWatching && super.mounted)
                 LoadingDialog.load(super.context, () async {
                     SerialMetadata metadata = SerialMetadata.unserialize(jsonDecode(message.data!));
@@ -246,16 +246,16 @@ class _HomePageState extends State<HomePage> {
 
     Widget _buildSinkButton(BuildContext context) {
         return ValueListenableBuilder(
-            valueListenable: PeerManager.notifier,
+            valueListenable: SinkManager.notifier,
             builder: (context, peerState, _) => FloatingActionButton(
                 onPressed: () => showDialog(
                     context: context,
                     builder: (context) => const SinkDialog()
                 ),
-                backgroundColor: peerState == PeerConnectionState.connected
+                backgroundColor: peerState == SinkConnectionState.connected
                     ? Theme.of(context).colorScheme.primary
                     : Theme.of(context).disabledColor,
-                child: Icon(peerState == PeerConnectionState.connecting
+                child: Icon(peerState == SinkConnectionState.connecting
                     ? Icons.sync
                     : Icons.people
                 )

@@ -19,9 +19,9 @@ import 'package:stronzflix/backend/api/bindings/vixxcloud.dart';
 import 'package:stronzflix/backend/api/bindings/vjsplayer.dart';
 import 'package:stronzflix/backend/api/tune.dart';
 import 'package:stronzflix/backend/cast/cast.dart';
+import 'package:stronzflix/backend/sink/sink_manager.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
-import 'package:stronzflix/backend/peer/peer_manager.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/backend/update/version.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
@@ -177,7 +177,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         await for (double percentage in this._load([
             KeepWatching.instance.unserialize(),
             SavedTitles.instance.unserialize(),
-            PeerManager.init(),
+            SinkManager.init(),
         ]))
             yield advance + percentage * phasesWeights[3];
         advance += phasesWeights[3];

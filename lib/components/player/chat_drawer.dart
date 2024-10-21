@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:stronzflix/backend/peer/peer_messenger.dart';
+import 'package:stronzflix/backend/sink/sink_messenger.dart';
 import 'package:stronzflix/components/border_text.dart';
 
 class ChatDrawer extends StatefulWidget {
@@ -21,7 +21,7 @@ class _ChatDrawerState extends State<ChatDrawer> {
     @override
     void initState() {
         super.initState();
-        this._subscription = PeerMessenger.messages.listen((message) {
+        this._subscription = SinkMessenger.messages.listen((message) {
             if(message.type == MessageType.chat)
                 super.setState(this._scrollList);
         });
@@ -59,7 +59,7 @@ class _ChatDrawerState extends State<ChatDrawer> {
     }
 
     void _sendMessage() {
-        PeerMessenger.chat(this._textController.text.trim());
+        SinkMessenger.chat(this._textController.text.trim());
         this._textController.clear();
         this._focusNode.requestFocus();
         super.setState(this._scrollList);
@@ -91,10 +91,10 @@ class _ChatDrawerState extends State<ChatDrawer> {
                         Expanded(
                             child: ListView.builder(
                                 controller: this._scrollController,
-                                itemCount: PeerMessenger.chatHistory.length,
+                                itemCount: SinkMessenger.chatHistory.length,
                                 itemBuilder: (context, i) => this._buildMessage(
-                                    PeerMessenger.chatHistory[i].$2,
-                                    PeerMessenger.chatHistory[i].$1
+                                    SinkMessenger.chatHistory[i].$2,
+                                    SinkMessenger.chatHistory[i].$1
                                 ),
                                 prototypeItem: this._buildMessage(
                                     "Lorem ipsum",

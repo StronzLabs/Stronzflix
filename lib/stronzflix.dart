@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stronzflix/backend/api/media.dart';
-import 'package:stronzflix/backend/peer/peer_messenger.dart';
+import 'package:stronzflix/backend/sink/sink_messenger.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/pages/home_page.dart';
 import 'package:stronzflix/pages/loading_page.dart';
@@ -101,7 +101,7 @@ class SinkNavigatorObserver extends NavigatorObserver {
         super.didPush(route, previousRoute);
         if(route.settings.name == '/player') {
             Watchable watchable = route.settings.arguments as Watchable; 
-            PeerMessenger.startWatching(SerialMetadata.fromWatchable(watchable, 0, 0));
+            SinkMessenger.startWatching(SerialMetadata.fromWatchable(watchable, 0, 0));
         }
     }
 }

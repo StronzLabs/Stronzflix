@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:stronz_video_player/stronz_video_player.dart';
-import 'package:stronzflix/backend/peer/peer_messenger.dart';
+import 'package:stronzflix/backend/sink/sink_messenger.dart';
 
 class PeerExternalController extends StronzExternalController {
 
@@ -18,9 +18,9 @@ class PeerExternalController extends StronzExternalController {
         if(state.playing != null && this._remoteState.playing != state.playing) {
             this._playing = state.playing ?? false;
             if(state.playing == true)
-                await PeerMessenger.play();
+                await SinkMessenger.play();
             else if(state.playing == false)
-                    await PeerMessenger.pause();
+                    await SinkMessenger.pause();
             print("Sending: ${state.playing ?? false ? "Play" : "Pause"}");
         }
     }
@@ -30,7 +30,7 @@ class PeerExternalController extends StronzExternalController {
         switch(event) {
             case StronzExternalControllerEvent.seekTo:
                 if ((arg.inSeconds - (this._remoteState.position?.inSeconds ?? 0)).abs() >= 2) {
-                    await PeerMessenger.seek(arg.inSeconds);
+                    await SinkMessenger.seek(arg.inSeconds);
                     this._position = arg;
                 }
                 break;
@@ -42,7 +42,7 @@ class PeerExternalController extends StronzExternalController {
 
     @override
     Future<void> initialize(Playable playable, Future<void> Function(StronzExternalControllerEvent event, {dynamic arg}) handler) async {
-        this._subscription = PeerMessenger.messages.listen((message) {
+        this._subscription = SinkMessenger.messages.listen((message) {
             print("Received message: ${message.type}");
             switch(message.type) {
                 case MessageType.play:
