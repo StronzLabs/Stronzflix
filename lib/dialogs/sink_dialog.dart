@@ -14,7 +14,11 @@ class SinkDialog extends StatefulWidget {
 
 class _SinkDialogState extends State<SinkDialog> {
     final TextEditingController _controller = TextEditingController();
-    final FocusNode _focusNode = FocusNode();
+
+    void _confirmConnection() {
+        SinkManager.connect(PeerDevice(this._controller.text.trim()));
+        Navigator.pop(context);
+    }
 
     Widget _buildConnectView(BuildContext context) {
         return AlertDialog(
@@ -22,31 +26,24 @@ class _SinkDialogState extends State<SinkDialog> {
             content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                    SelectableText.rich(
-                        TextSpan(
-                            children: [
-                                const TextSpan(
-                                    text: "Questo è il tuo ID: "
-                                ),
-                                TextSpan(
-                                    text: PeerInterface.currentId,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold
-                                    )
-                                ),
-                            ]
-                        )
+                    OverflowBar(
+                        children: [
+                            const Text("Questo è il tuo ID: "),
+                            SelectableText(
+                                PeerInterface.currentId,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    overflow: TextOverflow.ellipsis
+                                )
+                            ),
+                        ],
                     ),
                     TextField(
                         autofocus: true,
-                        focusNode: this._focusNode,
                         decoration: const InputDecoration(
                             labelText: "ID a cui connettersi"
                         ),
-                        onSubmitted: (value) {
-                            SinkManager.connect(PeerDevice(value.trim()));
-                            Navigator.pop(context);
-                        },
+                        onSubmitted: (_) => this._confirmConnection(),
                         controller: this._controller,
                     )
                 ],
@@ -57,10 +54,7 @@ class _SinkDialogState extends State<SinkDialog> {
                     child: const Text("Chiudi")
                 ),
                 TextButton(
-                    onPressed: () {
-                        SinkManager.connect(PeerDevice(this._controller.text.trim()));
-                        Navigator.of(context).pop();
-                    },
+                    onPressed: this._confirmConnection,
                     child: const Text("Connetti")
                 )
             ],
@@ -97,7 +91,7 @@ class _SinkDialogState extends State<SinkDialog> {
                     child: const Text("Chiudi")
                 ),
                 TextButton(
-                    onPressed: () {
+                    onPressed: () async {
                         SinkManager.disconnect();
                         Navigator.of(context).pop();
                     },
@@ -107,40 +101,33 @@ class _SinkDialogState extends State<SinkDialog> {
         );
     }
 
-    void _updateListener() {
-        if(!super.mounted)
-            return;
-
-        if(SinkManager.connected && this._state != SinkManager.connected)
+    void _connectionListener() {
+        if (SinkManager.notifier.value == SinkConnectionState.connected)
             Navigator.of(context).pop();
-        else if (SinkManager.connecting && this._state != SinkManager.connecting)
-            super.setState(() => this._state = SinkManager.notifier.value);
-        else if (!SinkManager.connected && !SinkManager.connecting && this._state != SinkConnectionState.notConnected)
-            super.setState(() => this._state = SinkManager.notifier.value);
     }
-
-    SinkConnectionState _state = SinkManager.notifier.value;
 
     @override
     void initState() {
         super.initState();
-        SinkManager.notifier.addListener(this._updateListener);
+        SinkManager.notifier.addListener(this._connectionListener);
     }
 
     @override
     void dispose() {
-        SinkManager.notifier.removeListener(this._updateListener);
+        SinkManager.notifier.removeListener(this._connectionListener);
         this._controller.dispose();
-        this._focusNode.dispose();
         super.dispose();
     }
 
     @override
     Widget build(BuildContext context) {
-        return switch(this._state) {
-            SinkConnectionState.notConnected=> this._buildConnectView(context),
-            SinkConnectionState.connected=> this._buildDisconnectView(context),
-            SinkConnectionState.connecting=> this._buildConnectingView(context),
-        };
+        return ListenableBuilder(
+            listenable: SinkManager.notifier,
+            builder: (context, _,) => switch(SinkManager.notifier.value) {
+                SinkConnectionState.notConnected => this._buildConnectView(context),
+                SinkConnectionState.connected => this._buildDisconnectView(context),
+                SinkConnectionState.connecting => this._buildConnectingView(context),
+            }
+        );
     }
 }
