@@ -93,7 +93,7 @@ class StreamingCommunity extends Site {
             for(dynamic episode in seasonObject["episodes"])
                 Episode(
                     uri: Uri.parse("/watch/${titleId}?e=${episode["id"]}"),
-                    name: episode["name"],
+                    name: episode["name"] ?? "Episodio ${episode["number"]}",
                     cover: Uri.parse("${this._cdn}/images/${this._findImage(episode, "cover")}"),
                     season: season,
                     episodeNo: episode["number"]
