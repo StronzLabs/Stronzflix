@@ -21,7 +21,9 @@ class AnimeSaturn extends Site {
         for(Element element in episodesGrid.querySelectorAll(".btn")) {
             String name = element.text.trim();
             String url = element.attributes["href"]!;
-            int episodeNo = int.parse(element.attributes["href"]!.split("-").last);
+            // TODO: improve this
+            int? episodeNo = int.tryParse(element.attributes["href"]!.split("-").last);
+            episodeNo ??= -episodes.length;
 
             episodes.add(Episode(
                 season: season,
