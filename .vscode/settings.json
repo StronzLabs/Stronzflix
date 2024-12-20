@@ -9,4 +9,9 @@
         ".flutter-plugins": true,
         ".flutter-plugins-dependencies": true,
     },
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+       "pubspec.yaml": "pubspec.yaml, analysis_options.yaml, devtools_options.yaml",
+       "README.md": "README.md, LICENSE, .gitignore",
+    }
 }
