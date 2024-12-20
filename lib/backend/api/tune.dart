@@ -5,7 +5,7 @@ import 'package:sutils/sutils.dart';
 class Tuner {
 
     static const Duration timeout = Duration(milliseconds: 2500);
-    static late final List<String> cache;
+    static late List<String> cache;
 
     final bool Function(String) validator;
     final int cacheId;
