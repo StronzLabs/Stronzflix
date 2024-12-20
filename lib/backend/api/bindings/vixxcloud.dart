@@ -32,7 +32,7 @@ class VixxCloud extends Player {
         dynamic json = jsonDecode(jsonString);
 
         String param = json.keys.map((key) => "${key}=${json[key]}").join("&");
-        String playlist = "${playlistUrl}?${param}";
+        String playlist = playlistUrl.contains('?') ? "${playlistUrl}&${param}" : "${playlistUrl}?${param}";
 
         if(src.contains("canPlayFHD=1"))
             playlist += "&h=1";
