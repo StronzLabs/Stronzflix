@@ -251,6 +251,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
                     ]
                 ),
                 Text("< ${this._error!} >",
+                    key: const Key("loading_error"),
                     style: const TextStyle(
                         decoration: TextDecoration.underline,
                         decorationStyle: TextDecorationStyle.wavy,

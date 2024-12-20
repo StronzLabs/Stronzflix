@@ -74,6 +74,7 @@ class SettingsDialog extends StatelessWidget {
                     ),
                     const Spacer(),
                     IconButton(
+                        key: const Key("settings_close"),
                         icon: const Icon(Icons.close),
                         onPressed: () => Navigator.of(context).pop(),
                     )
@@ -87,6 +88,7 @@ class SettingsDialog extends StatelessWidget {
                     children: [
                         const SizedBox(height: 16),
                         SelectDropDown<Site>(
+                            key: const Key("site_dropdown"),
                             label: "Canale",
                             options: Site.sites,
                             selectedValue: Settings.site,

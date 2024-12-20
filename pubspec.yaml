@@ -45,6 +45,8 @@ dependency_overrides:
   uuid: ^4.4.0
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
 
