@@ -34,6 +34,7 @@ class VixxCloud extends Player {
         String param = json.keys.map((key) => "${key}=${json[key]}").join("&");
         String playlist = "${playlistUrl}?${param}";
 
+        playlist += "&h=1";
         if (await HTTP.status(playlist) != 200)
             playlist = playlist.replaceFirst(RegExp(r"expires=\d+"), "");
 
