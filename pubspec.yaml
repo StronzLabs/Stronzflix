@@ -41,6 +41,9 @@ dependencies:
     git: https://github.com/Bonfra04/dart_castscreen.git
   provider: ^6.1.2
 
+  fvp:
+    git: https://github.com/Bonfra04/fvp.git
+
 dependency_overrides:
   uuid: ^4.4.0
 
