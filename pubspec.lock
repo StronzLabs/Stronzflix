@@ -377,8 +377,8 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "85178be45075211049548f523f325718bbdfafe1"
-      url: "https://github.com/Bonfra04/fvp.git"
+      resolved-ref: "4c107cd55abc1704706e3de211cf52cd17b08adc"
+      url: "https://github.com/wang-bin/fvp.git"
     source: git
     version: "0.28.0"
   html:
@@ -965,7 +965,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: e1df1156c5628c0eee8703897e5d868322fb57b5
+      resolved-ref: "06fcec92ec27a45bd9cd0aabfa4b1f053122e7a6"
       url: "https://github.com/StronzLabs/StronzVideoPlayer.git"
     source: git
     version: "0.0.1"
@@ -1191,18 +1191,18 @@ packages:
     dependency: "direct main"
     description:
       name: wakelock_plus
-      sha256: "1aeab49f24aec1e5ab417d7cdfc47c7bbcb815353f1840667ffe68c89a0cd2e6"
+      sha256: "36c88af0b930121941345306d259ec4cc4ecca3b151c02e3a9e71aede83c615e"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.9"
+    version: "1.2.10"
   wakelock_plus_platform_interface:
     dependency: transitive
     description:
       name: wakelock_plus_platform_interface
-      sha256: "422d1cdbb448079a8a62a5a770b69baa489f8f7ca21aef47800c726d404f9d16"
+      sha256: "70e780bc99796e1db82fe764b1e7dcb89a86f1e5b3afb1db354de50f2e41eb7a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "1.2.2"
   web:
     dependency: transitive
     description:

@@ -41,8 +41,9 @@ dependencies:
     git: https://github.com/Bonfra04/dart_castscreen.git
   provider: ^6.1.2
 
+  # needed to make the shared library be embedded in the application
   fvp:
-    git: https://github.com/Bonfra04/fvp.git
+    git: https://github.com/wang-bin/fvp.git
 
 dependency_overrides:
   uuid: ^4.4.0
