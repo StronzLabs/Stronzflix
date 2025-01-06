@@ -1,3 +1,4 @@
+import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/site.dart';
 import 'package:sutils/sutils.dart';
 
@@ -9,7 +10,7 @@ class Settings extends LocalStorage {
         "domains": {"Scaricati": ""}
     });
 
-    static Site get site => Site.get(Settings.instance["site"])!;
+    static Site get site => Site.get(Settings.instance["site"]) ?? LocalSite.instance;
     static set site(Site site) => Settings.instance["site"] = site.name;
     static Map<String, dynamic> get domains => Settings.instance["domains"];
     static set domains(Map<String, dynamic> domains) => Settings.instance["domains"] = domains;
