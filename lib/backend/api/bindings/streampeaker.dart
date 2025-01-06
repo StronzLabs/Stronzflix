@@ -7,9 +7,12 @@ class Streampeaker extends Player {
     static Player instance = Streampeaker._();
     Streampeaker._() : super("Streampeaker");
 
+    late final Map<String, String> _cookie;
+    static set cookie(Map<String, String> cookie) => (Streampeaker.instance as Streampeaker)._cookie = cookie;
+
     @override
     Future<Uri> getSource(Uri uri) async {
-        String body = await HTTP.get(uri);
+        String body = await HTTP.get(uri, headers: this._cookie);
         Document document = html.parse(body);
 
         String source = document.querySelector("#video-player")!.querySelector("source")!.attributes["src"]!;

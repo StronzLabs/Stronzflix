@@ -47,6 +47,7 @@ class AnimeSaturn extends Site {
                     return false;
 
                 this._cookie = { "Cookie": "${cookieName}=${cookieValue}" };
+                Streampeaker.cookie = this._cookie;
                 homePage = await HTTP.get(url, headers: this._cookie);
             }
         } catch (_) {
