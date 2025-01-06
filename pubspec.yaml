@@ -40,6 +40,7 @@ dependencies:
   castscreen:
     git: https://github.com/Bonfra04/dart_castscreen.git
   provider: ^6.1.2
+  encrypt: ^5.0.3
 
   # needed to make the shared library be embedded in the application
   fvp:

@@ -19,7 +19,7 @@ class StreamingCommunity extends Site {
     }
 
     @override
-    bool tunerValidator(String homePage) {
+    Future<bool> tunerValidator(String homePage) async {
         return homePage.contains("<meta name=\"author\" content=\"StreamingCommunity\">");
     }
 

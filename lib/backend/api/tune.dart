@@ -7,7 +7,7 @@ class Tuner {
     static const Duration timeout = Duration(milliseconds: 2500);
     static late List<String> cache;
 
-    final bool Function(String) validator;
+    final Future<bool> Function(String) validator;
     final int cacheId;
     const Tuner(this.validator, this.cacheId);
 

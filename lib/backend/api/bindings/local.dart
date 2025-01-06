@@ -14,7 +14,7 @@ class LocalSite extends Site with ChangeNotifier {
     static void notify() => LocalSite.instance.notifyListeners();
 
     @override
-    bool tunerValidator(String homePage) => true;
+    Future<bool> tunerValidator(String homePage) async => true;
 
     TitleMetadata _extractMetadata(Directory directory, [Map<String, dynamic>? metadata]) {
         metadata ??= jsonDecode(

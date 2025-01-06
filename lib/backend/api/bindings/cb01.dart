@@ -16,7 +16,7 @@ class CB01 extends Site {
     AlignmentGeometry get cropPolicy => Alignment.centerRight;
 
     @override
-    bool tunerValidator(String homePage) {
+    Future<bool> tunerValidator(String homePage) async {
         return RegExp(r'<meta property="og:description" content="Vedi GRATIS \+\d+\.\d+ Film e Serie-TV in Streaming HD in Italiano senza limiti o registrazione. CB01 UFFICIALE \(ORIGINALE\) by CB01.UNO" />').hasMatch(homePage);
     }
 

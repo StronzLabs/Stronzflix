@@ -1,3 +1,4 @@
+import 'package:encrypt/encrypt.dart';
 import 'package:stronzflix/backend/api/bindings/jwplayer.dart';
 import 'package:stronzflix/backend/api/bindings/streampeaker.dart';
 import 'package:stronzflix/backend/api/media.dart';
@@ -10,8 +11,47 @@ class AnimeSaturn extends Site {
     static Site instance = AnimeSaturn._();
     AnimeSaturn._():  super("AnimeSaturn", "www.animesaturn", 1);
 
+    late final Map<String, String> _cookie;
+
     @override
-    bool tunerValidator(String homePage) {
+    Future<Uri> getFavicon() async {
+        String body = await HTTP.get(this.url, headers: this._cookie);
+        RegExpMatch match = RegExp(r'<link rel="icon".*href="(?<favicon>[^"]+)"').firstMatch(body)!;
+        String url = match.namedGroup("favicon")!;
+        if(url.startsWith("//"))
+            url = "https:$url";
+        else if(url.startsWith("/"))
+            url = "${this.url}$url";
+        return Uri.parse(url);
+    }
+
+    @override
+    Future<bool> tunerValidator(String homePage) async {
+        try {
+            if(homePage.contains("document.cookie=\"")) {
+                Document document = html.parse(homePage);
+                String script = document.getElementsByTagName("script").last.text;
+                
+                String a = script.split("a=toNumbers(\"")[1].split("\")")[0];
+                String b = script.split("b=toNumbers(\"")[1].split("\")")[0];
+                String c = script.split("c=toNumbers(\"")[1].split("\")")[0];
+
+                String cookieName = script.split("document.cookie=\"")[1].split("=\"")[0];
+
+                Encrypter encrypter = Encrypter(AES(Key.fromBase16(a), mode: AESMode.cbc, padding: null));
+                List<int> decrypted = encrypter.decryptBytes(Encrypted.fromBase16(c), iv: IV.fromBase16(b));
+                String cookieValue = decrypted.map((int byte) => byte.toRadixString(16).padLeft(2, "0")).join();
+                
+                String url = homePage.split("location.href=\"")[1].split("\";")[0].replaceAll("http://", "https://");
+                if(!url.contains(this.url.substring(this.url.indexOf("www"))))
+                    return false;
+
+                this._cookie = { "Cookie": "${cookieName}=${cookieValue}" };
+                homePage = await HTTP.get(url, headers: this._cookie);
+            }
+        } catch (_) {
+        }
+
         return homePage.contains("<meta content=\"AnimeSaturn - Streaming di Anime in Sub ITA e ITA\">");
     }
 
@@ -39,7 +79,7 @@ class AnimeSaturn extends Site {
 
     @override
     Future<Title> getTitle(TitleMetadata metadata) async {
-        String body = await HTTP.get(metadata.uri);
+        String body = await HTTP.get(metadata.uri, headers: this._cookie);
         Document document = html.parse(body);
 
         String banner = document.querySelector(".banner")!.attributes["style"]!.split("'")[1];
@@ -116,7 +156,7 @@ class AnimeSaturn extends Site {
 
     @override
     Future<List<TitleMetadata>> latests() async {
-        String body = await HTTP.get("${super.url}/newest");
+        String body = await HTTP.get("${super.url}/newest", headers: this._cookie);
         Document document = html.parse(body);
 
         List<TitleMetadata> results = [];
@@ -139,7 +179,7 @@ class AnimeSaturn extends Site {
 
     @override
     Future<List<TitleMetadata>> search(String query) async {
-        String body = await HTTP.get("${super.url}/animelist?search=${Uri.encodeQueryComponent(query)}");
+        String body = await HTTP.get("${super.url}/animelist?search=${Uri.encodeQueryComponent(query)}", headers: this._cookie);
         Document document = html.parse(body);
 
         List<TitleMetadata> results = [];
@@ -163,11 +203,11 @@ class AnimeSaturn extends Site {
 
     @override
     Future<List<WatchOption>> getOptions(Watchable watchable) async {
-        String passBody = await HTTP.get(watchable.uri);
+        String passBody = await HTTP.get(watchable.uri, headers: this._cookie);
         Document passDocument = html.parse(passBody);
 
         String episodeUrl = passDocument.querySelector(".card-body")!.querySelector("a")!.attributes["href"]!;
-        String body = await HTTP.get(episodeUrl);
+        String body = await HTTP.get(episodeUrl, headers: this._cookie);
         Document document = html.parse(body);
 
         List<String> urls = [
@@ -178,7 +218,7 @@ class AnimeSaturn extends Site {
         
         List<WatchOption> options = [];
         for(String url in urls) {
-            String body = await HTTP.get(url);
+            String body = await HTTP.get(url, headers: this._cookie);
 
             if(body.contains("jwplayer"))
                 options.add(WatchOption(

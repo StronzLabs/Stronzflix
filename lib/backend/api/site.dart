@@ -81,7 +81,7 @@ abstract class Site extends Initializable {
     Future<Title> getTitle(TitleMetadata metadata);
     Future<List<WatchOption>> getOptions(Watchable watchable);
 
-    bool tunerValidator(String homePage);
+    Future<bool> tunerValidator(String homePage);
 
     @override
     String toString() => this.name;
