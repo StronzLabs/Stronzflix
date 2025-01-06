@@ -36,7 +36,8 @@ class Tuner {
         String response = await HTTP.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt");
         List<String> domains = response.split("\n").where((String line) => !line.startsWith("#")).toList();
         domains.shuffle();
-        domains.insert(0, Tuner.cache[this.cacheId]);
+        if(Tuner.cache.length > this.cacheId)
+            domains.insert(0, Tuner.cache[this.cacheId]);
         return domains;
     }
 
