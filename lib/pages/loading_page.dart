@@ -23,6 +23,7 @@ import 'package:stronzflix/backend/sink/sink_manager.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
+import 'package:stronzflix/backend/tuner_exception.dart';
 import 'package:stronzflix/backend/update/version.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/update_dialog.dart';
@@ -77,20 +78,41 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
         }
     }
 
-    Stream<double> _dynamicLoad(List<Stream<dynamic>> loadingPhase) async* {
+    Stream<double> _dynamicLoad(List<Stream<dynamic>> loadingPhase, int allowedFails) async* {
         StreamController<(int, double)> loading = StreamController.broadcast();
         int done = 0;
+        int fails = 0;
         List<StreamSubscription> subscriptions = loadingPhase.map((stream) {
             int index = loadingPhase.indexOf(stream);
-            return stream.listen(
+            StreamSubscription subscription = stream.listen(
                 (percentage) => loading.add(( index, percentage )),
-                onError: (error, stackTrace) => loading.addError(error, stackTrace),
                 onDone: () {
                     loading.add(( index, 1.0 ));
                     if(++done == loadingPhase.length)
                         loading.close();
-                }
+                },
+                onError: (error, stackTrace) {
+                    if (error is! TunerException)
+                        return loading.addError(error, stackTrace);
+                
+                    if(super.mounted) {
+                        ScaffoldMessenger.of(super.context).showSnackBar(SnackBar(
+                            content: Text(error.toString()),
+                            width: 300,
+                        ));
+                    }
+
+                    if(++fails > allowedFails) {
+                        super.setState(() =>
+                            this._error = "Troppe richieste fallite, controlla la tua connessione e riprova"
+                        );
+                    }
+                    else if(++done == loadingPhase.length)
+                        loading.close();
+                },
             );
+
+            return subscription;
         }).toList();
         
         List<double> advance = List.filled(loadingPhase.length, 0.0);
@@ -153,14 +175,14 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
 
         await for (double percentage in this._dynamicLoad([
             StreamingCommunity.instance.progress,
-            LocalSite.instance.progress,
             AnimeSaturn.instance.progress,
             CB01.instance.progress,
-        ]))
+        ], 2))
             yield advance + percentage * phasesWeights[1]; 
         advance += phasesWeights[1];
 
         await for (double percentage in this._load([
+            LocalSite.instance.ensureInitialized(),
             LocalPlayer.instance.ensureInitialized(),
             JWPlayer.instance.ensureInitialized(),
             VJSPlayer.instance.ensureInitialized(),
@@ -206,7 +228,9 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
                 this._controller.forward(from: 0);
             },
             cancelOnError: true,
-            onError: (error, stacktrace) => super.setState(() => this._error = error.message),
+            onError: (error, stacktrace) => super.setState(
+                () => this._error = error.toString()
+            ),
             onDone: () {
                 if(!this._update && super.mounted)
                     Navigator.of(super.context).pushReplacementNamed("/home");

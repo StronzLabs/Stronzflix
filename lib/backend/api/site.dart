@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' show Alignment, AlignmentGeometry, mustCallSuper;
 import 'package:stronzflix/backend/api/bindings/local.dart';
+import 'package:stronzflix/backend/tuner_exception.dart';
 import 'package:stronzflix/utils/initializable.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/tune.dart';
@@ -40,7 +41,7 @@ abstract class Site extends Initializable {
                 if (value is double)
                     super.reportProgress(value);
                 else if (value == null)
-                    throw Exception("Failed to find domain for ${this.name}");
+                    throw TunerException(this.name);
             }
         }
 
