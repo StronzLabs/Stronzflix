@@ -1,6 +1,6 @@
 import 'package:stronzflix/backend/api/bindings/vjsplayer.dart';
 import 'package:stronzflix/backend/api/player.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class Maxstream extends Player {
     static Player instance = Maxstream._();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/cast/cast.dart';
 import 'package:stronzflix/components/animated_gradient_icon.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class CastButton extends StatefulWidget {
     final double iconSize;

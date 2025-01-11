@@ -10,7 +10,7 @@ import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/downloader.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 import 'download_state.dart';
 

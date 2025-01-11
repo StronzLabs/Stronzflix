@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stronz_video_player/stronz_video_player.dart';
 import 'package:stronzflix/components/resource_image.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class CastVideoView extends StatefulWidget {
     const CastVideoView({super.key});

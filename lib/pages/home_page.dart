@@ -25,7 +25,7 @@ import 'package:stronzflix/dialogs/settings_dialog.dart';
 import 'package:stronzflix/dialogs/sink_dialog.dart';
 import 'package:stronzflix/pages/player_page.dart';
 import 'package:stronzflix/pages/search_page.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class HomePage extends StatefulWidget {
     const HomePage({super.key});

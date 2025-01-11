@@ -6,7 +6,7 @@ import 'package:stronzflix/components/resource_image.dart';
 import 'package:stronzflix/components/select_dropdown.dart';
 import 'package:stronzflix/dialogs/loading_dialog.dart';
 import 'package:stronzflix/utils/utils.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class DownloadDialog extends StatefulWidget {
 

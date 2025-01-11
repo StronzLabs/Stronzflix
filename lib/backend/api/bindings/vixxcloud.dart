@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:stronzflix/backend/api/bindings/streamingcommunity.dart';
 import 'package:stronzflix/backend/api/player.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class VixxCloud extends Player {
 

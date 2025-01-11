@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
 import 'package:process_run/process_run.dart';
-import 'package:sutils/utils/expanded_platform.dart';
+import 'package:sutils/utils.dart';
 
 class FFmpegWrapper {
 

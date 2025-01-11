@@ -5,7 +5,7 @@ import 'package:stronzflix/backend/api/bindings/mixdrop.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/middleware.dart';
 import 'package:stronzflix/backend/api/site.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 import 'package:html/parser.dart' as html;
 
 class CB01 extends Site {

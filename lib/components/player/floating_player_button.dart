@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:stronz_video_player/components/video_player_view.dart';
 import 'package:stronz_video_player/stronz_video_player.dart';
 import 'package:stronzflix/components/floating_player_context.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class FloatingPlayerButton extends StatelessWidget with StronzPlayerControl {
     final double iconSize;

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:stronzflix/backend/api/middleware.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class StayOnline extends Middleware {
     static Middleware instance = StayOnline._();
@@ -10,7 +10,7 @@ class StayOnline extends Middleware {
     @override
     Future<Uri> pass(Uri uri, String body) async {
         String id = uri.pathSegments[1];
-        String jsonString = await HTTP.post("https://${uri.host}/ajax/linkEmbedView.php", body: {
+        String jsonString = await HTTP.post("https://${uri.host}/ajax/linkEmbedView.php", fieldsBody: {
             "id": id
         });
         Map<String, dynamic> json = jsonDecode(jsonString);

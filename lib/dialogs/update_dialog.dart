@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/update/version.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class UpdateDialog extends StatelessWidget {
 

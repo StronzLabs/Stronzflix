@@ -1,5 +1,5 @@
 import 'package:stronzflix/utils/initializable.dart';
-import 'package:sutils/utils/simple_http.dart';
+import 'package:sutils/utils.dart';
 
 abstract class Middleware extends Initializable {
     final String name;

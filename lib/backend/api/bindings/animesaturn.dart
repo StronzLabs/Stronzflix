@@ -5,7 +5,7 @@ import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
 import 'package:html/parser.dart' as html;
 import 'package:html/dom.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class AnimeSaturn extends Site {
     static Site instance = AnimeSaturn._();

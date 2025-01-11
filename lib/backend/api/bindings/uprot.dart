@@ -1,7 +1,7 @@
 import 'package:html/dom.dart';
 import 'package:stronzflix/backend/api/middleware.dart';
 import 'package:html/parser.dart' as html;
-import 'package:sutils/utils/simple_http.dart';
+import 'package:sutils/utils.dart';
 
 class UProt extends Middleware {
     static Middleware instance = UProt._();

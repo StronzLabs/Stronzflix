@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:background_downloader/background_downloader.dart';
 import 'package:process_run/process_run.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:win32_registry/win32_registry.dart';
 

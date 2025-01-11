@@ -8,7 +8,7 @@ import 'package:stronzflix/pages/home_page.dart';
 import 'package:stronzflix/pages/loading_page.dart';
 import 'package:stronzflix/pages/player_page.dart';
 import 'package:stronzflix/pages/title_page.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class Stronzflix extends StatelessWidget {
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class Tuner {
 

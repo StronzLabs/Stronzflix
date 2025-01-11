@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:stronzflix/backend/api/bindings/vixxcloud.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class StreamingCommunity extends Site {
     static Site instance = StreamingCommunity._();

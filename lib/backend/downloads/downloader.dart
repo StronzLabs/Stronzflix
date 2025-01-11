@@ -9,7 +9,7 @@ import 'package:stronzflix/utils/utils.dart';
 
 import 'dart:typed_data';
 
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 abstract class Downloader {
     static const Downloader hls = HLSDownloader();

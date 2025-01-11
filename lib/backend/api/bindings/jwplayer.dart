@@ -1,7 +1,7 @@
 import 'package:html/dom.dart';
 import 'package:stronzflix/backend/api/player.dart';
 import 'package:html/parser.dart' as html;
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class JWPlayer extends Player {
     static Player instance = JWPlayer._();

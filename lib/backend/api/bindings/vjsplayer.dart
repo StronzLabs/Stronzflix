@@ -2,7 +2,7 @@ import 'package:html/dom.dart';
 import 'package:js_unpack/js_unpack.dart';
 import 'package:stronzflix/backend/api/player.dart';
 import 'package:html/parser.dart' as html;
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class VJSPlayer extends Player {
     static Player instance = VJSPlayer._();

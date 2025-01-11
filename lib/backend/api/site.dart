@@ -5,7 +5,7 @@ import 'package:stronzflix/utils/initializable.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/tune.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
-import 'package:sutils/utils/simple_http.dart';
+import 'package:sutils/utils.dart';
 
 abstract class Site extends Initializable {
 

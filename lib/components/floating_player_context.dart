@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class FloatingPlayerContext extends StatefulWidget {
     final Widget? child;

@@ -13,7 +13,7 @@ import 'package:stronzflix/components/player/chat_button.dart';
 import 'package:stronzflix/components/player/floating_player_button.dart';
 import 'package:stronzflix/components/player/peer_external_controller.dart';
 import 'package:stronzflix/stronzflix.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 
 class PlayerPageArguments {
     final Watchable watchable;

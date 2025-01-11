@@ -1,6 +1,6 @@
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/site.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/logic/storage/local_storage.dart';
 
 class Settings extends LocalStorage {
     static final Settings instance = Settings._();

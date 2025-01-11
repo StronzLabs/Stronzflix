@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart' hide Title;
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/logic/storage/local_storage.dart';
 
 class SerialMetadata {
     final TitleMetadata metadata;
