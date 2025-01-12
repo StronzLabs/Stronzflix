@@ -990,7 +990,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: b2783453aa2985007272f49cef78987e50e7d746
+      resolved-ref: "52f979e58ae04c538ec1db9ca8b077e90136edaf"
       url: "https://github.com/StronzLabs/SUtils.git"
     source: git
     version: "0.0.1"

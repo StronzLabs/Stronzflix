@@ -11,7 +11,7 @@ class AnimeSaturn extends Site {
     static Site instance = AnimeSaturn._();
     AnimeSaturn._():  super("AnimeSaturn", "www.animesaturn", 1);
 
-    late final Map<String, String> _cookie;
+    Map<String, String> _cookie = {};
 
     @override
     Future<Uri> getFavicon() async {
