@@ -238,10 +238,10 @@ packages:
     dependency: transitive
     description:
       name: dart_webrtc
-      sha256: ac7ef077084b3e54004716f1d736fcd839e1b60bc3f21f4122a35a9bb5ca2e47
+      sha256: e65506edb452148220efab53d8d2f8bb9d827bd8bcd53cf3a3e6df70b27f3d86
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.8"
+    version: "1.4.10"
   dbus:
     dependency: transitive
     description:
@@ -990,7 +990,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "52f979e58ae04c538ec1db9ca8b077e90136edaf"
+      resolved-ref: fc52b95205125c0d84d45eff692b1d8df7451988
       url: "https://github.com/StronzLabs/SUtils.git"
     source: git
     version: "0.0.1"
@@ -1223,18 +1223,18 @@ packages:
     dependency: transitive
     description:
       name: web
-      sha256: "97da13628db363c635202ad97068d47c5b8aa555808e7a9411963c533b449b27"
+      sha256: cd3543bd5798f6ad290ea73d210f423502e71900302dde696f8bff84bf89a1cb
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.1"
+    version: "1.1.0"
   web_socket_channel:
     dependency: transitive
     description:
       name: web_socket_channel
-      sha256: "58c6666b342a38816b2e7e50ed0f1e261959630becd4c879c4f26bfa14aa5a42"
+      sha256: d88238e5eac9a42bb43ca4e721edba3c08c6354d4a53063afaa568516217621b
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.5"
+    version: "2.4.0"
   webdriver:
     dependency: transitive
     description:
