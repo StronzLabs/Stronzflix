@@ -28,6 +28,7 @@ import 'package:stronzflix/backend/update/version.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/update_dialog.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:sutils/sutils.dart';
 
 class LoadingPage extends StatefulWidget {
     const LoadingPage({super.key});
@@ -141,6 +142,8 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
     Stream<double> _doLoading() async* {
         List<double> phasesWeights = [ 0.01, 0.97, 0.01, 0.01 ];
         double advance = 0.0;
+
+        await SUtils.ensureInitialized();
         
         await for (double percentage in this._load([
             StronzVideoPlayer.initialize(),
@@ -228,9 +231,7 @@ class _LoadingPageState extends State<LoadingPage> with SingleTickerProviderStat
                 this._controller.forward(from: 0);
             },
             cancelOnError: true,
-            onError: (error, stacktrace) => super.setState(
-                () => this._error = error.toString()
-            ),
+            onError: (error, stacktrace) => super.setState(() => this._error = error.toString()),
             onDone: () {
                 if(!this._update && super.mounted)
                     Navigator.of(super.context).pushReplacementNamed("/home");
