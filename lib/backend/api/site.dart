@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart' show Alignment, AlignmentGeometry, mustCallSuper;
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/tuner_exception.dart';
-import 'package:stronzflix/utils/initializable.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/tune.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
+import 'package:sutils/logic/data/initializable.dart';
 import 'package:sutils/utils.dart';
 
 abstract class Site extends Initializable {

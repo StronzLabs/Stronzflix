@@ -1,4 +1,4 @@
-import 'package:stronzflix/utils/initializable.dart';
+import 'package:sutils/logic/data/initializable.dart';
 import 'package:sutils/utils.dart';
 
 abstract class Middleware extends Initializable {

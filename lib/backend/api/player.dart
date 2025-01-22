@@ -1,4 +1,4 @@
-import 'package:stronzflix/utils/initializable.dart';
+import 'package:sutils/logic/data/initializable.dart';
 
 abstract class Player extends Initializable {
     final String name;
