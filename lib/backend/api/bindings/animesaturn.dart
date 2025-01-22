@@ -43,7 +43,7 @@ class AnimeSaturn extends Site {
                 String cookieValue = decrypted.map((int byte) => byte.toRadixString(16).padLeft(2, "0")).join();
                 
                 String url = homePage.split("location.href=\"")[1].split("\";")[0].replaceAll("http://", "https://");
-                if(!url.contains(this.url.substring(this.url.indexOf("www"))))
+                if(!url.contains(this.domain))
                     return false;
 
                 this._cookie = { "Cookie": "${cookieName}=${cookieValue}" };
