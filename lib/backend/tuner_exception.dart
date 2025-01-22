@@ -1,7 +1,7 @@
-class TunerException implements Exception {
-    final String site;
-    TunerException(this.site);
+import 'package:stronzflix/backend/api/site.dart';
+import 'package:sutils/logic/errors/stronz_loading_warn.dart';
 
-    @override
-    String toString() => "Non è stato possibile sintonizzare ${this.site}.\nIl caricamento continuerà senza di esso.";
+class TunerException extends StronzLoadingWarn {
+    TunerException(Site site)
+        : super("Non è stato possibile sintonizzare ${site}.\nIl caricamento continuerà senza di esso.");
 }

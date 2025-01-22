@@ -18,6 +18,8 @@ abstract class Site extends Initializable {
     late Uri _favicon;
     Uri get favicon => this._favicon;
 
+    bool _loadingCancelled = false;
+
     Site(this.name, this.domain, int cacheId) : super((self) => Site._registry[name] = self as Site) {
         this.tuner = Tuner(this.tunerValidator, cacheId);
     }
@@ -38,18 +40,23 @@ abstract class Site extends Initializable {
 
         if (!Settings.domains.containsKey(this.name)) {
             await for (dynamic value in this.tune()) {
-                if (value is double)
-                    super.reportProgress(value);
-                else if (value == null)
-                    throw TunerException(this.name);
+                if (value == null)
+                    throw TunerException(this);
+                super.reportProgress(value);
             }
         }
 
         this._favicon = await this.getFavicon();
     }
 
-    Stream<double?> tune() async* {
+    @override
+    void onCancel() => this._loadingCancelled = true;
+
+    Stream<dynamic> tune() async* {
         await for(dynamic res in this.tuner.findDomain(this.domain)) {
+            if(this._loadingCancelled) 
+                return;
+
             if(res is String) {
                 // TODO: find a better solution for this
                 Map<String, dynamic> domains = Settings.domains;
@@ -58,8 +65,8 @@ abstract class Site extends Initializable {
                 Settings.instance.serialize();
                 return;
             }
-            else
-                yield res;
+            
+            yield res;
         }
     }
 

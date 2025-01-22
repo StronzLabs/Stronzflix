@@ -16,5 +16,5 @@ class Settings extends LocalStorage {
     static set domains(Map<String, dynamic> domains) => Settings.instance["domains"] = domains;
     static bool get pickSource => Settings.instance["pick_source"];
     static set pickSource(bool pickSource) => Settings.instance["pick_source"] = pickSource;
-    static bool online = false;
+    static bool online = true;
 }

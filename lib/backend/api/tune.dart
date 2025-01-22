@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:sutils/logic/errors/stronz_loading_early_fail.dart';
 import 'package:sutils/utils.dart';
 
 class Tuner {
@@ -36,8 +37,6 @@ class Tuner {
         String response = await HTTP.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt");
         List<String> domains = response.split("\n").where((String line) => !line.startsWith("#")).toList();
         domains.shuffle();
-        if(Tuner.cache.length > this.cacheId)
-            domains.insert(0, Tuner.cache[this.cacheId]);
         return domains;
     }
 
@@ -45,6 +44,11 @@ class Tuner {
         String? result;
         double progress = 0.0;
         yield progress;
+
+        if(Tuner.cache.length > this.cacheId && await this.validateDomain("${subdomain}.${Tuner.cache[this.cacheId]}"))
+            yield Tuner.cache[this.cacheId];
+        else
+            yield StronzLoadingEarlyFail("Impossibile sintonizzare velocemente il dominio ${subdomain}.");
 
         List<String> domains = await this._getDomains();
 
