@@ -11,6 +11,7 @@ abstract class Site extends Initializable {
 
     final String name;
     final String domain;
+    final HTTPChain chain;
     String get url => Settings.domains[this.name]!;
 
     late final Tuner tuner;
@@ -20,8 +21,9 @@ abstract class Site extends Initializable {
 
     bool _loadingCancelled = false;
 
-    Site(this.name, this.domain, int cacheId) : super((self) => Site._registry[name] = self as Site) {
-        this.tuner = Tuner(this.tunerValidator, cacheId);
+    Site(this.name, this.domain, int cacheId, [HTTPProcessor httpProcessor = const HTTPProcessor.simple()])
+        : this.chain = HTTPChain(httpProcessor), super((self) => Site._registry[name] = self as Site) {
+        this.tuner = Tuner(this.tunerValidator, cacheId, this.chain);
     }
 
     @override
@@ -71,7 +73,7 @@ abstract class Site extends Initializable {
     }
 
     Future<Uri> getFavicon() async {
-        String body = await HTTP.get(this.url);
+        String body = await this.chain.get(this.url);
         RegExpMatch match = RegExp(r'<link rel="icon".*href="(?<favicon>[^"]+)"').firstMatch(body)!;
         String url = match.namedGroup("favicon")!;
         if(url.startsWith("//"))

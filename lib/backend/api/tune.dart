@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:sutils/logic/errors/stronz_loading_early_fail.dart';
 import 'package:sutils/utils.dart';
@@ -10,7 +11,8 @@ class Tuner {
 
     final Future<bool> Function(String) validator;
     final int cacheId;
-    const Tuner(this.validator, this.cacheId);
+    final HTTPChain chain;
+    const Tuner(this.validator, this.cacheId, this.chain);
 
     static Future<void> prepareCache() async {
         try {
