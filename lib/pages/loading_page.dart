@@ -41,7 +41,7 @@ class LoadingPage extends StatelessWidget {
             phases: [
                 StronzStaticLoadingPhase(
                     weight: 0.01,
-                    steps: [
+                    steps: () => [
                         StronzVideoPlayer.initialize(),
                         Settings.instance.unserialize(),
                         Tuner.prepareCache(),
@@ -58,7 +58,7 @@ class LoadingPage extends StatelessWidget {
                 ),
                 StronzStaticLoadingPhase(
                     weight: 0.01,
-                    steps: [
+                    steps: () => [
                         LocalSite.instance.initialized,
                         LocalPlayer.instance.initialized,
                         JWPlayer.instance.initialized,
@@ -73,7 +73,7 @@ class LoadingPage extends StatelessWidget {
                 ),
                 StronzStaticLoadingPhase(
                     weight: 0.01,
-                    steps: [
+                    steps: () => [
                         KeepWatching.instance.unserialize(),
                         SavedTitles.instance.unserialize(),
                         SinkManager.init(),

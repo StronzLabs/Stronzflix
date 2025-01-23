@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:sutils/logic/errors/stronz_loading_early_fail.dart';
 import 'package:sutils/utils.dart';
