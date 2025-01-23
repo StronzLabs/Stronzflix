@@ -4,30 +4,92 @@ import 'package:stronzflix/backend/api/bindings/vixxcloud.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/api/site.dart';
 import 'package:sutils/utils.dart';
+import 'package:html/parser.dart' as html;
+import 'package:html/dom.dart';
+
+final class CloudflarePhishingHTTPMiddleware extends HTTPProcessor {
+    Map<String, String>? _cookie;
+
+    CloudflarePhishingHTTPMiddleware([super._parent]);
+
+    @override
+    Future<Request> beforeRequest(Request request) async {
+        if(this._cookie == null)
+            return request;
+
+        return request.copyWith(headers: this._cookie);
+    }
+
+    @override
+    Future<Response> process(Request request, Duration? timeout) async {
+        Response response = await super.parent.process(request, timeout);
+
+        if((!response.headers.containsKey("server") && response.headers["server"] == "cloudflare"))
+            return response;
+
+        Document document = html.parse(response.body);
+        String title = document.head?.getElementsByTagName("title").firstOrNull?.text ?? "";
+        if(title != "Suspected phishing site | Cloudflare")
+            return response;
+
+        Element? input = document.body?.querySelector("input[name='atok']");
+        String? atok = input?.attributes["value"];
+
+        if(atok != null)
+            this._cookie = { "Cookie": "__cf_mw_byp=${atok}" };
+
+        request = await this.beforeRequest(request);
+        return super.parent.process(request, timeout);
+    }
+}
+
+final class InhertiaHTTPMiddleware extends HTTPProcessor {
+    Map<String, String>? _inhertia;
+    bool processInhertia = false;
+
+    InhertiaHTTPMiddleware([super._parent]);
+
+    @override
+    Future<Request> beforeRequest(Request request) async {
+        if(this._inhertia == null)
+            return request;
+
+        return request.copyWith(headers: this._inhertia);
+    }
+
+    @override
+    Future<Response> process(Request request, Duration? timeout) async {
+        Response response = await super.parent.process(request, timeout);
+        
+        if(!this.processInhertia)
+            return response;
+
+        RegExpMatch? match = RegExp(r'version&quot;:&quot;(?<inertia>[a-z0-9]+)&quot;').firstMatch(response.body);
+        if(match == null)
+            return response;
+
+        this._inhertia = { "X-Inertia": "true", "X-Inertia-Version": match.namedGroup("inertia")! };
+
+        request = await this.beforeRequest(request);
+        return super.parent.process(request, timeout);
+    }
+}
 
 class StreamingCommunity extends Site {
     static Site instance = StreamingCommunity._();
-    StreamingCommunity._() : super("StreamingCommunity", "streamingcommunity", 0);
+    StreamingCommunity._() : super("StreamingCommunity", "streamingcommunity", 0, InhertiaHTTPMiddleware(CloudflarePhishingHTTPMiddleware()));
 
     String get _cdn => super.url.replaceFirst("//", "//cdn.");
-    final Map<String, String> _inhertia = {};
 
     @override
     Future<void> construct() async {
         await super.construct();
-        await this._getInhertia();
+        (super.chain.middleware as InhertiaHTTPMiddleware).processInhertia = true;
     }
 
     @override
     Future<bool> tunerValidator(String homePage) async {
         return homePage.contains("<meta name=\"author\" content=\"StreamingCommunity\">");
-    }
-
-    Future<void> _getInhertia() async {
-        String body = await HTTP.get(super.url);
-        RegExpMatch match = RegExp(r'version&quot;:&quot;(?<inertia>[a-z0-9]+)&quot;').firstMatch(body)!;
-        this._inhertia["X-Inertia"] = "true";
-        this._inhertia["X-Inertia-Version"] = match.namedGroup("inertia")!;
     }
 
     String _findImage(Map<String, dynamic> json, String type) {
@@ -38,7 +100,7 @@ class StreamingCommunity extends Site {
     }
 
     Future<List<TitleMetadata>> _fetch(String url) async {
-        String body = await HTTP.get("${super.url}${url}", headers: this._inhertia);
+        String body = await super.chain.get("${super.url}${url}");
         dynamic json = jsonDecode(body);
         dynamic titles = json["props"]["titles"];
 
@@ -83,7 +145,7 @@ class StreamingCommunity extends Site {
     }
 
     Future<List<Episode>> getEpisodes(Season season, String seasonUrl) async {
-        String body = await HTTP.get("${super.url}${seasonUrl}", headers: this._inhertia);
+        String body = await super.chain.get("${super.url}${seasonUrl}");
         dynamic json = jsonDecode(body);
 
         dynamic seasonObject = json["props"]["loadedSeason"];
@@ -137,7 +199,7 @@ class StreamingCommunity extends Site {
 
     @override
     Future<Title> getTitle(TitleMetadata metadata) async {
-        String body = await HTTP.get("${super.url}${metadata.uri}", headers: this._inhertia);
+        String body = await super.chain.get("${super.url}${metadata.uri}");
         dynamic json = jsonDecode(body);
         dynamic title = json["props"]["title"];
 
