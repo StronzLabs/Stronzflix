@@ -28,7 +28,7 @@ class Tuner {
     Future<bool> validateDomain(String domain) async {
         domain = domain.startsWith('https://') ? domain : 'https://${domain}';
         try {
-            String body = await HTTP.get(domain, followRedirects: false, timeout: Tuner.timeout).onError((error, stackTrace) => "");
+            String body = await this.chain.get(domain, followRedirects: false, timeout: Tuner.timeout).onError((error, stackTrace) => "");
             return this.validator(body);
         } catch (_) {
             return false;
