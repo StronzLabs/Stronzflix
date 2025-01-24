@@ -38,11 +38,10 @@ jobs:
         with:
           flutter-version: "3.27.1"
           channel: "stable"
-          cache: false
           architecture: x64
 
       - name: Run tests
-        run: flutter test integration_test -d emulator
+        run: flutter test integration_test -d windows
 
   test_android:
     name: Android
