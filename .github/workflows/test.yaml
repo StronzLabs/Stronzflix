@@ -65,7 +65,7 @@ jobs:
           architecture: x64
 
       - name: Run tests
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test -d linux
+        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test --verbose -d linux
 
   test_macos:
     name: MacOS
