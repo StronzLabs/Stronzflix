@@ -36,11 +36,6 @@ jobs:
           distribution: "zulu"
           java-version: "17"
 
-      - name: Download Android SDK
-        uses: malinskiy/action-android/install-sdk@release/0.1.2
-      - name: Install Android SDK components
-        run: sdkmanager --install "build-tools;30.0.3"
-
       - name: Download Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -49,12 +44,11 @@ jobs:
           cache: false
           architecture: x64
 
-      - name: Run Tests
-        uses: malinskiy/action-android/emulator-run-cmd@release/0.1.2
+      - name: Run tests
+        uses: reactivecircus/android-emulator-runner@v2
         with:
-          cmd: flutter test -d emulator
-          api: 33
-          cmdOptions: -no-snapshot-save -noaudio -no-boot-anim -cores 2 -memory 3072 -no-window
-          tag: google_apis
-          abi: arm64-v8a
-
+          target: playstore
+          api-level: 33
+          arch: arm64-v8a
+          profile: Nexus 6
+          script: flutter test -d emulator
