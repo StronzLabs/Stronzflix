@@ -1,0 +1,55 @@
+name: Test
+on: 
+  workflow_dispatch:
+    inputs:
+      build_windows:
+        description: 'Run on Windows'
+        type: boolean
+        required: true
+        default: true
+      build_linux:
+        description: 'Run on Linux'
+        type: boolean
+        required: true
+        default: true
+      build_macos:
+        description: 'Run on MacOS'
+        type: boolean
+        required: true
+        default: true
+      build_android:
+        description: 'Run on Android'
+        type: boolean
+        required: true
+        default: true
+jobs:
+  integration-tests:
+    name: Android
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Download dependencies
+        uses: actions/setup-java@v2
+        with:
+          distribution: "zulu"
+          java-version: "17"
+
+      - name: Download Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.27.1"
+          channel: "stable"
+          cache: false
+          architecture: x64
+
+      - name: Run Tests
+        uses: malinskiy/action-android/emulator-run-cmd@release/0.1.2
+        with:
+          cmd: flutter test -d emulator
+          api: 33
+          cmdOptions: -no-snapshot-save -noaudio -no-boot-anim -cores 2 -memory 3072 -no-window
+          tag: google_apis
+          abi: arm64-v8a
+
