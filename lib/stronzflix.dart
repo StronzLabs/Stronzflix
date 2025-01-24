@@ -12,8 +12,9 @@ import 'package:stronzflix/pages/title_page.dart';
 class Stronzflix extends StatelessWidget {
 
     static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+    final bool skipLoading;
 
-    const Stronzflix({super.key});
+    const Stronzflix({super.key, this.skipLoading = false});
 
     static ThemeData get theme => ThemeData(
         useMaterial3: true,
@@ -64,7 +65,7 @@ class Stronzflix extends StatelessWidget {
                 themeMode: ThemeMode.dark,
                 title: 'Stronzflix',
                 theme: Stronzflix.theme,
-                initialRoute: '/loading',
+                initialRoute: this.skipLoading ? '/home' : '/loading',
                 routes: {
                     '/loading': (context) => const LoadingPage(),
                     '/home' : (context) => const HomePage(),
