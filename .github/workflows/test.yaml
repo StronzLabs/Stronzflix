@@ -57,4 +57,4 @@ jobs:
           api-level: 33
           arch: x86_64
           profile: Nexus 6
-          script: flutter test -d emulator
+          script: flutter test integration_test -d emulator
