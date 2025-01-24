@@ -26,10 +26,7 @@ on:
 
 jobs:
   run_tests:
-    strategy:
-      matrix:
-        target: [windows, macos, android] # linux
-    uses: StronzLabs/Stronzflix/.github/workflows/test.yml@test_${{ matrix.target }}
+    uses: StronzLabs/Stronzflix/.github/workflows/test.yml
 
   create_release:
     name: Create Draft Release
