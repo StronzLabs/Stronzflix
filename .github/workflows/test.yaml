@@ -71,7 +71,7 @@ jobs:
       - name: Run tests
         uses: smithki/xvfb-action@v1.1.2
         with:
-          run: fflutter test integration_test --verbose -d linux
+          run: flutter test integration_test --verbose -d linux
 
   test_macos:
     name: MacOS
