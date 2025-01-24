@@ -73,9 +73,6 @@ jobs:
         with:
           flutter-version: "3.27.1"
           channel: "stable"
-          cache: false # windows cache is broken
-          cache-key: "flutter-windows"
-          cache-path: "${{ runner.tool_cache }}/flutter/windows"
           architecture: x64
 
       - name: Build Windows App
@@ -130,9 +127,6 @@ jobs:
         with:
           flutter-version: "3.27.1"
           channel: "stable"
-          cache: true
-          cache-key: "flutter-linux"
-          cache-path: "${{ runner.tool_cache }}/flutter/linux"
           architecture: x64
 
       - name: Download ffmpeg
@@ -179,9 +173,6 @@ jobs:
         with:
           flutter-version: "3.27.1"
           channel: "stable"
-          cache: true
-          cache-key: "flutter-macos"
-          cache-path: "${{ runner.tool_cache }}/flutter/macos"
 
       - name: Build MacOS App
         run: |
@@ -222,9 +213,6 @@ jobs:
         with:
           flutter-version: "3.27.1"
           channel: "stable"
-          cache: true
-          cache-key: "flutter-android"
-          cache-path: "${{ runner.tool_cache }}/flutter/android"
           architecture: x64
 
       - name: Build Android App
