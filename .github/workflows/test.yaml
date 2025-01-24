@@ -43,6 +43,42 @@ jobs:
       - name: Run tests
         run: flutter test integration_test -d windows
 
+  test_linux:
+    name: Linux
+    runs-on: windows-latest
+    if:  ${{ inputs.test_linux }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.27.1"
+          channel: "stable"
+          architecture: x64
+
+      - name: Run tests
+        run: flutter test integration_test -d linux
+
+  test_macos:
+    name: MacOS
+    runs-on: windows-latest
+    if:  ${{ inputs.test_macos }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.27.1"
+          channel: "stable"
+          architecture: x64
+
+      - name: Run tests
+        run: flutter test integration_test -d macos
+
   test_android:
     name: Android
     runs-on: ubuntu-latest
