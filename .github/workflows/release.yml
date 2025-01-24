@@ -1,4 +1,5 @@
 name: Release
+
 on: 
   workflow_dispatch:
     inputs:
@@ -22,6 +23,7 @@ on:
         type: boolean
         required: true
         default: true
+
 jobs:
   create_release:
     name: Create Draft Release
