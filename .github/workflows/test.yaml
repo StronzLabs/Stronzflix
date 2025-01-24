@@ -48,11 +48,10 @@ jobs:
     runs-on: ubuntu-latest
     if:  ${{ inputs.test_linux }}
     steps:
-
       - name: Install dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+          sudo apt-get install -y ninja-build libgtk-3-dev libglu1-mesa xvfb
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -65,10 +64,10 @@ jobs:
           architecture: x64
 
       - name: Run tests
-        run: |
-          export DISPLAY=:99
-          sudo Xvfb -ac :99 -screen 0 1280x1024x24 &
-          flutter test integration_test/generic_test.dart --verbose -d linux
+        run: xvfb-run -e error.txt flutter test integration_test --verbose -d linux
+
+      - name: get error log
+        run: cat error.txt
 
   test_macos:
     name: MacOS
