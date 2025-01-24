@@ -68,6 +68,9 @@ jobs:
       #     (xvfb-run -e error.txt flutter test integration_test --verbose -d linux) ||
       #     cat error.txt
 
+      - run: |
+          pkill -f -9 Xvfb
+
       - name: Run tests
         uses: smithki/xvfb-action@v1.1.2
         with:
