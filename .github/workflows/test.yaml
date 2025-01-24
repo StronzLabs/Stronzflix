@@ -69,7 +69,7 @@ jobs:
       #     cat error.txt
 
       - run: |
-          pkill -f -9 Xvfb
+          pkill -f -9 Xvfb || true
 
       - name: Run tests
         uses: smithki/xvfb-action@v1.1.2
