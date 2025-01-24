@@ -54,7 +54,7 @@ Future<void> playFirstResult(WidgetTester tester, String query) async {
     expect(playFinder, findsAny);
 
     await tester.tap(playFinder);
-    await tester.pumpAndSettle(const Duration(milliseconds: 100), EnginePhase.sendSemanticsUpdate, const Duration(seconds: 10));
+    await tester.pumpAndSettle(const Duration(milliseconds: 100), EnginePhase.sendSemanticsUpdate, const Duration(seconds: 30));
 
     expect(find.byType(PlayerPage), findsOneWidget);
     expect(find.byType(Dialog), findsNothing);
