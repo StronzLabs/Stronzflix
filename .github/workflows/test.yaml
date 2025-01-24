@@ -55,6 +55,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
 
       - name: Download Flutter
         uses: subosito/flutter-action@v2
