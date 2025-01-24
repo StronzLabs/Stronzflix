@@ -49,7 +49,7 @@ final class CookieCaptchaHTTPMiddleware extends HTTPProcessor {
 
 class AnimeSaturn extends Site {
     static Site instance = AnimeSaturn._();
-    AnimeSaturn._():  super("AnimeSaturn", "www.animesaturn", 1, CookieCaptchaHTTPMiddleware());
+    AnimeSaturn._() : super("AnimeSaturn", "www.animesaturn", 1, CookieCaptchaHTTPMiddleware());
 
     @override
     Future<Uri> getFavicon() async {
