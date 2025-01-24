@@ -65,7 +65,9 @@ jobs:
           architecture: x64
 
       - name: Run tests
-        run: xvfb-run flutter test integration_test -d linux
+        uses: GabrielBB/xvfb-action@v1.6
+        with:
+          run: flutter test integration_test -d linux
 
   test_macos:
     name: MacOS
