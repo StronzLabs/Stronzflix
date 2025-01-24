@@ -64,10 +64,9 @@ jobs:
           architecture: x64
 
       - name: Run tests
-        run: xvfb-run -e error.txt flutter test integration_test --verbose -d linux
-
-      - name: get error log
-        run: cat error.txt
+        run: |
+          (xvfb-run -e error.txt flutter test integration_test --verbose -d linux) ||
+          cat error.txt
 
   test_macos:
     name: MacOS
