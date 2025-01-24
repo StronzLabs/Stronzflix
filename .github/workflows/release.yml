@@ -27,6 +27,11 @@ on:
 jobs:
   run_tests:
     uses: StronzLabs/Stronzflix/.github/workflows/test.yml@single-app
+    with:
+      test_windows: true
+      test_linux: false
+      test_macos: true
+      test_android: true
 
   create_release:
     name: Create Draft Release
