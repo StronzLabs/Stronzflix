@@ -63,10 +63,15 @@ jobs:
           channel: "stable"
           architecture: x64
 
+      # - name: Run tests
+      #   run: |
+      #     (xvfb-run -e error.txt flutter test integration_test --verbose -d linux) ||
+      #     cat error.txt
+
       - name: Run tests
-        run: |
-          (xvfb-run -e error.txt flutter test integration_test --verbose -d linux) ||
-          cat error.txt
+        uses: smithki/xvfb-action@v1.1.2
+        with:
+          run: fflutter test integration_test --verbose -d linux
 
   test_macos:
     name: MacOS
