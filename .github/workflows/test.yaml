@@ -3,22 +3,22 @@ name: Test
 on: 
   workflow_dispatch:
     inputs:
-      build_windows:
+      test_windows:
         description: 'Run on Windows'
         type: boolean
         required: true
         default: true
-      build_linux:
+      test_linux:
         description: 'Run on Linux'
         type: boolean
         required: true
         default: true
-      build_macos:
+      test_macos:
         description: 'Run on MacOS'
         type: boolean
         required: true
         default: true
-      build_android:
+      test_android:
         description: 'Run on Android'
         type: boolean
         required: true
@@ -28,12 +28,19 @@ jobs:
   integration-tests:
     name: Android
     runs-on: ubuntu-latest
+    if:  ${{ inputs.test_android }}
     steps:
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+
+      - name: Download Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: "zulu"
+          java-version: "17"
 
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v3
