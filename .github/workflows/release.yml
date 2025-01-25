@@ -26,6 +26,7 @@ on:
 
 jobs:
   run_tests:
+    name: Test
     uses: StronzLabs/Stronzflix/.github/workflows/test.yml@single-app
     with:
       test_windows: ${{ inputs.build_windows }}
