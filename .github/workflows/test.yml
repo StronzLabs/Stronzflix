@@ -7,22 +7,22 @@ on:
         description: 'Run on Windows'
         type: boolean
         required: true
-        default: true
+        default: false
       test_linux:
         description: 'Run on Linux'
         type: boolean
         required: true
-        default: true
+        default: false
       test_macos:
         description: 'Run on MacOS'
         type: boolean
         required: true
-        default: true
+        default: false
       test_android:
         description: 'Run on Android'
         type: boolean
         required: true
-        default: true
+        default: false
   workflow_dispatch:
     inputs:
       test_windows:
