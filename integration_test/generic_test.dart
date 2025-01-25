@@ -1,6 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:stronzflix/backend/api/bindings/animesaturn.dart';
+import 'package:stronzflix/backend/api/bindings/cb01.dart';
+import 'package:stronzflix/backend/api/bindings/streamingcommunity.dart';
+import 'package:stronzflix/backend/api/site.dart';
+import 'package:stronzflix/backend/api/tune.dart';
 import 'package:stronzflix/dialogs/settings_dialog.dart';
 import 'package:stronzflix/pages/home_page.dart';
 import 'package:stronzflix/pages/player_page.dart';
@@ -68,8 +75,35 @@ void testPlaybackFor(String site) {
     });
 }
 
+Future<void> testSiteTuning(Site site) async {
+    Completer<bool> completer = Completer<bool>();
+    site.progress.progress.listen(
+        (_) {},
+        onError: (_) => completer.complete(false),
+        onDone: () => completer.complete(true)
+    );
+    bool succesfull = await completer.future;
+    expect(succesfull, true);
+}
+
 void main() async {
     IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+    await Tuner.prepareCache();
+
+    group("Tuning -", () {
+        test("StreamingCommunity", () async {
+            await testSiteTuning(StreamingCommunity.instance);
+        }, timeout: const Timeout(Duration(minutes: 5)));
+
+        test("CB01", () async {
+            await testSiteTuning(CB01.instance);
+        }, timeout: const Timeout(Duration(minutes: 5)));
+
+        test("AnimeSaturn", () async {
+            await testSiteTuning(AnimeSaturn.instance);
+        }, timeout: const Timeout(Duration(minutes: 5)));
+    });
 
     group("Video Playback - ", () {
         testPlaybackFor("StreamingCommunity");
