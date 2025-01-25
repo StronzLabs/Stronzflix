@@ -78,7 +78,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y ninja-build libgtk-3-dev libpulse0 libglu1-mesa at-spi2-core
+          sudo apt-get install -y ninja-build libgtk-3-dev libpulse0 libglu1-mesa at-spi2-core pulseaudio
 
       - name: Checkout
         uses: actions/checkout@v2
