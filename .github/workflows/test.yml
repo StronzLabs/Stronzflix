@@ -85,6 +85,11 @@ jobs:
           channel: "stable"
           architecture: x64
 
+      - name: install deps
+        run: |
+          flutter config --enable-linux-desktop
+          flutter pub get
+
       - name: Run tests
         uses: smithki/xvfb-action@v1.1.2
         with:
