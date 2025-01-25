@@ -69,6 +69,11 @@ jobs:
     name: Linux
     runs-on: ubuntu-latest
     if:  ${{ inputs.test_linux }}
+
+    env:
+      LIBGL_ALWAYS_SOFTWARE: 1
+      DISPLAY: :99
+
     steps:
       - name: Install dependencies
         run: |
