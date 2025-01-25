@@ -88,7 +88,7 @@ jobs:
       - name: Run tests
         run: |
           sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-          flutter run -d linux
+          DISPLAY=:99 flutter test integration_test -d linux --verbose
 
   test_macos:
     name: MacOS
