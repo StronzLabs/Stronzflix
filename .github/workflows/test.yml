@@ -101,7 +101,7 @@ jobs:
           systemctl --user start pulseaudio.service
           sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
           echo -e "[D-Bus Service]\nName=org.freedesktop.ScreenSaver\nExec=/usr/bin/xscreensaver -no-splash" | sudo tee /usr/share/dbus-1/system-services/org.freedesktop.ScreenSaver.service > /dev/null
-          sudo systemctl --user restart dbus
+          systemctl --user restart dbus
 
       - name: Run tests
         run: |
