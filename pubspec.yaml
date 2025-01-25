@@ -30,7 +30,6 @@ dependencies:
   url_launcher: ^6.2.6
   uuid: ^4.4.0
   win32_registry: ^1.1.4
-  wakelock_plus: ^1.2.8
   stronz_video_player:
     git: https://github.com/StronzLabs/StronzVideoPlayer.git
   sutils:
