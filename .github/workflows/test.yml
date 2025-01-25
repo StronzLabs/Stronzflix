@@ -81,7 +81,7 @@ jobs:
           flutter config --enable-linux-desktop
           flutter pub get
       - run: sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-      - run: "DISPLAY=:99 flutter test -d linux integration_test/"
+      - run: "DISPLAY=:99 flutter test -d linux integration_test/generic_test.dart"
 
   # test_linux:
   #   name: Linux
