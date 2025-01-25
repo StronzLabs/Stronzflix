@@ -27,16 +27,18 @@ class ResourceImage extends StatelessWidget {
             return const SizedBox.shrink();
         }
 
-        return this.uri.scheme == "http" || this.uri.scheme == "https"
-            ? Image.network(
+        Image image;
+        if(this.uri.scheme == "http" || this.uri.scheme == "https")
+            image = Image.network(
                 this.uri.toString(),
                 fit: this.fit,
                 width: this.width,
                 height: this.height,
                 alignment: this.alignment,
                 errorBuilder: errorBuilder,
-            )
-            : Image.file(
+            );
+        else
+            image = Image.file(
                 File.fromUri(uri),
                 fit: this.fit,
                 width: this.width,
@@ -44,6 +46,15 @@ class ResourceImage extends StatelessWidget {
                 alignment: this.alignment,
                 errorBuilder: errorBuilder,
             );
+
+        image.image.resolve(ImageConfiguration.empty).addListener(
+            ImageStreamListener(
+                (_, __) {},
+                onError: (_, __) => imageCache.evict(image.image)
+            )
+        );
+
+        return image;
     }
 }
 
