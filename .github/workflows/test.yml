@@ -95,13 +95,11 @@ jobs:
           flutter config --enable-linux-desktop
           flutter pub get
 
-      # start pulseaudio, start xvfb, setup a org.freedesktop.ScreenSaver service
       - name: Setup environment
         run: |
           systemctl --user start pulseaudio.service
           sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-          echo -e "[D-Bus Service]\nName=org.freedesktop.ScreenSaver\nExec=/usr/bin/xscreensaver -no-splash" | sudo tee /usr/share/dbus-1/system-services/org.freedesktop.ScreenSaver.service > /dev/null
-          systemctl --user restart dbus
+          DISPLAY=:99 xscreensaver-demo --debug &
 
       - name: Run tests
         run: |
