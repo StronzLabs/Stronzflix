@@ -1,6 +1,6 @@
 # Stronzflix 
 
-[![Test](https://github.com/StronzLabs/Stronzflix/actions/workflows/test.yaml/badge.svg)](https://github.com/StronzLabs/Stronzflix/actions/workflows/test.yaml)
+[![Test](https://github.com/StronzLabs/Stronzflix/actions/workflows/test.yml/badge.svg)](https://github.com/StronzLabs/Stronzflix/actions/workflows/test.yml)
 
 Stronzflix is an open-source application for streaming multimedia content. The application is natively compiled and can be run on a variety of platforms. Although only the platforms listed below are currently supported, the development team is working to extend support to other platforms in the future.
 
