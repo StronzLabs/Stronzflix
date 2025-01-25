@@ -105,8 +105,8 @@ jobs:
 
       - name: Run tests
         run: |
-          DISPLAY=:99 flutter run -d linux
-        # DISPLAY=:99 flutter test integration_test -d linux
+          DISPLAY=:99 flutter test integration_test -d linux
+        # DISPLAY=:99 flutter run -d linux
 
   test_macos:
     name: MacOS
