@@ -104,7 +104,7 @@ jobs:
       - name: Run tests
         run: |
           systemctl --user start pulseaudio.service 
-          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &ù
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
           xscreensaver -no-splash &
           DISPLAY=:99 flutter run -d linux
         # pulseaudio --start --log-target=stderr --log-level=3
