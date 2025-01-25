@@ -23,6 +23,10 @@ class ResourceImage extends StatelessWidget {
         if(this.uri.toString().isEmpty)
             return const SizedBox.shrink();
 
+        Widget errorBuilder(context, error, stackTrace) {
+            return const SizedBox.shrink();
+        }
+
         return this.uri.scheme == "http" || this.uri.scheme == "https"
             ? Image.network(
                 this.uri.toString(),
@@ -30,6 +34,7 @@ class ResourceImage extends StatelessWidget {
                 width: this.width,
                 height: this.height,
                 alignment: this.alignment,
+                errorBuilder: errorBuilder,
             )
             : Image.file(
                 File.fromUri(uri),
@@ -37,6 +42,7 @@ class ResourceImage extends StatelessWidget {
                 width: this.width,
                 height: this.height,
                 alignment: this.alignment,
+                errorBuilder: errorBuilder,
             );
     }
 }
