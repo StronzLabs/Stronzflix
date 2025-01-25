@@ -99,7 +99,8 @@ jobs:
         run: |
           systemctl --user start pulseaudio.service 
           sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-          DISPLAY=:99 xscreensaver &
+          sudo service dbus start
+          DISPLAY=:99 dbus-launch xscreensaver -no-splash &
           DISPLAY=:99 flutter run -d linux
         # DISPLAY=:99 flutter test integration_test -d linux
 
