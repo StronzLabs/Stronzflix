@@ -103,9 +103,10 @@ jobs:
 
       - name: Run tests
         run: |
-          pulseaudio --start --log-target=stderr --log-level=3
+          systemctl start pulseaudio.service
           sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
           DISPLAY=:99 flutter run -d linux
+        # pulseaudio --start --log-target=stderr --log-level=3
         # DISPLAY=:99 flutter test integration_test -d linux
 
   test_macos:
