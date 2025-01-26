@@ -68,8 +68,11 @@ Future<void> playFirstResult(WidgetTester tester, String query) async {
 
 void testPlaybackFor(String site) {
     testWidgets(site, (WidgetTester tester) async {
+        print("Testing site");
         TestHelper.tester = tester;
+        print("Pumping the app");
         await TestHelper.pumpApp();
+        print("Pump done");
         await selectSite(tester, site);
         await playFirstResult(tester, "A");
     });
@@ -113,6 +116,9 @@ void main() async {
     
         print("AnimeSaturn done");
     });
+
+    print("Tuning done");
+    print("Starting playback tests");
 
     group("Video Playback - ", () {
         testPlaybackFor("StreamingCommunity");
