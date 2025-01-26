@@ -63,6 +63,8 @@ class Stronzflix extends StatelessWidget {
                 throw details.exception;
         };
 
+        print("Building Stronzflix");
+
         return Shortcuts(
             shortcuts: <LogicalKeySet, Intent>{
                 LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),

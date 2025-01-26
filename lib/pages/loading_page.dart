@@ -18,6 +18,7 @@ import 'package:stronzflix/backend/sink/sink_manager.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
+import 'package:sutils/logic/data/dynamic_loading_stream.dart';
 import 'package:sutils/logic/loading/stronz_dynamic_loading_phase.dart';
 import 'package:sutils/logic/loading/stronz_static_loading_phase.dart';
 import 'package:sutils/ui/pages/stronz_loading_page.dart';
@@ -27,6 +28,7 @@ class LoadingPage extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
+        print("Building LoadingPage");
         return StronzLoadingPage(
             splash: SvgPicture.asset("assets/logo.svg",
                 width: 200,
@@ -42,6 +44,7 @@ class LoadingPage extends StatelessWidget {
                 StronzStaticLoadingPhase(
                     weight: 0.01,
                     steps: () => [
+                        Future.microtask(() => print("First Loading Phase")),
                         StronzVideoPlayer.initialize(),
                         Settings.instance.unserialize(),
                         Tuner.prepareCache(),
@@ -51,6 +54,9 @@ class LoadingPage extends StatelessWidget {
                     weight: 0.97,
                     allowedFails: 2,
                     steps: () => [
+                        DynamicLoadingStream(
+                            Stream.value((() { print("Second Loading Phase"); return 1.0;})())
+                        ),
                         StreamingCommunity.instance.progress,
                         AnimeSaturn.instance.progress,
                         CB01.instance.progress,
@@ -59,6 +65,7 @@ class LoadingPage extends StatelessWidget {
                 StronzStaticLoadingPhase(
                     weight: 0.01,
                     steps: () => [
+                        Future.microtask(() => print("Third Loading Phase")),
                         LocalSite.instance.initialized,
                         LocalPlayer.instance.initialized,
                         JWPlayer.instance.initialized,
@@ -74,6 +81,7 @@ class LoadingPage extends StatelessWidget {
                 StronzStaticLoadingPhase(
                     weight: 0.01,
                     steps: () => [
+                        Future.microtask(() => print("Fourth Loading Phase")),
                         KeepWatching.instance.unserialize(),
                         SavedTitles.instance.unserialize(),
                         SinkManager.init(),

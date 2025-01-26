@@ -277,6 +277,7 @@ class _HomePageState extends State<HomePage> {
 
     @override
     Widget build(BuildContext context) {
+        print("Building HomePage");
         return Scaffold(
             appBar: this._buildAppBar(context),
             floatingActionButton: !this._hasPeerConnection ? null : this._buildSinkButton(context),
