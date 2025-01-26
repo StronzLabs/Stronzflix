@@ -87,22 +87,31 @@ Future<void> testSiteTuning(Site site) async {
 }
 
 void main() async {
+    print("Setting up test environments");
     IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
     await Tuner.prepareCache();
 
+    print("Starting tests");
+
     group("Tuning -", () {
+        print("Tuing test...");
         test("StreamingCommunity", () async {
             await testSiteTuning(StreamingCommunity.instance);
         }, timeout: const Timeout(Duration(minutes: 5)));
+
+        print("Streaming community done");
 
         test("CB01", () async {
             await testSiteTuning(CB01.instance);
         }, timeout: const Timeout(Duration(minutes: 5)));
 
+        print("CB01 done");
+
         test("AnimeSaturn", () async {
             await testSiteTuning(AnimeSaturn.instance);
         }, timeout: const Timeout(Duration(minutes: 5)));
+    
+        print("AnimeSaturn done");
     });
 
     group("Video Playback - ", () {
