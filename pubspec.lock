@@ -216,7 +216,7 @@ packages:
     source: hosted
     version: "1.19.0"
   connectivity_plus:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: connectivity_plus
       sha256: "8a68739d3ee113e51ad35583fdf9ab82c55d09d693d3c39da1aebab87c938412"
@@ -640,7 +640,7 @@ packages:
     source: hosted
     version: "2.1.1"
   package_info_plus:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: package_info_plus
       sha256: "739e0a5c3c4055152520fa321d0645ee98e932718b4c8efeeb51451968fe0790"
@@ -760,7 +760,7 @@ packages:
     source: hosted
     version: "2.1.8"
   pointycastle:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: pointycastle
       sha256: "4be0097fcf3fd3e8449e53730c631200ebc7b88016acecab2b0da2f0149222fe"
@@ -1099,7 +1099,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: ce5a2b6fa03fd630e825ebbf69582527cea78866
+      resolved-ref: "87c3727ef3ead1adacd6df177cb01174e21587db"
       url: "https://github.com/StronzLabs/SUtils.git"
     source: git
     version: "0.0.1"
@@ -1401,7 +1401,7 @@ packages:
     source: hosted
     version: "5.10.0"
   win32_registry:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: win32_registry
       sha256: "21ec76dfc731550fd3e2ce7a33a9ea90b828fdf19a5c3bcf556fa992cfa99852"

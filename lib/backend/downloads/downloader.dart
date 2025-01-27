@@ -5,11 +5,9 @@ import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/downloads/download_state.dart';
 import 'package:stronzflix/backend/ffmpeg_wrapper.dart';
-import 'package:stronzflix/utils/utils.dart';
+import 'package:sutils/utils.dart';
 
 import 'dart:typed_data';
-
-import 'package:sutils/utils.dart';
 
 abstract class Downloader {
     static const Downloader hls = HLSDownloader();
