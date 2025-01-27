@@ -38,63 +38,42 @@ Future<void> selectSite(WidgetTester tester, String site) async {
 Future<void> search(WidgetTester tester, String query) async {
     expect(find.byType(HomePage), findsOneWidget);
 
-    print("Tapping search icon");
     await tester.tap(find.byIcon(Icons.search));
     await tester.pumpAndSettle();
 
-    print("Selecting textfileld");
     Finder searchFinder = find.byType(TextField);
     expect(searchFinder, findsOneWidget);
 
-    print("Entering text");
     await tester.enterText(searchFinder, "A");
     await tester.testTextInput.receiveAction(TextInputAction.done);
     await tester.pumpAndSettle();
 
-    print("Expecting grid");
     expect(find.byType(SliverGrid), findsOneWidget);
 }
 
 Future<void> playFirstResult(WidgetTester tester, String query) async {
     expect(find.byType(HomePage), findsOneWidget);
 
-    print("Searching for ${query}");
     await search(tester, query);
         
-    print("Searching play icon");
     Finder playFinder = find.byIcon(Icons.play_arrow).first;
     expect(playFinder, findsAny);
 
-    print("Hitting play icon");
     await tester.tap(playFinder);
-    print("Awaiting settling");
     await tester.pumpAndSettle(const Duration(milliseconds: 100), EnginePhase.sendSemanticsUpdate, const Duration(seconds: 30));
 
-    print("Expeting player page");
     expect(find.byType(PlayerPage), findsOneWidget);
     expect(find.byType(Dialog), findsNothing);
-    print("OK");
 }
 
 void testPlaybackFor(String site) {
-    print("testPlaybackFor ${site}");
     testWidgets(site, (WidgetTester tester) async {
-        print("ADDIO");
-        await tester.runAsync(() async {
-            print("Testing site");
-            await Future.delayed(Durations.extralong4);
-            TestHelper.tester = tester;
-            print("Pumping the app");
-            await TestHelper.pumpApp();
-            print("Pump done");
-            await Future.delayed(Durations.extralong4);
-            print("Selecting site");
-            await selectSite(tester, site);
-            print("Selected site");
-            print("Playing first result");
-            await playFirstResult(tester, "A");
-            print("Done");
-        });
+        await Future.delayed(Durations.extralong4);
+        TestHelper.tester = tester;
+        await TestHelper.pumpApp();
+        await Future.delayed(Durations.extralong4);
+        await selectSite(tester, site);
+        await playFirstResult(tester, "A");
     });
 }
 
@@ -113,30 +92,24 @@ void main() async {
     IntegrationTestWidgetsFlutterBinding.ensureInitialized();
     await Tuner.prepareCache();
 
-    // group("Tuning -", () {
-    //     test("StreamingCommunity", () async {
-    //         await testSiteTuning(StreamingCommunity.instance);
-    //     }, timeout: const Timeout(Duration(minutes: 5)));
+    group("Tuning -", () {
+        test("StreamingCommunity", () async {
+            await testSiteTuning(StreamingCommunity.instance);
+        }, timeout: const Timeout(Duration(minutes: 5)));
 
-    //     print("Streaming community done");
+        
+        test("CB01", () async {
+            await testSiteTuning(CB01.instance);
+        }, timeout: const Timeout(Duration(minutes: 5)));
 
-    //     test("CB01", () async {
-    //         await testSiteTuning(CB01.instance);
-    //     }, timeout: const Timeout(Duration(minutes: 5)));
+        
+        test("AnimeSaturn", () async {
+            await testSiteTuning(AnimeSaturn.instance);
+        }, timeout: const Timeout(Duration(minutes: 5)));
+    });
 
-    //     print("CB01 done");
-
-    //     test("AnimeSaturn", () async {
-    //         await testSiteTuning(AnimeSaturn.instance);
-    //     }, timeout: const Timeout(Duration(minutes: 5)));
     
-    //     print("AnimeSaturn done");
-    // });
-
-    print("Tests!");
-
     group("Video Playback - ", () {
-        print("Group");
         testPlaybackFor("StreamingCommunity");
         testPlaybackFor("CB01");
         testPlaybackFor("AnimeSaturn");

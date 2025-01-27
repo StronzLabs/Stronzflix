@@ -29,20 +29,10 @@ final class TestHelper {
     }
 
     static Future<void> pumpApp() async {
+        await tester.pumpWidget(Stronzflix(skipLoading: TestHelper._loaded));
         if(!TestHelper._loaded) {
-            print("Not loaded");
-            print("Pumping stronzflix with load");
-            await tester.pumpWidget(const Stronzflix());
-            print("Pumped");
-            print("Awaiting loaidng");
             await TestHelper._waitLoading();
-            print("Loaded");
             TestHelper._loaded = true;
-        } else {
-            print("Already loaded");
-            print("Pumping stronxflix no load");
-            await tester.pumpWidget(const Stronzflix(skipLoading: true));
-            print("Pumped");
         }
 
         await tester.pump(Durations.extralong4);
