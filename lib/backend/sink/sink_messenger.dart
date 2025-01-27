@@ -47,7 +47,7 @@ class SinkMessenger {
     static final StreamController<Message> _messagesController = StreamController<Message>.broadcast();
     static Stream<Message> get messages => SinkMessenger._messagesController.stream;
 
-    static List<(bool, String)> _chatHistory = [];
+    static final List<(bool, String)> _chatHistory = [];
     static List<(bool, String)> get chatHistory => List.unmodifiable(SinkMessenger._chatHistory);
 
     static Future<void> sendMessage(MessageType type, [String? data]) {

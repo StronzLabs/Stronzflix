@@ -7,7 +7,7 @@ class PeerExternalController extends StronzExternalController {
 
     StronzControllerState _remoteState = StronzControllerState();
     set _playing(bool value) => this._remoteState = this._remoteState.copyWith(playing: value);
-    bool get _playing => this._remoteState.playing ?? false;
+    // bool get _playing => this._remoteState.playing ?? false;
     set _position(Duration? value) => this._remoteState = this._remoteState.copyWith(position: value);
     Duration? get _position => this._remoteState.position;
     
