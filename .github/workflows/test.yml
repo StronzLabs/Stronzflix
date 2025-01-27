@@ -97,7 +97,7 @@ jobs:
 
       - name: Run tests
         run: |
-          flutter test integration_test -d linux
+          flutter test integration_test -d linux --reporter=expanded
 
   test_macos:
     name: MacOS
