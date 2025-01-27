@@ -97,7 +97,7 @@ jobs:
 
       - name: Run tests
         run: |
-          flutter test integration_test -d linux --verbose
+          flutter test integration_test -d linux
 
   test_macos:
     name: MacOS

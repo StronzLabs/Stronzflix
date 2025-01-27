@@ -118,6 +118,7 @@ void main() async {
     print("Tests!");
 
     group("Video Playback - ", () {
+        print("Group");
         testPlaybackFor("StreamingCommunity");
         testPlaybackFor("CB01");
         testPlaybackFor("AnimeSaturn");
