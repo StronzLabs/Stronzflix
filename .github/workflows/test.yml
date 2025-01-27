@@ -34,7 +34,7 @@ on:
         description: 'Run on Linux'
         type: boolean
         required: true
-        default: false # Change to true
+        default: true
       test_macos:
         description: 'Run on MacOS'
         type: boolean
@@ -98,7 +98,7 @@ jobs:
 
       - name: Run tests
         run: |
-          flutter test integration_test -d linux --reporter=expanded
+          flutter test integration_test -d linux
 
   test_macos:
     name: MacOS
