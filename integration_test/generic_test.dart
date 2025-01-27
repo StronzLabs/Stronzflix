@@ -67,16 +67,19 @@ Future<void> playFirstResult(WidgetTester tester, String query) async {
 }
 
 void testPlaybackFor(String site) {
+    print("testPlaybackFor ${site}");
     testWidgets(site, (WidgetTester tester) async {
-        print("Testing site");
-        await Future.delayed(Durations.extralong4);
-        TestHelper.tester = tester;
-        print("Pumping the app");
-        await TestHelper.pumpApp();
-        print("Pump done");
-        await Future.delayed(Durations.extralong4);
-        await selectSite(tester, site);
-        await playFirstResult(tester, "A");
+        await tester.runAsync(() async {
+            print("Testing site");
+            await Future.delayed(Durations.extralong4);
+            TestHelper.tester = tester;
+            print("Pumping the app");
+            await TestHelper.pumpApp();
+            print("Pump done");
+            await Future.delayed(Durations.extralong4);
+            await selectSite(tester, site);
+            await playFirstResult(tester, "A");
+        });
     });
 }
 
