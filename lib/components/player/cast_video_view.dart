@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stronz_video_player/stronz_video_player.dart';
-import 'package:stronzflix/components/resource_image.dart';
+import 'package:sutils/ui/widgets/resource_image.dart';
 import 'package:sutils/utils.dart';
 
 class CastVideoView extends StatefulWidget {
@@ -40,7 +40,10 @@ class _CastVideoViewState extends State<CastVideoView> with StronzPlayerControl,
     Widget build(BuildContext context) {
         Uri uri = this._playable.thumbnail;
         return SizedBox.expand(
-            child: ResourceImage(uri: uri, fit: BoxFit.contain)
+            child: ResourceImage(
+                uri: uri,
+                fit: BoxFit.contain
+            )
         );
     }
 }

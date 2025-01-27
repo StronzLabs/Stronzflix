@@ -3,10 +3,10 @@ import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/components/border_text.dart';
-import 'package:stronzflix/components/resource_image.dart';
 import 'package:stronzflix/dialogs/download_dialog.dart';
 import 'package:stronzflix/pages/player_page.dart';
 import 'package:stronzflix/pages/title_page.dart';
+import 'package:sutils/ui/widgets/resource_image.dart';
 
 class EpisodeCard extends StatelessWidget {
     final Episode episode;

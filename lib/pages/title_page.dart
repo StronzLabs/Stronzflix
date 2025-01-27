@@ -10,11 +10,11 @@ import 'package:stronzflix/components/card_grid.dart';
 import 'package:stronzflix/components/cast_button.dart';
 import 'package:stronzflix/components/episode_card.dart';
 import 'package:stronzflix/components/expandable_text.dart';
-import 'package:stronzflix/components/resource_image.dart';
 import 'package:stronzflix/components/save_title_button.dart';
 import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:stronzflix/dialogs/download_dialog.dart';
 import 'package:stronzflix/pages/player_page.dart';
+import 'package:sutils/ui/widgets/resource_image.dart';
 
 class TitlePageArguments {
     final String heroUuid;
@@ -77,7 +77,7 @@ class _TitlePageState extends State<TitlePage> {
                         child: Container(
                             decoration: BoxDecoration(
                                 image: DecorationImage(
-                                    image: resourceImageProvider(
+                                    image: ResourceImage.provider(
                                         uri: super.widget.metadata.poster
                                     ),
                                     fit: BoxFit.cover,
