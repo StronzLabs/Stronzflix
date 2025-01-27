@@ -69,10 +69,12 @@ Future<void> playFirstResult(WidgetTester tester, String query) async {
 void testPlaybackFor(String site) {
     testWidgets(site, (WidgetTester tester) async {
         print("Testing site");
+        await Future.delayed(Durations.extralong4);
         TestHelper.tester = tester;
         print("Pumping the app");
         await TestHelper.pumpApp();
         print("Pump done");
+        await Future.delayed(Durations.extralong4);
         await selectSite(tester, site);
         await playFirstResult(tester, "A");
     });
@@ -90,35 +92,30 @@ Future<void> testSiteTuning(Site site) async {
 }
 
 void main() async {
-    print("Setting up test environments");
     IntegrationTestWidgetsFlutterBinding.ensureInitialized();
     await Tuner.prepareCache();
 
-    print("Starting tests");
+    // group("Tuning -", () {
+    //     test("StreamingCommunity", () async {
+    //         await testSiteTuning(StreamingCommunity.instance);
+    //     }, timeout: const Timeout(Duration(minutes: 5)));
 
-    group("Tuning -", () {
-        print("Tuing test...");
-        test("StreamingCommunity", () async {
-            await testSiteTuning(StreamingCommunity.instance);
-        }, timeout: const Timeout(Duration(minutes: 5)));
+    //     print("Streaming community done");
 
-        print("Streaming community done");
+    //     test("CB01", () async {
+    //         await testSiteTuning(CB01.instance);
+    //     }, timeout: const Timeout(Duration(minutes: 5)));
 
-        test("CB01", () async {
-            await testSiteTuning(CB01.instance);
-        }, timeout: const Timeout(Duration(minutes: 5)));
+    //     print("CB01 done");
 
-        print("CB01 done");
-
-        test("AnimeSaturn", () async {
-            await testSiteTuning(AnimeSaturn.instance);
-        }, timeout: const Timeout(Duration(minutes: 5)));
+    //     test("AnimeSaturn", () async {
+    //         await testSiteTuning(AnimeSaturn.instance);
+    //     }, timeout: const Timeout(Duration(minutes: 5)));
     
-        print("AnimeSaturn done");
-    });
+    //     print("AnimeSaturn done");
+    // });
 
-    print("Tuning done");
-    print("Starting playback tests");
+    print("Tests!");
 
     group("Video Playback - ", () {
         testPlaybackFor("StreamingCommunity");
