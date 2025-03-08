@@ -8,6 +8,7 @@ import 'package:stronzflix/pages/home_page.dart';
 import 'package:stronzflix/pages/loading_page.dart';
 import 'package:stronzflix/pages/player_page.dart';
 import 'package:stronzflix/pages/title_page.dart';
+import 'package:sutils/ui/stronz_theme.dart';
 
 class Stronzflix extends StatelessWidget {
 
@@ -16,59 +17,20 @@ class Stronzflix extends StatelessWidget {
 
     const Stronzflix({super.key, this.skipLoading = false});
 
-    static ThemeData get theme => ThemeData(
-        useMaterial3: true,
-        scaffoldBackgroundColor: (Colors.grey[900])!,
-        colorScheme: ColorScheme.dark(
-            brightness: Brightness.dark,
-            primary: Colors.orange,
-            secondary: Colors.grey,
-            surface: const Color(0xff121212),
-            surfaceTint: Colors.transparent,
-            surfaceContainerHigh: (Colors.grey[900])!,
-            error: Colors.red,
-            secondaryContainer: Colors.orange
-        ),
-        progressIndicatorTheme: const ProgressIndicatorThemeData(
-            linearTrackColor: Colors.grey
-        ),
-        appBarTheme: const AppBarTheme(
-            centerTitle: true
-        ),
-        snackBarTheme: const SnackBarThemeData(
-            backgroundColor: Color(0xff121212),
-            behavior: SnackBarBehavior.floating,
-            showCloseIcon: true,
-            closeIconColor: Colors.white,
-            contentTextStyle: TextStyle(
-                color: Colors.white
-            ),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20))
-            )
-        ),
-        expansionTileTheme: const ExpansionTileThemeData(
-            shape: Border()
-        ),
-        cardTheme: const CardTheme(
-            clipBehavior: Clip.antiAlias,
-        )
-    );
-
     @override
     Widget build(BuildContext context) {
         return Shortcuts(
             shortcuts: <LogicalKeySet, Intent>{
-                LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
+                LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent(),
             },
             child: MaterialApp(
                 themeMode: ThemeMode.dark,
                 title: 'Stronzflix',
-                theme: Stronzflix.theme,
+                theme: stronzTheme,
                 initialRoute: this.skipLoading ? '/home' : '/loading',
                 routes: {
-                    '/loading': (context) => const LoadingPage(),
-                    '/home' : (context) => const HomePage(),
+                    '/loading': (context) => LoadingPage(),
+                    '/home' : (context) => HomePage(),
                 },
                 onGenerateRoute: (settings) {
                     return MaterialPageRoute(
@@ -84,7 +46,7 @@ class Stronzflix extends StatelessWidget {
                                     controller: (settings.arguments as PlayerPageArguments).controller
                                 )
                             ),
-                            '/' => const SizedBox.shrink(),
+                            '/' => SizedBox.shrink(),
                             _ => throw Exception("Unknown route: ${settings.name}")
                         }
                     );
