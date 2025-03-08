@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:stronz_video_player/stronz_video_player.dart';
 import 'package:stronzflix/backend/api/bindings/animesaturn.dart';
 import 'package:stronzflix/backend/api/bindings/cb01.dart';
 import 'package:stronzflix/backend/api/bindings/jwplayer.dart';
@@ -42,7 +41,6 @@ class LoadingPage extends StatelessWidget {
                 StronzStaticLoadingPhase(
                     weight: 0.01,
                     steps: () => [
-                        StronzVideoPlayer.initialize(),
                         Settings.instance.unserialize(),
                         Tuner.prepareCache(),
                     ]

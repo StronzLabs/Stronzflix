@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' show showDialog;
 import 'package:stronzflix/backend/api/player.dart';
 import 'package:stronzflix/backend/api/site.dart';
 
-import 'package:stronz_video_player/stronz_video_player.dart' show Playable;
+import 'package:stronz_video_player/video_player.dart' show Playable;
 import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/dialogs/sources_dialog.dart';
 import 'package:stronzflix/stronzflix.dart';

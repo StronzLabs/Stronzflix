@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stronz_video_player/components/video_player_view.dart';
-import 'package:stronz_video_player/stronz_video_player.dart';
+import 'package:stronz_video_player/video_player.dart';
 import 'package:stronzflix/components/floating_player_context.dart';
 import 'package:sutils/utils.dart';
 

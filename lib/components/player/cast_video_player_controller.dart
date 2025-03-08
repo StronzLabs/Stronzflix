@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:stronz_video_player/stronz_video_player.dart';
+import 'package:stronz_video_player/video_player.dart';
 import 'package:stronzflix/backend/cast/cast.dart';
 
 class CastVideoPlayerController extends StronzPlayerController {

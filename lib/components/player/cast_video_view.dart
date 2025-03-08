@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stronz_video_player/stronz_video_player.dart';
+import 'package:stronz_video_player/video_player.dart';
 import 'package:sutils/ui/widgets/resource_image.dart';
 import 'package:sutils/utils.dart';
 

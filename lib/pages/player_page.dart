@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stronz_video_player/logic/controller/media_session_external_controller.dart';
-import 'package:stronz_video_player/logic/controller/native_player_controller.dart';
-import 'package:stronz_video_player/stronz_video_player.dart';
+import 'package:stronz_video_player/video_player.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/cast/cast.dart';
 import 'package:stronzflix/backend/sink/sink_messenger.dart';

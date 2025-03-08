@@ -27,7 +27,7 @@ enum _CurrentSection {
 }
 
 class _HomePageMobileState extends HomePageState<HomePageMobile> {
-    _CurrentSection _currentSection = _CurrentSection.keepWatching;
+    _CurrentSection _currentSection = _CurrentSection.news;
 
     @override
     NavigationBar buildBottomNavigationBar(BuildContext context) {

@@ -103,7 +103,11 @@ class HLSDownloader extends Downloader {
                     audioAdvance = progress;
                     updateProgress();
                 }),
-        ]).onError((error, stackTrace) => [false]);
+        ]).onError((error, stackTrace) {
+            print(error);
+            print(stackTrace);
+            return [ false ];
+        });
 
         await videoSink.close();
         await audioSink.close();
