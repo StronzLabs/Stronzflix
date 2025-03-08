@@ -1,0 +1,139 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:stronzflix/backend/downloads/download_manager.dart';
+import 'package:stronzflix/backend/storage/keep_watching.dart';
+import 'package:stronzflix/backend/storage/saved_titles.dart';
+import 'package:stronzflix/backend/storage/settings.dart';
+import 'package:stronzflix/components/card_row.dart';
+import 'package:stronzflix/components/delete_title_button.dart';
+import 'package:stronzflix/components/download_card.dart';
+import 'package:stronzflix/components/save_title_button.dart';
+import 'package:stronzflix/components/title_card.dart';
+import 'package:stronzflix/pages/home_page.dart';
+
+class HomePageDesktop extends StatefulWidget {
+    const HomePageDesktop({super.key});
+
+    @override
+    State<HomePageDesktop> createState() => _HomePageDesktopState();
+}
+
+class _HomePageDesktopState extends HomePageState<HomePageDesktop> {
+
+    Widget _buildSection<T>({
+        required Iterable<T> value,
+        required String label,
+        double cardAspectRatio = 16 / 9,
+        required Widget Function(BuildContext, T) buildCard,
+    }) {
+        return CardRow(
+            title: label,
+            values: value,
+            buildCard: buildCard,
+            cardAspectRatio: cardAspectRatio,
+        );
+    }
+
+    Widget _buildListenableSection<T>({
+        required ValueListenable<Iterable<T>> listenable,
+        required String label,
+        double cardAspectRatio = 16 / 9,
+        required Widget Function(BuildContext, T) buildCard
+    }) {
+        return ValueListenableBuilder<Iterable<T>>(
+            valueListenable: listenable,
+            builder: (context, value, _) => this._buildSection(
+                value: value,
+                label: label,
+                cardAspectRatio: cardAspectRatio,
+                buildCard: buildCard
+            ),
+        );
+    }
+
+    Widget _buildFutureSection<T>({
+        required Future<Iterable<T>> future,
+        required String label,
+        double cardAspectRatio = 16 / 9,
+        required Widget Function(BuildContext, T) buildCard
+    }) {
+        return FutureBuilder(
+            future: future,
+            builder: (context, snapshot) {
+                if(snapshot.connectionState != ConnectionState.done)
+                    return const Center(child: CircularProgressIndicator());
+
+                return this._buildSection(
+                    value: snapshot.data!,
+                    label: label,
+                    cardAspectRatio: cardAspectRatio,
+                    buildCard: buildCard
+                );
+            }
+        );
+    }
+
+     Widget _buildKeepWatching(BuildContext context) {
+        return this._buildListenableSection(
+            listenable: KeepWatching.listener,
+            label: "Continua a guardare",
+            buildCard: (context, metadata) => TitleCard(
+                action: IconButton(
+                    onPressed: () => KeepWatching.remove(metadata.metadata),
+                    icon: const Icon(Icons.close, size: 28)
+                ),
+                title: metadata.metadata,
+            )
+        );
+    }
+
+    Widget _buildNews(BuildContext context) {
+        return this._buildFutureSection(
+            future: super.newsMemoizer.runOnce(Settings.site.latests),
+            label: "Novità",
+            buildCard: (context, metadata) => TitleCard(
+                action: Settings.site.isLocal
+                    ? DeleteTitleButton(title: metadata)
+                    : SaveTitleButton(title: metadata),
+                title: metadata,
+            )
+        );
+    }
+
+    Widget _buildSaved(BuildContext context) {
+        return this._buildListenableSection(
+            listenable: SavedTitles.listener,
+            label: "Salvati",
+            buildCard: (context, metadata) => TitleCard(
+                action: SaveTitleButton(title: metadata),
+                title: metadata,
+            )
+        );
+    }
+
+    Widget _buildDownloads(BuildContext context) {
+        return this._buildListenableSection(
+            listenable: DownloadManager.downloads,
+                label: "Download in corso",
+            cardAspectRatio: 16 / 5,
+            buildCard: (context, metadata) => DownloadCard(
+                download: metadata,
+            )
+        );
+    }
+
+    @override
+    Widget buildBody(BuildContext context) {
+        return ListView(
+            padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
+            children: [
+                this._buildKeepWatching(context),
+                this._buildSaved(context),
+                this._buildNews(context),
+                this._buildDownloads(context),
+            ]
+        );
+    }
+}
