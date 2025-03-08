@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
-import 'package:stronzflix/dialogs/loading_dialog.dart';
 import 'package:stronzflix/pages/player_page.dart';
 import 'package:stronzflix/pages/title_page.dart';
+import 'package:sutils/ui/dialogs/loading_dialog.dart';
 import 'package:sutils/ui/widgets/resource_image.dart';
 import 'package:uuid/uuid.dart';
 
