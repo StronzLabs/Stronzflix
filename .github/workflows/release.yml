@@ -259,10 +259,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download dependencies
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y python2.7-dev expect gettext
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 2.7
+
+      # - name: Download dependencies
+      #   run: |
+      #     sudo apt-get update -y
+      #     sudo apt-get install -y python2.7-dev expect gettext
 
       - name: Install Tizen Studio
         run: |
