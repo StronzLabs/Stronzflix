@@ -276,7 +276,7 @@ jobs:
 
       - name: Build Tizen App
         run: |
-          export PATH=$GITHUB_WORKSPACE/tizen-studio/tools:$GITHUB_WORKSPACE/tizen-studio/tools/ide/bin:$PATH
+          export PATH=$GITHUB_WORKSPACE/tizen-studio/tools:$GITHUB_WORKSPACE/tizen-studio/tools/ide/bin:$GITHUB_WORKSPACE/flutter-tizen/bin:$PATH
           flutter-tizen build tpk --release
 
       - name: Upload Release Asset
