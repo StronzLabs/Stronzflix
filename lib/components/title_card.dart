@@ -124,6 +124,7 @@ class _TitleCardState extends State<TitleCard> {
             aspectRatio: 16 / 9, 
             child: Card(
                 child: InkWell(
+                    autofocus: true,
                     focusNode: FocusNode(
                         skipTraversal: false,
                         descendantsAreTraversable: false,

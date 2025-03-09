@@ -111,6 +111,7 @@ class EpisodeCard extends StatelessWidget {
             aspectRatio: 3 / 2,
             child: Card(
                 child: InkWell(
+                    autofocus: true,
                     focusNode: FocusNode(
                         skipTraversal: false,
                         descendantsAreTraversable: false,
