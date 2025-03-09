@@ -6,8 +6,6 @@ class SelectDropDown<T> extends StatefulWidget {
     final T? selectedValue;
     final Function(T) onSelected;
     final String Function(T)? stringify;
-    final IconData? actionIcon;
-    final void Function(T)? action;
     final bool initiallyExpanded;
     
     const SelectDropDown({
@@ -17,8 +15,6 @@ class SelectDropDown<T> extends StatefulWidget {
         required this.selectedValue,
         required this.onSelected,
         this.stringify,
-        this.actionIcon,
-        this.action,
         this.initiallyExpanded = false
     });
     
@@ -34,20 +30,7 @@ class _SelectDropDownState<T> extends State<SelectDropDown<T>> {
     String _elementToString(T e) => super.widget.stringify != null ? super.widget.stringify!(e) : e.toString();
 
     Widget _buildElement(T? element) {
-        return Row(
-            children: [
-                if(element != null && super.widget.action != null) ...[
-                    IconButton(
-                        icon: Icon(super.widget.actionIcon ?? Icons.edit),
-                        onPressed: () => super.widget.action!(element as T),
-                    ),
-                    const SizedBox(width: 10),
-                ],
-                Flexible(
-                    child: Text(element == null ? "Seleziona" : this._elementToString(element)),
-                )
-            ],
-        );
+        return Text(element == null ? "Seleziona" : this._elementToString(element));
     }
 
     @override
