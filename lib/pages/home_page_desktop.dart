@@ -9,7 +9,7 @@ import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/components/card_row.dart';
 import 'package:stronzflix/components/delete_title_button.dart';
 import 'package:stronzflix/components/download_card.dart';
-import 'package:stronzflix/components/save_title_button.dart';
+import 'package:stronzflix/widgets/save_title_button.dart';
 import 'package:stronzflix/components/title_card.dart';
 import 'package:stronzflix/pages/home_page.dart';
 
