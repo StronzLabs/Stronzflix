@@ -274,10 +274,10 @@ jobs:
 
       - name: Build Tizen App
         run: |
-          export PATH=$GITHUB_WORKSPACE/tizen-studio/tools:$GITHUB_WORKSPACE/tizen-studio/tools/ide/bin:$GITHUB_WORKSPACE/flutter-tizen/bin:$PATH
-          pwd
-          ls
-          ls -R
+          export PATH=$GITHUB_WORKSPACE/tizen-studio/tools:$GITHUB_WORKSPACE/tizen-studio/tools/ide/bin:$PATH
+          export PATH=$GITHUB_WORKSPACE/tizen-studio/package-manager:$PATH
+          export PATH=$GITHUB_WORKSPACE/flutter-tizen/bin:$PATH
+          package-manager-cli.bin install --accept-license IOT-Headed-6.0-NativeAppDevelopment
           flutter-tizen pub get
           flutter-tizen build tpk --release
 
