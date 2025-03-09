@@ -7,17 +7,16 @@ import 'package:flutter_svg/svg.dart';
 import 'package:stronz_cast/ui/stronz_cast_button.dart';
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
-import 'package:stronzflix/backend/sink/sink_manager.dart';
 import 'package:stronzflix/backend/sink/sink_messenger.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
-import 'package:stronzflix/dialogs/settings_dialog.dart';
-import 'package:stronzflix/dialogs/sink_dialog.dart';
 import 'package:stronzflix/pages/home_page_desktop.dart';
 import 'package:stronzflix/pages/home_page_mobile.dart';
 import 'package:stronzflix/pages/home_page_tv.dart';
 import 'package:stronzflix/pages/player_page.dart';
-import 'package:stronzflix/pages/search_page.dart';
+import 'package:stronzflix/widgets/search_button.dart';
+import 'package:stronzflix/widgets/settings_button.dart';
+import 'package:stronzflix/widgets/sink_button.dart';
 import 'package:sutils/ui/dialogs/loading_dialog.dart';
 import 'package:sutils/utils.dart';
 
@@ -89,44 +88,12 @@ abstract class HomePageState<T extends StatefulWidget> extends State<T> {
             actions: [
                 const StronzCastButton(),
                 const SizedBox(width: 8),
-                IconButton(
-                    icon: const Icon(Icons.settings),
-                    onPressed: () => showDialog(
-                        context: context,
-                        builder: (context) => const SettingsDialog()
-                    ).then((_) => this.refetchLatests())
-                ),
+                SettingsButton(onClosed: () => this.refetchLatests()),
                 const SizedBox(width: 8),
-                IconButton(
-                    icon: const Icon(Icons.search),
-                    onPressed: () => showSearch(
-                        context: context,
-                        delegate: SearchPage(),
-                        maintainState: true
-                    )
-                ),
+                const SearchButton(),
                 const SizedBox(width: 8)
             ]
         );        
-    }
-
-    Widget _buildSinkButton(BuildContext context) {
-        return ValueListenableBuilder(
-            valueListenable: SinkManager.notifier,
-            builder: (context, peerState, _) => FloatingActionButton(
-                onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => const SinkDialog()
-                ),
-                backgroundColor: peerState == SinkConnectionState.connected
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).disabledColor,
-                child: Icon(peerState == SinkConnectionState.connecting
-                    ? Icons.sync
-                    : Icons.people
-                )
-            )
-        );
     }
 
     NavigationBar? buildBottomNavigationBar(BuildContext context) => null;
@@ -136,7 +103,7 @@ abstract class HomePageState<T extends StatefulWidget> extends State<T> {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: this._buildAppBar(context),
-            floatingActionButton: !this._hasPeerConnectivity ? null : this._buildSinkButton(context),
+            floatingActionButton: this._hasPeerConnectivity ? const SinkButton() : null,
             bottomNavigationBar: this.buildBottomNavigationBar(context),
             body: this.buildBody(context),
         );
