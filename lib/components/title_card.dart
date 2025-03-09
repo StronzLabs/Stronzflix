@@ -7,6 +7,7 @@ import 'package:stronzflix/pages/player_page.dart';
 import 'package:stronzflix/pages/title_page.dart';
 import 'package:sutils/ui/dialogs/loading_dialog.dart';
 import 'package:sutils/ui/widgets/resource_image.dart';
+import 'package:sutils/utils.dart';
 import 'package:uuid/uuid.dart';
 
 class TitleCard extends StatefulWidget {
@@ -124,7 +125,7 @@ class _TitleCardState extends State<TitleCard> {
             aspectRatio: 16 / 9, 
             child: Card(
                 child: InkWell(
-                    autofocus: true,
+                    autofocus: EPlatform.isTV,
                     focusNode: FocusNode(
                         skipTraversal: false,
                         descendantsAreTraversable: false,
