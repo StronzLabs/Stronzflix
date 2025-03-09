@@ -253,7 +253,7 @@ jobs:
   build_tizen:
     name: Build Tizen
     needs: create_release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: ${{ inputs.build_tizen }}
     steps:
       - name: Checkout
@@ -261,12 +261,9 @@ jobs:
 
       - name: Download dependencies
         run: |
-          echo "deb http://security.ubuntu.com/ubuntu focal-security main universe" | sudo tee -a /etc/apt/sources.list
-          sudo add-apt-repository universe
-          sudo add-apt-repository multiverse
           sudo add-apt-repository ppa:deadsnakes/ppa
-          sudo apt-get update -y
-          sudo apt-get install -y libncurses5 python2.7 libpython2.7
+          sudo apt update
+          sudo apt install -y libncurses5 python2.7 libpython2.7
 
       - name: Install Tizen Studio
         run: |
