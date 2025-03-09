@@ -231,6 +231,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  connectivity_plus_tizen:
+    dependency: transitive
+    description:
+      name: connectivity_plus_tizen
+      sha256: "47dafd4990bd4e626148d7019ccc759fa8415fff77e84520e10a689be0174b4b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   convert:
     dependency: transitive
     description:
@@ -656,6 +664,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
+  package_info_plus_tizen:
+    dependency: transitive
+    description:
+      name: package_info_plus_tizen
+      sha256: "47ec00f2710012d92a9206ecb313fded2975a535d53d63d494712c3ddb46bb96"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   path:
     dependency: transitive
     description:
@@ -712,6 +728,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  path_provider_tizen:
+    dependency: "direct main"
+    description:
+      name: path_provider_tizen
+      sha256: aef84fc38dfa1dc8a12062a56fddd4bb3bb4c93f0106345d3b6c14ca5c659642
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   path_provider_windows:
     dependency: transitive
     description:
@@ -920,6 +944,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.1"
+  shared_preferences_tizen:
+    dependency: transitive
+    description:
+      name: shared_preferences_tizen
+      sha256: "9e93b543d658a9d5f4280a4e05a7b088c8b199eb644ce0bc9036fc1525749450"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   shared_preferences_web:
     dependency: transitive
     description:
@@ -1100,7 +1132,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "34a34a407226a9cbeb8647ad44e0a0e50b14a303"
+      resolved-ref: "0566125978bf144afcfff2fa293c4c0cf520b15f"
       url: "https://github.com/StronzLabs/StronzVideoPlayer.git"
     source: git
     version: "0.0.1"
@@ -1109,7 +1141,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "029e049a448e217998812d4c5428ee9bc26d6197"
+      resolved-ref: cb2c55b94dc8aaecdbddcf49de9b3af2e8eceeda
       url: "https://github.com/StronzLabs/SUtils.git"
     source: git
     version: "0.0.1"
@@ -1161,6 +1193,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.5"
+  tizen_interop:
+    dependency: transitive
+    description:
+      name: tizen_interop
+      sha256: "46303c36a7e45491ce0149c77a3f54f3d57654938983c482ab0363a8ebe6ee27"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
   tuple:
     dependency: transitive
     description:
@@ -1313,6 +1353,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.3.0"
+  video_player_tizen:
+    dependency: transitive
+    description:
+      name: video_player_tizen
+      sha256: "108ae6dc12d075f479d23e702d5b91fc9d87172921234af383c1b3f38ebd61a6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.4"
   video_player_web:
     dependency: transitive
     description:

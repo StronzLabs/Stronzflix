@@ -20,6 +20,7 @@ dependencies:
   html: ^0.15.4
   html_unescape: ^2.0.0
   path_provider: ^2.1.3
+  path_provider_tizen: ^2.2.0
   peerdart: ^0.5.4
   process_run: ^1.2.2+1
   shimmer: ^3.0.0
