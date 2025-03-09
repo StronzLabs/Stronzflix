@@ -261,6 +261,7 @@ jobs:
 
       - name: Download dependencies
         run: |
+          sudo add-apt-repository universe
           sudo apt-get update -y
           sudo apt-get install -y libncurses5
 
