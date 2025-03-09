@@ -13,7 +13,10 @@ import 'package:stronzflix/components/expandable_text.dart';
 import 'package:stronzflix/widgets/save_title_button.dart';
 import 'package:stronzflix/dialogs/download_dialog.dart';
 import 'package:stronzflix/pages/player_page.dart';
+import 'package:stronzflix/widgets/seasons_dropdown_button.dart';
+import 'package:sutils/ui/widgets/circular_progress_button.dart';
 import 'package:sutils/ui/widgets/resource_image.dart';
+import 'package:sutils/utils.dart';
 
 class TitlePageArguments {
     final String heroUuid;
@@ -34,16 +37,6 @@ class TitlePage extends StatefulWidget {
 
     @override
     State<TitlePage> createState() => _TitlePageState();
-
-    static Future<void> delete(BuildContext context, Watchable watchable) async {
-        bool delete = await ConfirmationDialog.ask(context,
-            "Elimina ${watchable.title}",
-            "Sei sicuro di voler eliminare ${watchable.title}?",
-            action: "Elimina"
-        );
-        if (delete)
-            await DownloadManager.deleteSingle(watchable);
-    }
 }
 
 class _TitlePageState extends State<TitlePage> {
@@ -176,42 +169,6 @@ class _TitlePageState extends State<TitlePage> {
     }
 
     Widget _buildFilmActions(BuildContext context) {
-        Widget buildActionIcon(BuildContext context, IconData icon, {
-            double borderPercentage = 0.0,
-            void Function()? action
-        }) {
-            return Stack(
-                alignment: Alignment.center,
-                children: [
-                    OutlinedButton(
-                        onPressed: action,
-                        style: OutlinedButton.styleFrom(
-                            shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(10.0),
-                            minimumSize: const Size(60, 60),
-                            side: BorderSide(
-                                width: 2,
-                                color: Theme.of(context).disabledColor,
-                            )
-                        ),
-                        child: Icon(icon,
-                            size: 30
-                        )
-                    ),
-                    IgnorePointer(
-                        child: SizedBox(
-                        height: 50,
-                        width: 50,
-                        child: CircularProgressIndicator(
-                            value: borderPercentage,
-                            strokeWidth: 2.0,
-                        ),
-                    ),
-                    )
-                ],
-            );
-        }
-
         int? duration = KeepWatching.getDuration(this.title as Film);
         int? timestamp = KeepWatching.getTimestamp(this.title as Film);
         double? progress = duration != null && timestamp != null
@@ -224,21 +181,22 @@ class _TitlePageState extends State<TitlePage> {
                 mainAxisSize: MainAxisSize.min,
                 spacing: 20.0,
                 children: [
-                    buildActionIcon(context, progress != null
-                        ? Icons.fast_forward
-                        : Icons.play_arrow,
+                    CircularProgressButton(
+                        icon: progress != null ? Icons.fast_forward : Icons.play_arrow,
                         borderPercentage: progress ?? 0.0,
+                        autofocus: EPlatform.isTV,
                         action: () => Navigator.pushNamed(context, '/player', arguments: PlayerPageArguments(this.title as Film))
                     ),
                     if(this.title.site.isLocal)
+                        CircularProgressButton(
+                            icon: Icons.delete_outline,
                             action: () => DownloadManager.deleteDialog(context, this.title as Film)
                         )
                     else if(this.title.site.allowsDownload)
                         FutureBuilder(
                             future: DownloadManager.alreadyDownloaded(this.title as Film),
-                            builder: (context, snapshot) => buildActionIcon(
-                                context,
-                                snapshot.hasData && snapshot.data!
+                            builder: (context, snapshot) => CircularProgressButton(
+                                icon: snapshot.hasData && snapshot.data!
                                     ? Icons.download_done_rounded
                                     : Icons.file_download_outlined,
                                 action: snapshot.hasData && !snapshot.data!
@@ -252,31 +210,12 @@ class _TitlePageState extends State<TitlePage> {
     }
 
     Widget _buildSeriesActions(BuildContext context) {
-        Series series = this.title as Series;
-
         return Align(
             alignment: Alignment.centerRight,
-            child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Theme.of(context).disabledColor, width: 2.0),
-                    borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: DropdownButton<Season>(
-                    focusColor: Colors.transparent,
-                    borderRadius: BorderRadius.circular(20.0),
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    underline: const SizedBox.shrink(),
-                    value: this._selectedSeason,
-                    items: [
-                        for (Season season in series.seasons)
-                            DropdownMenuItem(
-                                value: season,
-                                child: Text(season.name ?? "Stagione ${season.seasonNo}")
-                            )
-                    ],
-                    onChanged: series.seasons.length == 1 ? null
-                        : (selected) => super.setState(() => this._selectedSeason = selected!),
-                )
+            child: SeasonsDropdownButton(
+                selectedSeason: this._selectedSeason,
+                seasons: (this.title as Series).seasons,
+                onSeasonSelected: (selected) => super.setState(() => this._selectedSeason = selected),
             )
         );
     }
