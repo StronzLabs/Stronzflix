@@ -262,7 +262,7 @@ jobs:
       - name: Download dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y libpython2.7 expect gettext
+          sudo apt-get install -y python2.7-dev expect gettext
 
       - name: Install Tizen Studio
         run: |
