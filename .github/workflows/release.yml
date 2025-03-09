@@ -262,8 +262,10 @@ jobs:
       - name: Download dependencies
         run: |
           echo "deb http://security.ubuntu.com/ubuntu focal-security main universe" | sudo tee -a /etc/apt/sources.list
+          sudo add-apt-repository universe
+          sudo add-apt-repository multiverse
           sudo apt-get update -y
-          sudo apt-get install -y libffi7 mime-support libncurses5 python2.7 libpython2.7
+          sudo apt-get install -y libncurses5 python2.7 libpython2.7
 
       - name: Install Tizen Studio
         run: |
