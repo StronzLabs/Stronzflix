@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:stronz_cast/stronz_cast.dart';
 import 'package:stronz_video_player/video_player.dart';
-import 'package:stronzflix/backend/cast/cast.dart';
 
 class CastVideoPlayerController extends StronzPlayerController {
 
@@ -11,9 +11,9 @@ class CastVideoPlayerController extends StronzPlayerController {
     Future<void> initialize(Playable playable, {StronzControllerState? initialState}) async {
         await super.initialize(playable, initialState: initialState);
 
-        await CastManager.loadMedia(super.tracks.masterSource);
+        await StronzCastManager.loadMedia(super.tracks.masterSource);
 
-        CastManager.state.addListener(this._onStateChange);
+        StronzCastManager.state.addListener(this._onStateChange);
 
         if(initialState == null)
             return;
@@ -26,17 +26,17 @@ class CastVideoPlayerController extends StronzPlayerController {
     }
 
     void _onStateChange() {
-        super.playing = CastManager.state.mediaState.playing ?? super.playing;
-        super.buffering = CastManager.state.mediaState.buffering ?? super.buffering;
-        super.completed = CastManager.state.mediaState.completed ?? super.completed;
-        super.position = CastManager.state.mediaState.position ?? super.position;
-        super.duration = CastManager.state.mediaState.duration ?? super.duration;
+        super.playing = StronzCastManager.state.mediaState.playing ?? super.playing;
+        super.buffering = StronzCastManager.state.mediaState.buffering ?? super.buffering;
+        super.completed = StronzCastManager.state.mediaState.completed ?? super.completed;
+        super.position = StronzCastManager.state.mediaState.position ?? super.position;
+        super.duration = StronzCastManager.state.mediaState.duration ?? super.duration;
     }
 
     @override
     Future<void> dispose() async {
-        await CastManager.stop();
-        CastManager.state.removeListener(this._onStateChange);
+        await StronzCastManager.stop();
+        StronzCastManager.state.removeListener(this._onStateChange);
         super.dispose();
     }
 
@@ -44,7 +44,7 @@ class CastVideoPlayerController extends StronzPlayerController {
     Future<bool> pause() async {
         if(!await super.pause())
             return false;
-        await CastManager.pause();
+        await StronzCastManager.pause();
         return true;
     }
 
@@ -52,7 +52,7 @@ class CastVideoPlayerController extends StronzPlayerController {
     Future<bool> play() async {
         if(!await super.play())
             return false;
-        await CastManager.play();
+        await StronzCastManager.play();
         return true;
     }
 
@@ -60,21 +60,21 @@ class CastVideoPlayerController extends StronzPlayerController {
     Future<bool> seekTo(Duration position) async {
         if(!await super.seekTo(position))
             return false;
-        await CastManager.seekTo(position);
+        await StronzCastManager.seekTo(position);
         return true;
     }
 
     @override
     Future<void> setVolume(double volume) async {
         await super.setVolume(volume);
-        await CastManager.setVolume(volume);
+        await StronzCastManager.setVolume(volume);
     }
 
     @override
     Future<void> switchTo(Playable playable) async {
         super.buffering = true;
         Uri uri = await playable.source;
-        await CastManager.loadMedia(uri);
+        await StronzCastManager.loadMedia(uri);
         await super.switchTo(playable);
         super.buffering = false;
     }
