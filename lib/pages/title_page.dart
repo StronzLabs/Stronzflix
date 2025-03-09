@@ -235,8 +235,7 @@ class _TitlePageState extends State<TitlePage> {
                         action: () => Navigator.pushNamed(context, '/player', arguments: PlayerPageArguments(this.title as Film))
                     ),
                     if(this.title.site.isLocal)
-                        buildActionIcon(context, Icons.delete_outline,
-                            action: () => TitlePage.delete(context, this.title as Film)
+                            action: () => DownloadManager.deleteDialog(context, this.title as Film)
                         )
                     else if(this.title.site.allowsDownload)
                         FutureBuilder(

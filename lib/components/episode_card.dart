@@ -5,7 +5,6 @@ import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/components/border_text.dart';
 import 'package:stronzflix/dialogs/download_dialog.dart';
 import 'package:stronzflix/pages/player_page.dart';
-import 'package:stronzflix/pages/title_page.dart';
 import 'package:sutils/ui/widgets/resource_image.dart';
 
 class EpisodeCard extends StatelessWidget {
@@ -87,7 +86,7 @@ class EpisodeCard extends StatelessWidget {
                 ),
                 if(this.episode.site.isLocal)
                     this._buildActionIcon(context, Icons.delete_outline,
-                        action: () => TitlePage.delete(context, this.episode)
+                        action: () => DownloadManager.deleteDialog(context, this.episode)
                     )
                 else if(this.episode.site.allowsDownload)
                     FutureBuilder(

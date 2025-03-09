@@ -3,13 +3,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
-import 'package:flutter/material.dart' show ValueNotifier;
+import 'package:flutter/material.dart' show BuildContext, ValueNotifier;
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/downloader.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
+import 'package:stronzflix/dialogs/confirmation_dialog.dart';
 import 'package:sutils/utils.dart';
 
 import 'download_state.dart';
@@ -209,5 +210,15 @@ class DownloadManager {
         
         KeepWatching.remove(metadata);
         LocalSite.notify();
+    }
+
+    static Future<void> deleteDialog(BuildContext context, Watchable watchable) async {
+        bool delete = await ConfirmationDialog.ask(context,
+            "Elimina ${watchable.title}",
+            "Sei sicuro di voler eliminare ${watchable.title}?",
+            action: "Elimina"
+        );
+        if (delete)
+            await DownloadManager.deleteSingle(watchable);
     }
 }
