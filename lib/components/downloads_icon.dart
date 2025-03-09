@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
-import 'package:stronzflix/components/animated_gradient_icon.dart';
+import 'package:sutils/ui/icons/animated_gradient_icon.dart';
 
 class DownloadsIcon extends StatelessWidget {
     const DownloadsIcon({super.key});
