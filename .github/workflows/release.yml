@@ -263,7 +263,7 @@ jobs:
         run: |
           sudo add-apt-repository ppa:deadsnakes/ppa
           sudo apt update
-          sudo apt install -y libncurses5 python2.7 libpython2.7  libkf5itemmodels5 libkf5kiowidgets5 libkchart2
+          sudo apt install -y libncurses5 python2.7 libpython2.7 gettext libkf5itemmodels5 libkf5kiowidgets5 libkchart2
 
       - name: Install Tizen Studio
         run: |
