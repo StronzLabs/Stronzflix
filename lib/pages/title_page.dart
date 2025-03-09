@@ -9,7 +9,7 @@ import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/components/card_grid.dart';
 import 'package:stronzflix/components/episode_card.dart';
-import 'package:stronzflix/components/expandable_text.dart';
+import 'package:sutils/ui/widgets/expandable_text.dart';
 import 'package:stronzflix/widgets/save_title_button.dart';
 import 'package:stronzflix/dialogs/download_dialog.dart';
 import 'package:stronzflix/pages/player_page.dart';
