@@ -266,17 +266,19 @@ jobs:
           mkdir tizen-studio
           ./tizen-studio.bin --no-java-check --accept-license $GITHUB_WORKSPACE/tizen-studio
           rm tizen-studio.bin
-        shell: bash
 
       - name: Install Flutter Tizen
         run: |
           mkdir flutter-tizen
           git clone https://github.com/flutter-tizen/flutter-tizen.git flutter-tizen
-        shell: bash
 
       - name: Build Tizen App
         run: |
           export PATH=$GITHUB_WORKSPACE/tizen-studio/tools:$GITHUB_WORKSPACE/tizen-studio/tools/ide/bin:$GITHUB_WORKSPACE/flutter-tizen/bin:$PATH
+          pwd
+          ls
+          ls -R
+          flutter-tizen pub get
           flutter-tizen build tpk --release
 
       - name: Upload Release Asset
