@@ -44,6 +44,9 @@ dependencies:
 dependency_overrides:
   uuid: ^4.4.0
 
+  flutter_webrtc:
+    git: https://github.com/MCYBA/flutter-webrtc
+
 dev_dependencies:
   integration_test:
     sdk: flutter
