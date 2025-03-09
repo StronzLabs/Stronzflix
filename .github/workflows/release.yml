@@ -259,17 +259,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download dependencies
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '5.0.x'
+      - name: Install Tizen Studio
+        run: |
+          curl http://download.tizen.org/sdk/Installer/tizen-studio_6.0/web-cli_Tizen_Studio_6-0_ubuntu-64.bin > tizen-studio.bin
+          chmod 755 tizen-studio.bin
+          mkdir tizen-studio
+          ./tizen-studio.bin --no-java-check --accept-license $GITHUB_WORKSPACE/tizen-studio
+          rm tizen-studio.bin
+        shell: bash
 
-      - uses: Rexios80/flutter-tizen-action@v5
-        with:
-          author-certificate-file: test123.p12
-          author-certificate-password: test123
-          distributor-certificate-file: test123.p12
-          distributor-certificate-password: test123
+      - name: Install Flutter Tizen
+        run: |
+          mkdir flutter-tizen
+          git clone https://github.com/flutter-tizen/flutter-tizen.git flutter-tizen
+        shell: bash
+
+      - name: Build Tizen App
+        run: |
+          flutter-tizen build tpk --release
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
