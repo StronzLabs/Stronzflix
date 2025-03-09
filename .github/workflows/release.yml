@@ -263,7 +263,7 @@ jobs:
         run: |
           sudo add-apt-repository ppa:deadsnakes/ppa
           sudo apt update
-          sudo apt install -y libncurses5 python2.7 libpython2.7
+          sudo apt install -y libncurses5 python2.7 libpython2.7  libkf5itemmodels5 libkf5kiowidgets5 libkchart2
 
       - name: Install Tizen Studio
         run: |
@@ -278,13 +278,19 @@ jobs:
           mkdir flutter-tizen
           git clone https://github.com/flutter-tizen/flutter-tizen.git flutter-tizen
 
-      - name: Build Tizen App
+      - name: Update PATH
         run: |
           export PATH=$GITHUB_WORKSPACE/tizen-studio/tools:$GITHUB_WORKSPACE/tizen-studio/tools/ide/bin:$PATH
           export PATH=$GITHUB_WORKSPACE/tizen-studio/package-manager:$PATH
           export PATH=$GITHUB_WORKSPACE/flutter-tizen/bin:$PATH
-          echo "A"
-          package-manager-cli.bin install --accept-license IOT-Headed-6.0-NativeAppDevelopment
+          echo $PATH >> $GITHUB_PATH
+
+      - name: Install Tizen packages
+        run: |
+          package-manager-cli.bin install --accept-license IOT-Headed-6.0-NativeAppDevelopment 
+
+      - name: Build Tizen App
+        run: |
           flutter-tizen pub get
           flutter-tizen build tpk --release
 
