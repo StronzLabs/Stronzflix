@@ -261,7 +261,7 @@ jobs:
 
       - name: Install Tizen Studio
         run: |
-          curl http://download.tizen.org/sdk/Installer/tizen-studio_6.0/web-cli_Tizen_Studio_6-0_ubuntu-64.bin > tizen-studio.bin
+          curl https://download.tizen.org/sdk/Installer/tizen-studio_6.0/web-cli_Tizen_Studio_6.0_ubuntu-64.bin > tizen-studio.bin
           chmod 755 tizen-studio.bin
           mkdir tizen-studio
           ./tizen-studio.bin --no-java-check --accept-license $GITHUB_WORKSPACE/tizen-studio
