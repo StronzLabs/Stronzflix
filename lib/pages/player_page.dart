@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:stronz_cast/stronz_cast.dart';
 import 'package:stronz_video_player/video_player.dart';
 import 'package:stronzflix/backend/api/media.dart';
-import 'package:stronzflix/backend/cast/cast.dart';
 import 'package:stronzflix/backend/sink/sink_messenger.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/components/cast_button.dart';
@@ -85,11 +85,11 @@ class _PlayerPageState extends State<PlayerPage> with StreamListener {
             child: Scaffold(
                 backgroundColor: Colors.black,
                 body: ListenableBuilder(
-                    listenable: CastManager.state,
+                    listenable: StronzCastManager.state,
                     builder: (context, _) {
-                        if(CastManager.connected && this._controller is! CastVideoPlayerController)
+                        if(StronzCastManager.connected && this._controller is! CastVideoPlayerController)
                             this._controller = CastVideoPlayerController([MediaSessionExternalController(), PeerExternalController()]);
-                        else if(!CastManager.connected && this._controller is! NativePlayerController)
+                        else if(!StronzCastManager.connected && this._controller is! NativePlayerController)
                             this._controller = NativePlayerController([MediaSessionExternalController(), PeerExternalController()]);
 
                         return StronzVideoPlayer(
@@ -128,7 +128,7 @@ class _PlayerPageState extends State<PlayerPage> with StreamListener {
                                     },
                                 )
                             ],
-                            videoBuilder:CastManager.connected
+                            videoBuilder: StronzCastManager.connected
                                 ? (context) => const CastVideoView()
                                 : null,
                             controller: this._controller!,

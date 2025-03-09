@@ -12,7 +12,6 @@ dependencies:
       sdk: flutter
   async: ^2.11.0
   background_downloader: ^8.5.3
-  cast: ^2.1.0
   crypto: ^3.0.3
   ffmpeg_kit_flutter: ^6.0.3
   flutter_hls_parser:
@@ -32,10 +31,10 @@ dependencies:
   encrypt: ^5.0.3
   stronz_video_player:
     git: https://github.com/StronzLabs/StronzVideoPlayer.git
+  stronz_cast:
+    git: https://github.com/StronzLabs/StronzCast.git
   sutils:
     git: https://github.com/StronzLabs/SUtils.git
-  castscreen:
-    git: https://github.com/Bonfra04/dart_castscreen.git
 
   # needed to make the shared library be embedded in the application
   fvp:

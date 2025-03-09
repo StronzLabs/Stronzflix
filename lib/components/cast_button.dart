@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stronzflix/backend/cast/cast.dart';
 import 'package:stronzflix/components/animated_gradient_icon.dart';
 import 'package:sutils/utils.dart';
+import 'package:stronz_cast/stronz_cast.dart';
 
 class CastButton extends StatefulWidget {
     final double iconSize;
@@ -38,14 +38,14 @@ class _CastButtonState extends State<CastButton> with StreamListener {
         if(EPlatform.isTV)
             return const SizedBox.shrink();
 
-        List<PopupMenuItem<Object>> buildOptions(context) => CastManager.connected
+        List<PopupMenuItem<Object>> buildOptions(context) => StronzCastManager.connected
             ? [
                 const PopupMenuItem(
                     value: 0,
                     child: Text("Disconnetti"),
                 )
             ] : [
-                for(CasterDevice device in CastManager.devices)
+                for(StronzCasterDevice device in StronzCastManager.devices)
                     PopupMenuItem(
                         value: device,
                         child: Text(device.name),
@@ -57,38 +57,38 @@ class _CastButtonState extends State<CastButton> with StreamListener {
             ];
 
         return ListenableBuilder(
-            listenable: CastManager.state,
+            listenable: StronzCastManager.state,
             builder: (context, _) => PopupMenuButton(
                 onOpened: this.widget.onOpened,
                 onCanceled: this.widget.onClosed,
                 tooltip: '',
                 iconSize: 28,
-                enabled: !CastManager.connecting && !CastManager.discovering,
+                enabled: !StronzCastManager.connecting && !StronzCastManager.discovering,
                 icon: AnimatedGradientIcon(
-                    icon: CastManager.connected ? Icons.cast_connected : Icons.cast,
+                    icon: StronzCastManager.connected ? Icons.cast_connected : Icons.cast,
                     begin: Alignment.bottomLeft,
                     tint: Colors.grey,
                     radius: 0.6,
                     reverse: true,
-                    animated: CastManager.discovering || CastManager.connecting,
+                    animated: StronzCastManager.discovering || StronzCastManager.connecting,
                 ),
                 position: PopupMenuPosition.under,
                 itemBuilder: buildOptions,
                 onSelected: (value) async {
-                    if(value is! CasterDevice) {
-                        if(CastManager.connected) {
-                            await CastManager.disconnect();
+                    if(value is! StronzCasterDevice) {
+                        if(StronzCastManager.connected) {
+                            await StronzCastManager.disconnect();
                             return;
                         }
 
-                        await CastManager.discovery();
+                        await StronzCastManager.discovery();
                         return;
                     }
 
                     if(await FullScreen.check())
                         await FullScreen.set(false);
 
-                    CastManager.connect(value);
+                    StronzCastManager.connect(value);
                 },
             )
         );
