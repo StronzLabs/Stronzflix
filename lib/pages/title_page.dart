@@ -124,17 +124,14 @@ class _TitlePageState extends State<TitlePage> {
 
     Widget _buildTopBar(BuildContext context) {
         return SliverAppBar.large(
-            leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () => Navigator.of(context).pop(),
-            ),
+            leading: BackButton(),
             actions: [
                 const StronzCastButton(),
                 if(super.widget.metadata.site is! LocalSite) ...[
                     const SizedBox(width: 8),
                     SaveTitleButton(title: super.widget.metadata),
-                    const SizedBox(width: 8)
-                ]
+                ],
+                const SizedBox(width: 8)
             ],
             pinned: true,
             expandedHeight: 300,

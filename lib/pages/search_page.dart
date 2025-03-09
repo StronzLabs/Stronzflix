@@ -4,7 +4,7 @@ import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/components/delete_title_button.dart';
-import 'package:stronzflix/components/save_title_button.dart';
+import 'package:stronzflix/widgets/save_title_button.dart';
 import 'package:stronzflix/components/title_card.dart';
 import 'package:stronzflix/components/card_grid.dart';
 
@@ -37,9 +37,8 @@ class SearchPage extends SearchDelegate {
 
     @override
     Widget buildLeading(BuildContext context) {
-        return IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => super.close(context, null)
+        return BackButton(
+            onPressed: () => super.close(context, null),
         );
     }
 
