@@ -261,7 +261,7 @@ jobs:
 
       - name: Download dependencies
         run: |
-          sudo add-apt-repository universe
+          echo "deb http://security.ubuntu.com/ubuntu focal-security main universe" | sudo tee -a /etc/apt/sources.list
           sudo apt-get update -y
           sudo apt-get install -y libncurses5 python libpython2.7
 
