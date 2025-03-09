@@ -284,7 +284,7 @@ jobs:
           export PATH=$GITHUB_WORKSPACE/tizen-studio/package-manager:$PATH
           export PATH=$GITHUB_WORKSPACE/flutter-tizen/bin:$PATH
           echo "A"
-          sudo $GITHUB_WORKSPACE/tizen-studio/package-manager/package-manager-cli.bin install --accept-license IOT-Headed-6.0-NativeAppDevelopment
+          package-manager-cli.bin install --accept-license IOT-Headed-6.0-NativeAppDevelopment
           flutter-tizen pub get
           flutter-tizen build tpk --release
 
