@@ -23,6 +23,11 @@ on:
         type: boolean
         required: true
         default: true
+      build_tizen:
+        description: 'Build for Tizen'
+        type: boolean
+        required: true
+        default: true
 
 jobs:
   run_tests:
@@ -244,3 +249,34 @@ jobs:
           asset_path: build/app/outputs/flutter-apk/app-release.apk
           asset_name: Stronzflix.apk
           asset_content_type: application/vnd.android.package-archive
+
+  build_tizen:
+    name: Build Tizen
+    needs: create_release
+    runs-on: ubuntu-latest
+    if: ${{ inputs.build_tizen }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download dependencies
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
+
+      - uses: Rexios80/flutter-tizen-action@v5
+        with:
+          author-certificate-file: test123.p12
+          author-certificate-password: test123
+          distributor-certificate-file: test123.p12
+          distributor-certificate-password: test123
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: build/tizen/tpk/org.stronzlabs.stronzflix-*.tpk
+          asset_name: Stronzflix.tpk
+          asset_content_type: application/octet-stream
