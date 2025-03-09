@@ -1091,7 +1091,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "055a7c5cbd87a59fa112f452c24d29bab59fd670"
+      resolved-ref: "4a7743fb13e51db72a8bc751d0da54b1da86fa9b"
       url: "https://github.com/StronzLabs/StronzCast.git"
     source: git
     version: "0.0.1"
@@ -1109,7 +1109,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "20fad7763f06e583253c18a437a50b014221c0d5"
+      resolved-ref: ad85d7772e0ed3969fd9aaf7aebc75b89e64d77b
       url: "https://github.com/StronzLabs/SUtils.git"
     source: git
     version: "0.0.1"

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:stronz_cast/stronz_cast.dart';
+import 'package:stronz_cast/ui/stronz_cast_button.dart';
 import 'package:stronz_video_player/video_player.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/sink/sink_messenger.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
-import 'package:stronzflix/components/cast_button.dart';
 import 'package:stronzflix/components/player/cast_video_player_controller.dart';
 import 'package:stronzflix/components/player/cast_video_view.dart';
 import 'package:stronzflix/components/player/chat_button.dart';
@@ -104,7 +104,7 @@ class _PlayerPageState extends State<PlayerPage> with StreamListener {
                                     KeepWatching.add(controller.playable as Watchable, controller.position.inSeconds, controller.duration.inSeconds);
                             },
                             additionalControlsBuilder: (context, onMenuOpened, onMenuClosed) => [
-                                CastButton(
+                                StronzCastButton(
                                     onOpened: onMenuOpened,
                                     onClosed: onMenuClosed,
                                 ),

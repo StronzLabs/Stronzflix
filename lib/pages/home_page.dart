@@ -4,13 +4,13 @@ import 'dart:convert';
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:stronz_cast/ui/stronz_cast_button.dart';
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/sink/sink_manager.dart';
 import 'package:stronzflix/backend/sink/sink_messenger.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
-import 'package:stronzflix/components/cast_button.dart';
 import 'package:stronzflix/dialogs/settings_dialog.dart';
 import 'package:stronzflix/dialogs/sink_dialog.dart';
 import 'package:stronzflix/pages/home_page_desktop.dart';
@@ -70,7 +70,6 @@ abstract class HomePageState<T extends StatefulWidget> extends State<T> {
     void _refetchLocal() {
         if(!Settings.site.isLocal)
             return;
-
         this.refetchLatests();
     }
 
@@ -88,7 +87,7 @@ abstract class HomePageState<T extends StatefulWidget> extends State<T> {
                 child: SvgPicture.asset("assets/logo.svg"),
             ),
             actions: [
-                const CastButton(),
+                const StronzCastButton(),
                 const SizedBox(width: 8),
                 IconButton(
                     icon: const Icon(Icons.settings),

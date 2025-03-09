@@ -2,12 +2,12 @@ import 'dart:ui';
 
 import 'package:async/async.dart';
 import 'package:flutter/material.dart' hide Title;
+import 'package:stronz_cast/ui/stronz_cast_button.dart';
 import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/components/card_grid.dart';
-import 'package:stronzflix/components/cast_button.dart';
 import 'package:stronzflix/components/episode_card.dart';
 import 'package:stronzflix/components/expandable_text.dart';
 import 'package:stronzflix/components/save_title_button.dart';
@@ -130,7 +130,7 @@ class _TitlePageState extends State<TitlePage> {
                 onPressed: () => Navigator.of(context).pop(),
             ),
             actions: [
-                const CastButton(),
+                const StronzCastButton(),
                 if(super.widget.metadata.site is! LocalSite) ...[
                     const SizedBox(width: 8),
                     SaveTitleButton(title: super.widget.metadata),
