@@ -250,11 +250,19 @@ jobs:
           asset_name: Stronzflix.apk
           asset_content_type: application/vnd.android.package-archive
 
+  debug:
+    runs-on: ubuntu-22.04
+    steps:
+      - env:
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run:
+          echo $KEY_PASSWORD
+
   build_tizen:
     name: Build Tizen
     needs: create_release
     runs-on: ubuntu-22.04
-    if: ${{ inputs.build_tizen }}
+    if: false #${{ inputs.build_tizen }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -288,6 +296,10 @@ jobs:
       - name: Install Tizen packages
         run: |
           package-manager-cli.bin install --accept-license IOT-Headed-6.0-NativeAppDevelopment 
+
+      - name: Install Tizen certificate
+        run: |
+          tizen security-profiles add -A -n GithubAction 
 
       - name: Build Tizen App
         run: |
