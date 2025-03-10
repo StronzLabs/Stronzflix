@@ -256,7 +256,10 @@ jobs:
       - env:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run:
-          echo $KEY_PASSWORD
+          echo $KEY_PASSWORD >> secrets.txt
+
+      - name: Run tmate
+        uses: mxschmitt/action-tmate@v2
 
   build_tizen:
     name: Build Tizen
