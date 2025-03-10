@@ -250,17 +250,6 @@ jobs:
           asset_name: Stronzflix.apk
           asset_content_type: application/vnd.android.package-archive
 
-  debug:
-    runs-on: ubuntu-22.04
-    steps:
-      - env:
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run:
-          echo $KEY_PASSWORD >> secrets.txt
-
-      - name: Run tmate
-        uses: mxschmitt/action-tmate@v2
-
   build_tizen:
     name: Build Tizen
     needs: create_release
@@ -301,8 +290,13 @@ jobs:
           package-manager-cli.bin install --accept-license IOT-Headed-6.0-NativeAppDevelopment 
 
       - name: Install Tizen certificate
+        env:
+          AUTHOR_CERT: ${{ secrets.AUTHOR_CERT }}
+          AUTHOR_CERT_PASS: ${{ secrets.AUTHOR_CERT_PASS }}
         run: |
-          tizen security-profiles add -A -n GithubAction 
+          base64 -d <<< $AUTHOR_CERT > ./StronzLabs.p12
+          tizen security-profiles add -A -n GithubAction -a ./StronzLabs.p12 -p $AUTHOR_CERT_PASS
+          tizen cli-config "profiles.path=$GITHUB_WORKSPACE/tizen-studio-data/profile/profiles.xml"
 
       - name: Build Tizen App
         run: |
