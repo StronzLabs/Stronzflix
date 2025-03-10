@@ -18,6 +18,7 @@ import 'package:stronzflix/widgets/search_button.dart';
 import 'package:stronzflix/widgets/settings_button.dart';
 import 'package:stronzflix/widgets/sink_button.dart';
 import 'package:sutils/ui/dialogs/loading_dialog.dart';
+import 'package:sutils/ui/widgets/tv_traversable.dart';
 import 'package:sutils/utils.dart';
 
 class HomePage extends StatelessWidget {
@@ -86,12 +87,18 @@ abstract class HomePageState<T extends StatefulWidget> extends State<T> {
                 child: SvgPicture.asset("assets/logo.svg"),
             ),
             actions: [
-                const StronzCastButton(),
-                const SizedBox(width: 8),
-                SettingsButton(onClosed: () => this.refetchLatests()),
-                const SizedBox(width: 8),
-                const SearchButton(),
-                const SizedBox(width: 8)
+                TvTraversable(
+                    child: Row(
+                        children: [
+                            const StronzCastButton(),
+                            const SizedBox(width: 8),
+                            SettingsButton(onClosed: () => this.refetchLatests()),
+                            const SizedBox(width: 8),
+                            const SearchButton(),
+                            const SizedBox(width: 8),
+                        ]
+                    )
+                )
             ]
         );        
     }

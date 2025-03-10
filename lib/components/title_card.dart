@@ -129,6 +129,7 @@ class _TitleCardState extends State<TitleCard> {
                     focusNode: FocusNode(
                         skipTraversal: false,
                         descendantsAreTraversable: false,
+                        debugLabel: "TitleCard-[${this._title.name}]"
                     ),
                     onTap: () => this._open(context),
                     child: Padding(
