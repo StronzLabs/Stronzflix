@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/api/media.dart';
-import 'package:stronzflix/components/select_dropdown.dart';
 import 'package:stronzflix/utils/utils.dart';
 import 'package:sutils/ui/dialogs/loading_dialog.dart';
 import 'package:sutils/ui/widgets/resource_image.dart';
+import 'package:sutils/ui/widgets/select_dropdown.dart';
 import 'package:sutils/utils.dart';
 
 class DownloadDialog extends StatefulWidget {

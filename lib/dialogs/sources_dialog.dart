@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/media.dart';
-import 'package:stronzflix/components/select_dropdown.dart';
+import 'package:sutils/ui/widgets/select_dropdown.dart';
 
 class SourcesDialog extends StatelessWidget {
 

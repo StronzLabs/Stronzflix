@@ -2,9 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/site.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
-import 'package:stronzflix/components/select_dropdown.dart';
 import 'package:sutils/logic/update/version.dart';
 import 'package:sutils/ui/widgets/labeled_checkbox.dart';
+import 'package:sutils/ui/widgets/select_dropdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsDialog extends StatelessWidget {
