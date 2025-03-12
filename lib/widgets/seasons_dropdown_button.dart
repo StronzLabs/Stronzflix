@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/media.dart';
+import 'package:sutils/utils.dart';
 
 class SeasonsDropdownButton extends StatelessWidget {
     
@@ -22,7 +23,7 @@ class SeasonsDropdownButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20.0),
             ),
             child: DropdownButton<Season>(
-                focusColor: Colors.transparent,
+                focusColor: EPlatform.isTV ? null : Colors.transparent,
                 borderRadius: BorderRadius.circular(20.0),
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 underline: const SizedBox.shrink(),
