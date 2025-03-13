@@ -45,6 +45,7 @@ class _TitlePageState extends State<TitlePage> {
     Title get title => this._title!;
     late Season _selectedSeason;
     bool _discarding = false;
+    final ScrollController _scrollController = ScrollController();
     
     final AsyncMemoizer _memoizer = AsyncMemoizer();
 
@@ -146,25 +147,41 @@ class _TitlePageState extends State<TitlePage> {
     }
 
     Widget _buildDescription(BuildContext context) {
-        return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-                Text(super.widget.metadata.name,
-                    style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold
+        return Builder(
+            builder: (context) => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                    Text(super.widget.metadata.name,
+                        style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold
+                        )
+                    ),
+                    ExpandableText(this.title.description,
+                        collapsedLabel: "Mostra altro",
+                        expandedLabel: "Mostra meno",
+                        maxLines: 3,
+                        textAlign: TextAlign.justify,
+                        style: const TextStyle(
+                            fontSize: 16,
+                        ),
+                        autofocus: EPlatform.isTV,
+                        onTvFocus: () => this._scrollController.animateTo(
+                            this._scrollController.position.minScrollExtent,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut
+                        ),
+                        onTvExpanded: () {
+                            Scrollable.ensureVisible(
+                                context,
+                                duration: const Duration(milliseconds: 150),
+                                curve: Curves.easeInOut,
+                                alignmentPolicy: ScrollPositionAlignmentPolicy.explicit
+                            );
+                        },
                     )
-                ),
-                ExpandableText(this.title.description,
-                    collapsedLabel: "Mostra altro",
-                    expandedLabel: "Mostra meno",
-                    maxLines: 3,
-                    textAlign: TextAlign.justify,
-                    style: const TextStyle(
-                        fontSize: 16,
-                    )
-                )
-            ]
+                ]
+            )
         );
     }
 
@@ -184,7 +201,6 @@ class _TitlePageState extends State<TitlePage> {
                     CircularProgressButton(
                         icon: progress != null ? Icons.fast_forward : Icons.play_arrow,
                         borderPercentage: progress ?? 0.0,
-                        autofocus: EPlatform.isTV,
                         action: () => Navigator.pushNamed(context, '/player', arguments: PlayerPageArguments(this.title as Film))
                     ),
                     if(this.title.site.isLocal)
@@ -295,11 +311,11 @@ class _TitlePageState extends State<TitlePage> {
             body: FutureBuilder(
                 future: this._memoizer.runOnce(() => this._fetchTitle()),
                 builder: (context, snapshot) {
-
                     return CustomScrollView(
+                        controller: this._scrollController,
                         slivers: [
                             this._buildTopBar(context),
-                             if (snapshot.hasError)
+                            if (snapshot.hasError)
                                 const SliverFillRemaining(
                                     child: Center(
                                         child: Text("Errore durante il caricamento del titolo"),

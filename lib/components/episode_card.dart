@@ -6,7 +6,6 @@ import 'package:stronzflix/components/border_text.dart';
 import 'package:stronzflix/dialogs/download_dialog.dart';
 import 'package:stronzflix/pages/player_page.dart';
 import 'package:sutils/ui/widgets/resource_image.dart';
-import 'package:sutils/utils.dart';
 
 class EpisodeCard extends StatelessWidget {
     final Episode episode;
@@ -112,7 +111,6 @@ class EpisodeCard extends StatelessWidget {
             aspectRatio: 3 / 2,
             child: Card(
                 child: InkWell(
-                    autofocus: EPlatform.isTV,
                     focusNode: FocusNode(
                         skipTraversal: false,
                         descendantsAreTraversable: false,
