@@ -12,11 +12,11 @@ import 'package:stronzflix/widgets/save_title_button.dart';
 import 'package:stronzflix/components/title_card.dart';
 import 'package:stronzflix/pages/home_page.dart';
 
-class HomePageMobile extends StatefulWidget {
-    const HomePageMobile({super.key});
+class HomePageSmallScreen extends StatefulWidget {
+    const HomePageSmallScreen({super.key});
 
     @override
-    State<HomePageMobile> createState() => _HomePageMobileState();
+    State<HomePageSmallScreen> createState() => _HomePageSmallScreenState();
 }
 
 enum _CurrentSection {
@@ -26,7 +26,7 @@ enum _CurrentSection {
     downloads,
 }
 
-class _HomePageMobileState extends HomePageState<HomePageMobile> {
+class _HomePageSmallScreenState extends HomePageState<HomePageSmallScreen> {
     _CurrentSection _currentSection = _CurrentSection.news;
 
     @override

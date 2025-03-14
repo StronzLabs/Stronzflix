@@ -13,14 +13,14 @@ import 'package:stronzflix/widgets/save_title_button.dart';
 import 'package:stronzflix/components/title_card.dart';
 import 'package:stronzflix/pages/home_page.dart';
 
-class HomePageDesktop extends StatefulWidget {
-    const HomePageDesktop({super.key});
+class HomePageBigScreen extends StatefulWidget {
+    const HomePageBigScreen({super.key});
 
     @override
-    State<HomePageDesktop> createState() => _HomePageDesktopState();
+    State<HomePageBigScreen> createState() => _HomePageBigScreenState();
 }
 
-class _HomePageDesktopState extends HomePageState<HomePageDesktop> {
+class _HomePageBigScreenState extends HomePageState<HomePageBigScreen> {
 
     Widget _buildSection<T>({
         required Iterable<T> value,

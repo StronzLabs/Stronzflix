@@ -10,9 +10,8 @@ import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/sink/sink_messenger.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
-import 'package:stronzflix/pages/home_page_desktop.dart';
-import 'package:stronzflix/pages/home_page_mobile.dart';
-import 'package:stronzflix/pages/home_page_tv.dart';
+import 'package:stronzflix/pages/home_page_big_screen.dart';
+import 'package:stronzflix/pages/home_page_small_screen.dart';
 import 'package:stronzflix/pages/player_page.dart';
 import 'package:stronzflix/widgets/search_button.dart';
 import 'package:stronzflix/widgets/settings_button.dart';
@@ -26,12 +25,10 @@ class HomePage extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
-        if(EPlatform.isDesktop)
-            return HomePageDesktop();
+        if(EPlatform.isDesktop || EPlatform.isTV)
+            return HomePageBigScreen();
         else if(EPlatform.isMobile)
-            return HomePageMobile();
-        else if(EPlatform.isTV)
-            return HomePageTV();
+            return HomePageSmallScreen();
         
         throw Exception("Unsupported platform");
     }
