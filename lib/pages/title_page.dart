@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:async/async.dart';
@@ -307,29 +308,37 @@ class _TitlePageState extends State<TitlePage> {
 
     @override
     Widget build(BuildContext context) {
+
+        double minCardWidth = 350;
+        double screenWidth = MediaQuery.of(context).size.width;
+        int crossAxisCount = max((screenWidth / minCardWidth).floor(), 1);
+
         return Scaffold(
             body: FutureBuilder(
                 future: this._memoizer.runOnce(() => this._fetchTitle()),
                 builder: (context, snapshot) {
-                    return CustomScrollView(
-                        controller: this._scrollController,
-                        slivers: [
-                            this._buildTopBar(context),
-                            if (snapshot.hasError)
-                                const SliverFillRemaining(
-                                    child: Center(
-                                        child: Text("Errore durante il caricamento del titolo"),
-                                    ),
-                                )
-                            else if (snapshot.connectionState != ConnectionState.done)
-                                const SliverFillRemaining(
-                                    child: Center(
-                                        child: CircularProgressIndicator(),
-                                    ),
-                                )
-                            else
-                                this._buildTitle(context)
-                        ],
+                    return FocusTraversalGroup(
+                        policy: _ScrollAPolicy(crossAxisCount),
+                        child: CustomScrollView(
+                            controller: this._scrollController,
+                            slivers: [
+                                this._buildTopBar(context),
+                                if (snapshot.hasError)
+                                    const SliverFillRemaining(
+                                        child: Center(
+                                            child: Text("Errore durante il caricamento del titolo"),
+                                        ),
+                                    )
+                                else if (snapshot.connectionState != ConnectionState.done)
+                                    const SliverFillRemaining(
+                                        child: Center(
+                                            child: CircularProgressIndicator(),
+                                        ),
+                                    )
+                                else
+                                    this._buildTitle(context)
+                            ],
+                        )
                     );
                 }
             )
@@ -373,4 +382,57 @@ class _TitlePageState extends State<TitlePage> {
             }
         }
     }
+}
+
+class _ScrollAPolicy extends WidgetOrderTraversalPolicy {
+
+    final int crossAxisCount;
+    _ScrollAPolicy(this.crossAxisCount);
+
+    @override
+    bool inDirection(FocusNode currentNode, TraversalDirection direction) {
+        List<FocusNode> siblings = currentNode.parent!.children.toList();
+        List<FocusNode> others = [
+            siblings.where((node) => node.context!.findAncestorWidgetOfExactType<BackButton>() != null).firstOrNull,
+            siblings.where((node) => node.context!.findAncestorWidgetOfExactType<StronzCastButton>() != null).firstOrNull,
+            siblings.where((node) => node.context!.findAncestorWidgetOfExactType<SaveTitleButton>() != null).firstOrNull,
+            siblings.where((node) => node.context!.findAncestorWidgetOfExactType<ExpandableText>() != null).firstOrNull,
+            siblings.where((node) => node.context!.findAncestorWidgetOfExactType<SeasonsDropdownButton>() != null).firstOrNull,
+        ].whereType<FocusNode>().toList();
+        siblings.removeWhere((node) => others.contains(node));
+
+        int idx = siblings.indexOf(currentNode);
+
+        if(direction == TraversalDirection.up)
+            if (idx >= this.crossAxisCount) {
+                siblings[idx - this.crossAxisCount].requestFocus();
+                Scrollable.ensureVisible(
+                    siblings[idx - this.crossAxisCount].context!,
+                    alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart
+                );
+                return true;
+            }
+            else if (idx >= 0) {
+                others.last.requestFocus();
+                Scrollable.ensureVisible(
+                    others.last.context!,
+                    alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart
+                );
+                return true;
+            }
+            else if (idx == -1) {
+                idx = others.indexOf(currentNode);
+                if (idx > 0) {
+                    others[idx - 1].requestFocus();
+                    Scrollable.ensureVisible(
+                        others[idx - 1].context!,
+                        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart
+                    );
+                    return true;
+                }
+            }
+
+        return super.inDirection(currentNode, direction);
+    }
+
 }
