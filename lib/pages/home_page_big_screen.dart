@@ -12,6 +12,7 @@ import 'package:stronzflix/widgets/delete_title_button.dart';
 import 'package:stronzflix/widgets/save_title_button.dart';
 import 'package:stronzflix/components/title_card.dart';
 import 'package:stronzflix/pages/home_page.dart';
+import 'package:sutils/utils.dart';
 
 class HomePageBigScreen extends StatefulWidget {
     const HomePageBigScreen({super.key});
@@ -127,7 +128,7 @@ class _HomePageBigScreenState extends HomePageState<HomePageBigScreen> {
     Widget _buildDownloads(BuildContext context) {
         return this._buildListenableSection(
             listenable: DownloadManager.downloads,
-                label: "Download in corso",
+            label: "Download in corso",
             cardAspectRatio: 16 / 5,
             buildCard: (context, metadata, autofocus) => DownloadCard(
                 download: metadata,
@@ -137,9 +138,9 @@ class _HomePageBigScreenState extends HomePageState<HomePageBigScreen> {
 
     @override
     Widget buildBody(BuildContext context) {
-        bool focusKeepWatching = KeepWatching.metadata.isNotEmpty;
-        bool focusSaved = !focusKeepWatching && SavedTitles.all.isNotEmpty;
-        bool focusNews = !focusKeepWatching && !focusSaved;
+        bool focusKeepWatching = EPlatform.isTV && KeepWatching.metadata.isNotEmpty;
+        bool focusSaved = EPlatform.isTV && !focusKeepWatching && SavedTitles.all.isNotEmpty;
+        bool focusNews = EPlatform.isTV && !focusKeepWatching && !focusSaved;
 
         return ListView(
             padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
