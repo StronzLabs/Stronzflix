@@ -122,6 +122,7 @@ class _TitleCardState extends State<TitleCard> {
                     )
                 )
             );
+
         return AspectRatio(
             aspectRatio: 16 / 9, 
             child: Card(
