@@ -26,13 +26,15 @@ class _HomePageBigScreenState extends HomePageState<HomePageBigScreen> {
         required Iterable<T> value,
         required String label,
         double cardAspectRatio = 16 / 9,
-        required Widget Function(BuildContext, T) buildCard,
+        bool autofocus = false,
+        required Widget Function(BuildContext, T, bool) buildCard,
     }) {
         return CardRow(
             title: label,
             values: value,
             buildCard: buildCard,
             cardAspectRatio: cardAspectRatio,
+            autofocus: autofocus,
         );
     }
 
@@ -40,7 +42,8 @@ class _HomePageBigScreenState extends HomePageState<HomePageBigScreen> {
         required ValueListenable<Iterable<T>> listenable,
         required String label,
         double cardAspectRatio = 16 / 9,
-        required Widget Function(BuildContext, T) buildCard
+        bool autofocus = false,
+        required Widget Function(BuildContext, T, bool) buildCard
     }) {
         return ValueListenableBuilder<Iterable<T>>(
             valueListenable: listenable,
@@ -48,6 +51,7 @@ class _HomePageBigScreenState extends HomePageState<HomePageBigScreen> {
                 value: value,
                 label: label,
                 cardAspectRatio: cardAspectRatio,
+                autofocus: autofocus,
                 buildCard: buildCard
             ),
         );
@@ -57,7 +61,8 @@ class _HomePageBigScreenState extends HomePageState<HomePageBigScreen> {
         required Future<Iterable<T>> future,
         required String label,
         double cardAspectRatio = 16 / 9,
-        required Widget Function(BuildContext, T) buildCard
+        bool autofocus = false,
+        required Widget Function(BuildContext, T, bool) buildCard
     }) {
         return FutureBuilder(
             future: future,
@@ -69,17 +74,20 @@ class _HomePageBigScreenState extends HomePageState<HomePageBigScreen> {
                     value: snapshot.data!,
                     label: label,
                     cardAspectRatio: cardAspectRatio,
+                    autofocus: autofocus,
                     buildCard: buildCard
                 );
             }
         );
     }
 
-     Widget _buildKeepWatching(BuildContext context) {
+    Widget _buildKeepWatching(BuildContext context, bool autofocus) {
         return this._buildListenableSection(
             listenable: KeepWatching.listener,
             label: "Continua a guardare",
-            buildCard: (context, metadata) => TitleCard(
+            autofocus: autofocus,
+            buildCard: (context, metadata, autofocus) => TitleCard(
+                autofocus: autofocus,
                 action: IconButton(
                     onPressed: () => KeepWatching.remove(metadata.metadata),
                     icon: const Icon(Icons.close, size: 28)
@@ -89,11 +97,12 @@ class _HomePageBigScreenState extends HomePageState<HomePageBigScreen> {
         );
     }
 
-    Widget _buildNews(BuildContext context) {
+    Widget _buildNews(BuildContext context, bool autofocus) {
         return this._buildFutureSection(
             future: super.newsMemoizer.runOnce(Settings.site.latests),
             label: "Novità",
-            buildCard: (context, metadata) => TitleCard(
+            buildCard: (context, metadata, autofocus) => TitleCard(
+                autofocus: autofocus,
                 action: Settings.site.isLocal
                     ? DeleteTitleButton(title: metadata)
                     : SaveTitleButton(title: metadata),
@@ -102,11 +111,13 @@ class _HomePageBigScreenState extends HomePageState<HomePageBigScreen> {
         );
     }
 
-    Widget _buildSaved(BuildContext context) {
+    Widget _buildSaved(BuildContext context, bool autofocus) {
         return this._buildListenableSection(
             listenable: SavedTitles.listener,
             label: "Salvati",
-            buildCard: (context, metadata) => TitleCard(
+            autofocus: autofocus,
+            buildCard: (context, metadata, autofocus) => TitleCard(
+                autofocus: autofocus,
                 action: SaveTitleButton(title: metadata),
                 title: metadata,
             )
@@ -118,7 +129,7 @@ class _HomePageBigScreenState extends HomePageState<HomePageBigScreen> {
             listenable: DownloadManager.downloads,
                 label: "Download in corso",
             cardAspectRatio: 16 / 5,
-            buildCard: (context, metadata) => DownloadCard(
+            buildCard: (context, metadata, autofocus) => DownloadCard(
                 download: metadata,
             )
         );
@@ -126,12 +137,16 @@ class _HomePageBigScreenState extends HomePageState<HomePageBigScreen> {
 
     @override
     Widget buildBody(BuildContext context) {
+        bool focusKeepWatching = KeepWatching.metadata.isNotEmpty;
+        bool focusSaved = !focusKeepWatching && SavedTitles.all.isNotEmpty;
+        bool focusNews = !focusKeepWatching && !focusSaved;
+
         return ListView(
             padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
             children: [
-                this._buildKeepWatching(context),
-                this._buildSaved(context),
-                this._buildNews(context),
+                this._buildKeepWatching(context, focusKeepWatching),
+                this._buildSaved(context, focusSaved),
+                this._buildNews(context, focusNews),
                 this._buildDownloads(context),
             ]
         );

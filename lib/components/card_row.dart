@@ -5,8 +5,9 @@ class CardRow<T> extends StatefulWidget {
 
     final String title;
     final Iterable<T> values;
-    final Widget Function(BuildContext, T) buildCard;
+    final Widget Function(BuildContext, T, bool) buildCard;
     final double cardAspectRatio;
+    final bool autofocus;
 
     const CardRow({
         super.key,
@@ -14,6 +15,7 @@ class CardRow<T> extends StatefulWidget {
         required this.values,
         required this.buildCard,
         this.cardAspectRatio = 16 / 9,
+        this.autofocus = false
     });
 
     @override
@@ -57,7 +59,7 @@ class _CardRowState<T> extends State<CardRow<T>> {
                 scrollDirection: Axis.horizontal,
                 controller: this._scrollController,
                 itemCount: data.length,
-                itemBuilder: (context, index) => super.widget.buildCard(context, data.elementAt(index))
+                itemBuilder: (context, index) => super.widget.buildCard(context, data.elementAt(index), index == 0 && super.widget.autofocus)
             )
         );
     }
