@@ -1140,7 +1140,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: d53c4a11c472396e8d68e0172a55db46ee592ab1
+      resolved-ref: efa0a8caeec1e013ff5b2c9229c4bfeb9bf78980
       url: "https://github.com/StronzLabs/StronzVideoPlayer.git"
     source: git
     version: "0.0.1"
