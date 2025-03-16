@@ -129,7 +129,7 @@ jobs:
         run: flutter test integration_test -d macos
 
   test_android_phone:
-    name: Android
+    name: Android Phone
     runs-on: ubuntu-latest
     if:  ${{ inputs.test_android_phone }}
     steps:
@@ -189,7 +189,7 @@ jobs:
           script: flutter test integration_test -d emulator
 
   test_android_tv:
-    name: Android
+    name: Android TV
     runs-on: ubuntu-latest
     if:  ${{ inputs.test_android_tv }}
     steps:
