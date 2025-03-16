@@ -7,10 +7,10 @@ import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/components/card_row.dart';
-import 'package:stronzflix/components/download_card.dart';
+import 'package:stronzflix/widgets/download_card.dart';
 import 'package:stronzflix/widgets/delete_title_button.dart';
 import 'package:stronzflix/widgets/save_title_button.dart';
-import 'package:stronzflix/components/title_card.dart';
+import 'package:stronzflix/widgets/title_card.dart';
 import 'package:stronzflix/pages/home_page.dart';
 import 'package:sutils/utils.dart';
 

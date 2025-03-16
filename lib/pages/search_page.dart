@@ -5,7 +5,7 @@ import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
 import 'package:stronzflix/widgets/delete_title_button.dart';
 import 'package:stronzflix/widgets/save_title_button.dart';
-import 'package:stronzflix/components/title_card.dart';
+import 'package:stronzflix/widgets/title_card.dart';
 import 'package:stronzflix/components/card_grid.dart';
 
 class SearchPage extends SearchDelegate {

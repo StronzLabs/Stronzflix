@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/pages/player_page.dart';
@@ -10,13 +9,13 @@ import 'package:sutils/ui/widgets/resource_image.dart';
 import 'package:uuid/uuid.dart';
 
 class TitleCard extends StatefulWidget {
-    final TitleMetadata? title;
+    final TitleMetadata title;
     final Widget? action;
     final bool autofocus;
 
     const TitleCard({
         super.key,
-        this.title,
+        required this.title,
         this.action,
         this.autofocus = false
     });
@@ -28,7 +27,7 @@ class TitleCard extends StatefulWidget {
 class _TitleCardState extends State<TitleCard> {
     final String _uuid = const Uuid().v4();
 
-    TitleMetadata get _title => super.widget.title!;
+    TitleMetadata get _title => super.widget.title;
 
     Widget _buildButton(BuildContext context, {
         required IconData icon,
@@ -110,47 +109,32 @@ class _TitleCardState extends State<TitleCard> {
 
     @override
     Widget build(BuildContext context) {
-        if(super.widget.title == null)
-            return AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Shimmer.fromColors(
-                    baseColor: Theme.of(context).colorScheme.surface,
-                    highlightColor: Theme.of(context).scaffoldBackgroundColor,
-                    period: const Duration(milliseconds: 2500),
-                    child: const Card(
-                        child: SizedBox.expand(),
-                    )
-                )
-            );
-
         return AspectRatio(
             aspectRatio: 16 / 9, 
             child: Card(
                 child: InkWell(
-                    autofocus: super.widget.autofocus,
                     focusNode: FocusNode(
                         skipTraversal: false,
                         descendantsAreTraversable: false,
                     ),
+                    autofocus: super.widget.autofocus,
                     onTap: () => this._open(context),
                     child: Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: IntrinsicHeight(
-                            child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                    Hero(
-                                        tag: this._uuid,
-                                        child: ResourceImage(
-                                            uri: this._title.poster
-                                        )
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Flexible(
-                                        child: this._buildSection(context)
+                        child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                                Hero(
+                                    tag: this._uuid,
+                                    child: ResourceImage(
+                                        uri: this._title.poster
                                     )
-                                ]
-                            )
+                                ),
+                                const SizedBox(width: 16),
+                                Flexible(
+                                    child: this._buildSection(context)
+                                )
+                            ]
                         )
                     )
                 )
@@ -159,7 +143,7 @@ class _TitleCardState extends State<TitleCard> {
     }
 
     void _open(BuildContext context) {
-        Navigator.pushNamed(context, '/title', arguments: TitlePageArguments(this._uuid, super.widget.title!));
+        Navigator.pushNamed(context, '/title', arguments: TitlePageArguments(this._uuid, super.widget.title));
     }
 
     void _play(BuildContext context) {
