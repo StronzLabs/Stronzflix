@@ -54,7 +54,7 @@ on:
         description: 'Run on Android TV'
         type: boolean
         required: true
-        default: true
+        default: false # video rendering doesn't work on tv emulator ¯\_(ツ)_/¯
 
 jobs:
   test_windows:
@@ -191,7 +191,7 @@ jobs:
   test_android_tv:
     name: Android TV
     runs-on: ubuntu-latest
-    if:  ${{ inputs.test_android_tv }}
+    if: ${{ inputs.test_android_tv }}
     steps:
       - name: Enable KVM
         run: |

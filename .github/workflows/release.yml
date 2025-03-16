@@ -38,7 +38,7 @@ jobs:
       test_linux: ${{ inputs.build_linux }}
       test_macos: ${{ inputs.build_macos }}
       test_android_phone: ${{ inputs.build_android }}
-      test_android_tv: ${{ inputs.build_android }}
+      test_android_tv: false # ${{ inputs.build_android }} # video rendering doesn't work on tv emulator ¯\_(ツ)_/¯
 
   create_release:
     name: Create Draft Release
