@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
-import 'package:stronzflix/components/border_text.dart';
 import 'package:stronzflix/dialogs/download_dialog.dart';
 import 'package:stronzflix/pages/player_page.dart';
+import 'package:sutils/ui/widgets/bordered_text.dart';
 import 'package:sutils/ui/widgets/resource_image.dart';
 
 class EpisodeCard extends StatelessWidget {
     final Episode episode;
+    final bool autofocus;
 
     const EpisodeCard({
         super.key,
-        required this.episode    
+        required this.episode,
+        this.autofocus = false    
     });
 
     Widget _buildCover(BuildContext context) {
@@ -44,14 +46,10 @@ class EpisodeCard extends StatelessWidget {
                                 bottom: 2.0,
                                 left: 2.0
                             ),
-                            child: BorderText(
-                                builder: (style) => TextSpan(
-                                    text: this.episode.episodeNo.toString(),
-                                    style: style?.copyWith(
-                                        fontSize: 32,
-                                    ) ?? const TextStyle(
-                                        fontSize: 32,
-                                    ),
+                            child: BorderedText(
+                                text: this.episode.episodeNo.toString(),
+                                textStyle: const TextStyle(
+                                    fontSize: 32,
                                 ),
                             ),
                         ),
@@ -115,6 +113,7 @@ class EpisodeCard extends StatelessWidget {
                         skipTraversal: false,
                         descendantsAreTraversable: false,
                     ),
+                    autofocus: this.autofocus,
                     onTap: () => Navigator.pushNamed(context, '/player', arguments: PlayerPageArguments(this.episode)),
                     child: Padding(
                         padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0, bottom: 8.0),

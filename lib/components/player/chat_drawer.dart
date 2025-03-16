@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/sink/sink_messenger.dart';
-import 'package:stronzflix/components/border_text.dart';
+import 'package:sutils/ui/widgets/bordered_text.dart';
 
 class ChatDrawer extends StatefulWidget {
     const ChatDrawer({super.key});
@@ -36,24 +36,11 @@ class _ChatDrawerState extends State<ChatDrawer> {
     }
 
     Widget _buildMessage(String message, bool isLocal) {
-        return BorderText(
-            builder: (style) => TextSpan(
-                style: style?.copyWith(
-                    color: Colors.white,
-                    fontSize: 16
-                ) ?? const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16
-                ),
-                children: [
-                    TextSpan(
-                        text: isLocal ? "Tu: " : "Sinko: ",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold
-                        )
-                    ),
-                    TextSpan(text: message),
-                ]
+        return BorderedText(
+            text: (isLocal ? "Tu: " : "Sinko: ") + message,
+            textStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 16
             )
         );
     }

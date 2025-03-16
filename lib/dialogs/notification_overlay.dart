@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stronzflix/components/border_text.dart';
+import 'package:sutils/ui/widgets/bordered_text.dart';
 
 sealed class NotificationOverlay {
 
@@ -22,16 +22,11 @@ sealed class NotificationOverlay {
                         ),
                         child: Padding(
                             padding: const EdgeInsets.all(13),
-                            child: BorderText(
-                                builder: (style) => TextSpan(
-                                    style: style?.copyWith(
-                                        color: Colors.white,
-                                        fontSize: 16
-                                    ) ?? const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16
-                                    ),
-                                    text: message
+                            child: BorderedText(
+                                text: message,
+                                textStyle: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16
                                 )
                             )
                         )
