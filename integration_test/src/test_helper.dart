@@ -20,6 +20,12 @@ final class TestHelper {
             FinderResult<Element> errorFinder = find.byKey(const Key("loading_error")).evaluate();
             if (errorFinder.isNotEmpty)
                 error = (errorFinder.single.widget as Text).data;
+
+            FinderResult<Element> updateFinder = find.text("Aggiornamento Disponibile").evaluate();
+            if (updateFinder.isNotEmpty) {
+                await tester.tap(find.text("Ignora"));
+                await tester.pump(Durations.extralong4);
+            }
         }
 
         if(error != null)
