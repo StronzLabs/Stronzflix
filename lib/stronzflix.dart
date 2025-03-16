@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stronz_video_player/video_player.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/sink/sink_messenger.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
-import 'package:stronzflix/components/floating_player_context.dart';
 import 'package:stronzflix/pages/home_page.dart';
 import 'package:stronzflix/pages/loading_page.dart';
 import 'package:stronzflix/pages/player_page.dart';
@@ -40,7 +40,7 @@ class Stronzflix extends StatelessWidget {
                                 heroUuid: (settings.arguments as TitlePageArguments).heroUuid,
                                 metadata: (settings.arguments as TitlePageArguments).metadata
                             ),
-                            '/player' || '/player-sink' => FloatingPlayerContext.navigatorGuard(context,
+                            '/player' || '/player-sink' => StronzFloatingPlayerContext.navigatorGuard(context,
                                 child: PlayerPage(
                                     watchable: (settings.arguments as PlayerPageArguments).watchable,
                                     controller: (settings.arguments as PlayerPageArguments).controller
@@ -51,7 +51,7 @@ class Stronzflix extends StatelessWidget {
                         }
                     );
                 },
-                builder: (context, child) => FloatingPlayerContext(child: child),
+                builder: (context, child) => StronzFloatingPlayerContext(child: child),
                 navigatorKey: Stronzflix.navigatorKey,
                 debugShowCheckedModeBanner: false,
                 navigatorObservers: [

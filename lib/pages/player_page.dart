@@ -8,7 +8,6 @@ import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/components/player/cast_video_player_controller.dart';
 import 'package:stronzflix/components/player/cast_video_view.dart';
 import 'package:stronzflix/components/player/chat_button.dart';
-import 'package:stronzflix/components/player/floating_player_button.dart';
 import 'package:stronzflix/components/player/peer_external_controller.dart';
 import 'package:stronzflix/stronzflix.dart';
 import 'package:sutils/utils.dart';
@@ -75,8 +74,34 @@ class _PlayerPageState extends State<PlayerPage> with StreamListener {
         super.dispose();
     }
 
+    void _onFloatingPlayerShow() {
+        this._floatingPlayerVisible = true;
+    }
+
+    void _onFloatingPlayerClose() {
+        this._floatingPlayerVisible = false;
+        if(this._exited && this._controller != null) {
+            KeepWatching.add(this._controller!.playable as Watchable, this._controller!.position.inSeconds, this._controller!.duration.inSeconds);
+            this._controller?.dispose();
+        }
+    }
+
+    void _onFloatingPlayerExpand() {
+        this._floatingPlayerVisible = false;
+        Stronzflix.navigatorKey.currentState!.pushNamed('/player',
+            arguments: PlayerPageArguments(super.widget.watchable, controller: this._controller)
+        );
+    }
+
     @override
     Widget build(BuildContext context) {
+
+        StronzFloatingPlayerContext.of(context)!.setHandlers(
+            onFloatingPlayerShow: this._onFloatingPlayerShow,
+            onFloatingPlayerExpand: this._onFloatingPlayerExpand,
+            onFloatingPlayerClose: this._onFloatingPlayerClose,
+        );
+
         return PopScope(
             onPopInvokedWithResult: (didPop, result) {
                 SinkMessenger.stopWatching();
@@ -88,9 +113,13 @@ class _PlayerPageState extends State<PlayerPage> with StreamListener {
                     listenable: StronzCastManager.state,
                     builder: (context, _) {
                         if(StronzCastManager.connected && this._controller is! CastVideoPlayerController)
-                            this._controller = CastVideoPlayerController([MediaSessionExternalController(), PeerExternalController()]);
+                            this._controller = CastVideoPlayerController(
+                                externalControllers: [MediaSessionExternalController(), PeerExternalController()],
+                            );
                         else if(!StronzCastManager.connected && this._controller is! NativePlayerController)
-                            this._controller = NativePlayerController([MediaSessionExternalController(), PeerExternalController()]);
+                            this._controller = NativePlayerController(
+                                externalControllers: [MediaSessionExternalController(), PeerExternalController()],
+                            );
 
                         return StronzVideoPlayer(
                             playable: super.widget.watchable,
@@ -108,25 +137,7 @@ class _PlayerPageState extends State<PlayerPage> with StreamListener {
                                     onOpened: onMenuOpened,
                                     onClosed: onMenuClosed,
                                 ),
-                                const ChatButton(),
-                                FloatingPlayerButton(
-                                    onClose: () {
-                                        this._floatingPlayerVisible = false;
-                                        if(this._exited && this._controller != null) {
-                                            KeepWatching.add(this._controller!.playable as Watchable, this._controller!.position.inSeconds, this._controller!.duration.inSeconds);
-                                            this._controller?.dispose();
-                                        }
-                                    },
-                                    onOpen: () {
-                                        this._floatingPlayerVisible = true;
-                                        Navigator.of(context).pop();
-                                    },
-                                    onExpand: () {
-                                        Stronzflix.navigatorKey.currentState!.pushNamed('/player',
-                                            arguments: PlayerPageArguments(super.widget.watchable, controller: this._controller)
-                                        );
-                                    },
-                                )
+                                const ChatButton()
                             ],
                             videoBuilder: StronzCastManager.connected
                                 ? (context) => const CastVideoView()
