@@ -318,7 +318,7 @@ class _TitlePageState extends State<TitlePage> {
                 future: this._memoizer.runOnce(() => this._fetchTitle()),
                 builder: (context, snapshot) {
                     return FocusTraversalGroup(
-                        policy: _ScrollAPolicy(crossAxisCount),
+                        policy: _ScrollPolicy(crossAxisCount),
                         child: CustomScrollView(
                             controller: this._scrollController,
                             slivers: [
@@ -384,10 +384,10 @@ class _TitlePageState extends State<TitlePage> {
     }
 }
 
-class _ScrollAPolicy extends WidgetOrderTraversalPolicy {
+class _ScrollPolicy extends WidgetOrderTraversalPolicy {
 
     final int crossAxisCount;
-    _ScrollAPolicy(this.crossAxisCount);
+    _ScrollPolicy(this.crossAxisCount);
 
     @override
     bool inDirection(FocusNode currentNode, TraversalDirection direction) {
