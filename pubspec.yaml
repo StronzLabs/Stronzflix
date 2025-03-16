@@ -2,7 +2,7 @@ name: stronzflix
 description: "Streaming application."
 publish_to: 'none'
 
-version: 0.2.14
+version: 0.3.0
 
 environment:
   sdk: ^3.6.0
