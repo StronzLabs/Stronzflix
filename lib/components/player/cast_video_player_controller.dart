@@ -5,7 +5,9 @@ import 'package:stronz_video_player/video_player.dart';
 
 class CastVideoPlayerController extends StronzPlayerController {
 
-    CastVideoPlayerController(super.externalControllers);
+    CastVideoPlayerController({
+        super.externalControllers
+    });
 
     @override
     Future<void> initialize(Playable playable, {StronzControllerState? initialState}) async {
