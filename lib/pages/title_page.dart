@@ -400,6 +400,7 @@ class _ScrollAPolicy extends WidgetOrderTraversalPolicy {
             siblings.where((node) => node.context!.findAncestorWidgetOfExactType<SeasonsDropdownButton>() != null).firstOrNull,
         ].whereType<FocusNode>().toList();
         siblings.removeWhere((node) => others.contains(node));
+        others.removeWhere((node) => node.canRequestFocus == false);
 
         int idx = siblings.indexOf(currentNode);
 
