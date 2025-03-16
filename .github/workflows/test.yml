@@ -18,8 +18,13 @@ on:
         type: boolean
         required: true
         default: false
-      test_android:
-        description: 'Run on Android'
+      test_android_phone:
+        description: 'Run on Android Phone'
+        type: boolean
+        required: true
+        default: false
+      test_android_tv:
+        description: 'Run on Android TV'
         type: boolean
         required: true
         default: false
@@ -40,8 +45,13 @@ on:
         type: boolean
         required: true
         default: true
-      test_android:
-        description: 'Run on Android'
+      test_android_phone:
+        description: 'Run on Android Phone'
+        type: boolean
+        required: true
+        default: true
+      test_android_tv:
+        description: 'Run on Android TV'
         type: boolean
         required: true
         default: true
@@ -118,10 +128,10 @@ jobs:
       - name: Run tests
         run: flutter test integration_test -d macos
 
-  test_android:
+  test_android_phone:
     name: Android
     runs-on: ubuntu-latest
-    if:  ${{ inputs.test_android }}
+    if:  ${{ inputs.test_android_phone }}
     steps:
       - name: Enable KVM
         run: |
@@ -154,6 +164,66 @@ jobs:
           disable-animations: true
           arch: x86_64
           profile: Nexus 6
+          script: echo "Generated AVD snapshot for caching."
+
+      - name: Download Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.27.1"
+          channel: "stable"
+          cache: false
+          architecture: x64
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          arch: x86_64
+          profile: Nexus 6
+          script: flutter test integration_test -d emulator
+
+  test_android_tv:
+    name: Android
+    runs-on: ubuntu-latest
+    if:  ${{ inputs.test_android_tv }}
+    steps:
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Download Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: "zulu"
+          java-version: "17"
+
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-33
+
+      - name: Create AVD
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          arch: x86_64
+          profile: Android TV (720p)
           script: echo "Generated AVD snapshot for caching."
 
       - name: Download Flutter
