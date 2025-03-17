@@ -193,7 +193,7 @@ jobs:
       - name: Build MacOS App
         run: |
           flutter config --enable-macos-desktop
-          find . -name "Podfile" -execdir pod repo update \;
+          find . -name "Podfile" -execdir pod update WebRTC-SDK \;
           flutter build macos --release
 
       - name: Zip File
