@@ -10,7 +10,7 @@ import 'package:stronzflix/backend/api/bindings/local.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/downloader.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
-import 'package:stronzflix/dialogs/confirmation_dialog.dart';
+import 'package:sutils/ui/dialogs/confirmation_dialog.dart';
 import 'package:sutils/utils.dart';
 
 import 'download_state.dart';
@@ -213,10 +213,11 @@ class DownloadManager {
     }
 
     static Future<void> deleteDialog(BuildContext context, Watchable watchable) async {
-        bool delete = await ConfirmationDialog.ask(context,
-            "Elimina ${watchable.title}",
-            "Sei sicuro di voler eliminare ${watchable.title}?",
-            action: "Elimina"
+        bool delete = await ConfirmationDialog.ask(
+            context: context,
+            title: "Elimina ${watchable.title}",
+            text: "Sei sicuro di voler eliminare ${watchable.title}?",
+            confirm: "Elimina"
         );
         if (delete)
             await DownloadManager.deleteSingle(watchable);

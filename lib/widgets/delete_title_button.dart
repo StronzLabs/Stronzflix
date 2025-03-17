@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stronzflix/backend/api/media.dart';
 import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
-import 'package:stronzflix/dialogs/confirmation_dialog.dart';
+import 'package:sutils/ui/dialogs/confirmation_dialog.dart';
 
 class DeleteTitleButton extends StatelessWidget {
     final TitleMetadata title;
@@ -21,10 +21,11 @@ class DeleteTitleButton extends StatelessWidget {
                     size: 28,
                 ),
                 onPressed: () async {
-                    bool delete = await ConfirmationDialog.ask(context,
-                        "Elimina ${this.title.name}",
-                        "Sei sicuro di voler eliminare ${this.title.name}?",
-                        action: "Elimina"
+                    bool delete = await ConfirmationDialog.ask(
+                        context: context,
+                        title: "Elimina ${this.title.name}",
+                        text: "Sei sicuro di voler eliminare ${this.title.name}?",
+                        confirm: "Elimina"
                     );
                     if (delete)
                         await DownloadManager.deleteTitle(this.title);
