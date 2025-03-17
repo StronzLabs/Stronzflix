@@ -193,6 +193,7 @@ jobs:
       - name: Build MacOS App
         run: |
           flutter config --enable-macos-desktop
+          find . -name "Podfile" -execdir pod repo update \;
           flutter build macos --release
 
       - name: Zip File
