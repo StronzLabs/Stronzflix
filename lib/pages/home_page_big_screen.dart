@@ -6,7 +6,7 @@ import 'package:stronzflix/backend/downloads/download_manager.dart';
 import 'package:stronzflix/backend/storage/keep_watching.dart';
 import 'package:stronzflix/backend/storage/saved_titles.dart';
 import 'package:stronzflix/backend/storage/settings.dart';
-import 'package:stronzflix/components/card_row.dart';
+import 'package:stronzflix/widgets/card_row.dart';
 import 'package:stronzflix/widgets/download_card.dart';
 import 'package:stronzflix/widgets/delete_title_button.dart';
 import 'package:stronzflix/widgets/save_title_button.dart';

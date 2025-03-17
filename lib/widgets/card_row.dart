@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sutils/ui/widgets/tv_traversable.dart';
+import 'package:sutils/utils.dart';
 
 class CardRow<T> extends StatefulWidget {
 
@@ -7,6 +8,7 @@ class CardRow<T> extends StatefulWidget {
     final Iterable<T> values;
     final Widget Function(BuildContext, T, bool) buildCard;
     final double cardAspectRatio;
+    final double cardWidth;
     final bool autofocus;
 
     const CardRow({
@@ -15,6 +17,7 @@ class CardRow<T> extends StatefulWidget {
         required this.values,
         required this.buildCard,
         this.cardAspectRatio = 16 / 9,
+        this.cardWidth = 350,
         this.autofocus = false
     });
 
@@ -51,8 +54,7 @@ class _CardRowState<T> extends State<CardRow<T>> {
     }
 
     Widget _buildScrollView(BuildContext context, Iterable<T> data) {
-        double width = 350;
-        double height = width / super.widget.cardAspectRatio;
+        double height = super.widget.cardWidth / super.widget.cardAspectRatio;
         return SizedBox(
             height: height,
             child: ListView.builder(
@@ -88,9 +90,9 @@ class _CardRowState<T> extends State<CardRow<T>> {
                             alignment: AlignmentDirectional.centerStart,
                             children: [
                                 this._buildScrollView(context, super.widget.values),
-                                if (this._arrowVisibility && this._scrollController.hasClients && this._scrollController.offset > 0)
+                                if (EPlatform.isDesktop && this._arrowVisibility && this._scrollController.hasClients && this._scrollController.offset > 0)
                                     this._buildArrowIcon(true),
-                                if (this._arrowVisibility && this._scrollController.hasClients && this._scrollController.offset < this._scrollController.position.maxScrollExtent)
+                                if (EPlatform.isDesktop && this._arrowVisibility && this._scrollController.hasClients && this._scrollController.offset < this._scrollController.position.maxScrollExtent)
                                     this._buildArrowIcon(false)
                             ],
                         ),
