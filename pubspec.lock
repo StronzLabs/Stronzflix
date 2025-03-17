@@ -416,10 +416,10 @@ packages:
     dependency: "direct overridden"
     description:
       name: flutter_webrtc
-      sha256: "42a9b3f1115a14928e03336e7441c4b086689fa337e26c9929d2f8330fe462bc"
+      sha256: b832dc76c0d1577f14aaf35e9c38d4ed7667cbc89c492b7bf4505d8d5f62e08b
       url: "https://pub.dev"
     source: hosted
-    version: "0.12.12"
+    version: "0.12.12+hotfix.1"
   frontend_server_client:
     dependency: transitive
     description:
@@ -1131,7 +1131,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: afef5ede0459a47a7078e0aedf98c5910c614d7f
+      resolved-ref: "4d58ea8b25040835e77579d38660f7ee1c23834d"
       url: "https://github.com/StronzLabs/StronzVideoPlayer.git"
     source: git
     version: "0.0.1"
