@@ -54,7 +54,7 @@ on:
         description: 'Run on Android TV'
         type: boolean
         required: true
-        default: false # video rendering doesn't work on tv emulator ¯\_(ツ)_/¯
+        default: true
 
 jobs:
   test_windows:
