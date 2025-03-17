@@ -193,6 +193,7 @@ jobs:
       - name: Build MacOS App
         run: |
           flutter config --enable-macos-desktop
+          flutter pub get
           find . -name "Podfile" -execdir pod update WebRTC-SDK \;
           flutter build macos --release
 
