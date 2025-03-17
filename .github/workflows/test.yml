@@ -126,7 +126,10 @@ jobs:
           architecture: x64
 
       - name: Run tests
-        run: flutter test integration_test -d macos
+        run: |
+          flutter pub get
+          find . -name "Podfile" -execdir pod update WebRTC-SDK \;
+          flutter test integration_test -d macos
 
   test_android_phone:
     name: Android Phone
