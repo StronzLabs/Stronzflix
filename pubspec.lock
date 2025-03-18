@@ -1131,7 +1131,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "4d58ea8b25040835e77579d38660f7ee1c23834d"
+      resolved-ref: e124f49a24e790c9a593cb7fd75b7ef70721242a
       url: "https://github.com/StronzLabs/StronzVideoPlayer.git"
     source: git
     version: "0.0.1"
@@ -1140,7 +1140,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: ba052ec0ca1ba3651ca1ee54bf7111c442c9dfdd
+      resolved-ref: "099e1358ebd87f4c59a63eeb4a0656724d1f8b92"
       url: "https://github.com/StronzLabs/SUtils.git"
     source: git
     version: "0.0.1"
